@@ -1,29 +1,18 @@
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import {
-  Button,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import StartScreen from "./login";
 import Main from "./main";
 
+const Stack = createNativeStackNavigator();
+
 export default function App() {
-  const [view, setView] = useState("LAUNCH");
-  const [name, setName] = useState("");
-
-  const handleGo = (name) => {
-    setView("MAIN");
-    setName(name);
-  };
-
   return (
-    <>
-      {view === "LAUNCH" && <StartScreen handleGo={handleGo} />}
-      {view === "MAIN" && <Main name={name} />}
-    </>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={StartScreen} />
+        <Stack.Screen name="Main" component={Main} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
