@@ -1,9 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import StartScreen from "./components/start-screen";
-import SettleUpScreen from "./components/settle-up-screen";
-import TrackGameScreen from "./components/track-game-screen";
+import StartScreen from "./components/start-screen/start-screen";
+import SettleUpScreen from "./components/settle-up-screen/settle-up-screen";
+import TrackGameScreen from "./components/track-game-screen/track-game-screen";
 
 const Stack = createNativeStackNavigator();
 

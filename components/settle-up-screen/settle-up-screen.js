@@ -7,6 +7,7 @@ import {
   Button,
 } from "react-native";
 import React, { useState } from "react";
+import styles from "./settle-up-screen.css";
 
 export default function SettleUpScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(1);
@@ -48,18 +49,18 @@ export default function SettleUpScreen({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className={styles.container}>
       <Text style={{ marginBottom: 40, fontSize: 30 }}>Add players</Text>
       {players.map((player) => {
         return (
-          <View key={player.id} style={styles.player}>
+          <View key={player.id} className={styles.player}>
             <TextInput
               key={"name" + player.id}
               onChangeText={(text) => onChangeName(text, player.id)}
               value={player.name}
               placeholder="Player name"
               maxLength={20}
-              style={{ marginBottom: 20, marginRight: 10 }}
+              className={styles.textInput}
             />
             <TextInput
               key={"buyIn" + player.id}
@@ -68,7 +69,7 @@ export default function SettleUpScreen({ navigation, route }) {
               value={player.buyIn}
               placeholder="Buy in"
               maxLength={10}
-              style={{ marginBottom: 20, marginRight: 10 }}
+              className={styles.textInput}
             />
             <TextInput
               key={"chipsLeft" + player.id}
@@ -78,6 +79,7 @@ export default function SettleUpScreen({ navigation, route }) {
               placeholder="Chips left"
               maxLength={10}
               style={{ marginBottom: 20 }}
+              className={styles.textInput}
             />
           </View>
         );
@@ -89,15 +91,3 @@ export default function SettleUpScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "lightblue",
-  },
-  player: {
-    display: "flex",
-    flexDirection: "row",
-  },
-});

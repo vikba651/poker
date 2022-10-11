@@ -1,0 +1,13 @@
+.container {
+    flex: 1;
+    background-color: lightblue;
+    align-items: center;
+    justify-content: center;
+}
+
+.inputField {
+    background-color: white;
+    padding: 5px;
+    margin-top: 5px;
+    min-width: 30%;
+}

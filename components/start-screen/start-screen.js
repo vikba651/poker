@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { Component, useState } from "react";
+import styles from "./start-screen.css";
 
 export default function StartScreen({ navigation }) {
   return (
@@ -33,17 +34,3 @@ export default function StartScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "lightblue",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inputField: {
-    backgroundColor: "white",
-    padding: 5,
-    marginTop: 5,
-    minWidth: "30%",
-  },
-});

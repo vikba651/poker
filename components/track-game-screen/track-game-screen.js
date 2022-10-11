@@ -1,5 +1,6 @@
 import { Text, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
+import styles from "./track-game-screen.css";
 
 export default function TrackGameScreen({ navigation, route }) {
   return (
@@ -8,11 +9,3 @@ export default function TrackGameScreen({ navigation, route }) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "lightblue",
-  },
-});
