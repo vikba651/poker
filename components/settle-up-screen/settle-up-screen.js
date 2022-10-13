@@ -48,6 +48,22 @@ export default function SettleUpScreen({ navigation, route }) {
     setPlayers(newPlayers);
   }
 
+  function onDone() {
+    console.log(players);
+    const potTotal = players
+      .map((player) => +player.buyIn)
+      .reduce((a, b) => a + b);
+    const chipsLeftTotal = players
+      .map((player) => +player.chipsLeft)
+      .reduce((a, b) => a + b);
+
+    if (potTotal !== chipsLeftTotal) {
+      console.log(
+        `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
+      );
+    }
+  }
+
   return (
     <SafeAreaView className={styles.container}>
       <Text style={{ marginBottom: 40, fontSize: 30 }}>Add players</Text>
@@ -86,8 +102,7 @@ export default function SettleUpScreen({ navigation, route }) {
       })}
 
       <Button title="Add player" onPress={onAddPlayer}></Button>
-      <Button title="Done" onPress={() => console.log(players)}></Button>
+      <Button title="Done" onPress={onDone}></Button>
     </SafeAreaView>
   );
 }
-
