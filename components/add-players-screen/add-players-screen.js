@@ -1,11 +1,4 @@
-import {
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  View,
-  TextInput,
-  Button,
-} from "react-native";
+import { Text, View, ScrollView, Button } from "react-native";
 import React, { useState } from "react";
 import styles from "./add-players-screen.css";
 import PlayerCard from "../player-card/player-card";
@@ -56,23 +49,25 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onDone() {
     console.log(players);
-    const potTotal = players
-      .map((player) => +player.buyIn)
-      .reduce((a, b) => a + b);
-    const chipsLeftTotal = players
-      .map((player) => +player.chipsLeft)
-      .reduce((a, b) => a + b);
+    if (players) {
+      const potTotal = players
+        .map((player) => +player.buyIn)
+        .reduce((a, b) => a + b);
+      const chipsLeftTotal = players
+        .map((player) => +player.chipsLeft)
+        .reduce((a, b) => a + b);
 
-    if (potTotal !== chipsLeftTotal) {
-      console.log(
-        `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
-      );
+      if (potTotal !== chipsLeftTotal) {
+        console.log(
+          `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
+        );
+      }
     }
   }
 
   return (
-    <SafeAreaView className={styles.container}>
-      <Text style={{ marginBottom: 40, fontSize: 30 }}>Add players</Text>
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <Text className={styles.addPlayers}>Add players</Text>
       {players.map((player) => {
         return (
           <PlayerCard
@@ -88,6 +83,6 @@ export default function AddPlayersScreen({ navigation, route }) {
 
       <Button title="Add player" onPress={onAddPlayer}></Button>
       <Button title="Done" onPress={onDone}></Button>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
