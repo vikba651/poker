@@ -21,7 +21,7 @@ export default function StartScreen({ navigation }) {
         value={name}
       ></TextInput> */}
       <Button
-        onPress={() => navigation.navigate("SettleUpScreen")}
+        onPress={() => navigation.navigate("AddPlayersScreen")}
         title="Settle up"
       />
       <Text>or</Text>
@@ -33,4 +33,3 @@ export default function StartScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-

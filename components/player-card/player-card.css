@@ -1,0 +1,22 @@
+.playerCard {
+  display: flex;
+  background-color: gainsboro;
+  width: 75%;
+  border-radius: 10%;
+  padding: 5%;
+  margin: 1%;
+}
+
+.topRow {
+  margin-bottom: 5%;
+  flex-direction: row;
+  flex-grow: 2;
+}
+
+.deleteButton {
+  margin-left: 10px;
+}
+
+.bottomRow {
+  flex-direction: row;
+}
