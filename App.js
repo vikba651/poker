@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import StartScreen from "./components/start-screen/start-screen";
-import SettleUpScreen from "./components/settle-up-screen/settle-up-screen";
+import AddPlayersScreen from "./components/add-players-screen/add-players-screen";
 import TrackGameScreen from "./components/track-game-screen/track-game-screen";
 
 const Stack = createNativeStackNavigator();
@@ -12,7 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="StartScreens" component={StartScreen} />
-        <Stack.Screen name="SettleUpScreen" component={SettleUpScreen} />
+        <Stack.Screen name="AddPlayersScreen" component={AddPlayersScreen} />
         <Stack.Screen name="TrackGameScreen" component={TrackGameScreen} />
       </Stack.Navigator>
     </NavigationContainer>

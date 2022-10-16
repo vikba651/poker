@@ -7,9 +7,10 @@ import {
   Button,
 } from "react-native";
 import React, { useState } from "react";
-import styles from "./settle-up-screen.css";
+import styles from "./add-players-screen.css";
+import PlayerCard from "../player-card/player-card";
 
-export default function SettleUpScreen({ navigation, route }) {
+export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(1);
 
   const [players, setPlayers] = useState([
@@ -30,21 +31,26 @@ export default function SettleUpScreen({ navigation, route }) {
     setPlayers(newPlayers);
   }
 
+  function onDeletePlayer(id) {
+    const newPlayers = players.filter((player) => player.id != id);
+    setPlayers(newPlayers);
+  }
+
   function onChangeName(text, id) {
     let newPlayers = [...players];
-    newPlayers[id].name = text;
+    newPlayers.find((player) => player.id == id).name = text;
     setPlayers(newPlayers);
   }
 
   function onChangeBuyIn(text, id) {
     let newPlayers = [...players];
-    newPlayers[id].buyIn = text;
+    newPlayers.find((player) => player.id == id).buyIn = text;
     setPlayers(newPlayers);
   }
 
   function onChangeChipsLeft(text, id) {
     let newPlayers = [...players];
-    newPlayers[id].chipsLeft = text;
+    newPlayers.find((player) => player.id == id).chipsLeft = text;
     setPlayers(newPlayers);
   }
 
@@ -69,35 +75,14 @@ export default function SettleUpScreen({ navigation, route }) {
       <Text style={{ marginBottom: 40, fontSize: 30 }}>Add players</Text>
       {players.map((player) => {
         return (
-          <View key={player.id} className={styles.player}>
-            <TextInput
-              key={"name" + player.id}
-              onChangeText={(text) => onChangeName(text, player.id)}
-              value={player.name}
-              placeholder="Player name"
-              maxLength={20}
-              className={styles.textInput}
-            />
-            <TextInput
-              key={"buyIn" + player.id}
-              keyboardType="numeric"
-              onChangeText={(text) => onChangeBuyIn(text, player.id)}
-              value={player.buyIn}
-              placeholder="Buy in"
-              maxLength={10}
-              className={styles.textInput}
-            />
-            <TextInput
-              key={"chipsLeft" + player.id}
-              keyboardType="numeric"
-              onChangeText={(text) => onChangeChipsLeft(text, player.id)}
-              value={player.chipsLeft}
-              placeholder="Chips left"
-              maxLength={10}
-              style={{ marginBottom: 20 }}
-              className={styles.textInput}
-            />
-          </View>
+          <PlayerCard
+            key={player.id}
+            player={player}
+            onChangeName={onChangeName}
+            onChangeBuyIn={onChangeBuyIn}
+            onChangeChipsLeft={onChangeChipsLeft}
+            onDeletePlayer={onDeletePlayer}
+          ></PlayerCard>
         );
       })}
 
