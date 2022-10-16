@@ -1,5 +1,5 @@
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
-import styles from "./player-card.css";
+import styles from "./player-card.scss";
 
 export default function PlayerCard({
   player,

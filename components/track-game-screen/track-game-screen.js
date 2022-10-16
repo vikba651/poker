@@ -1,6 +1,6 @@
 import { Text, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
-import styles from "./track-game-screen.css";
+import styles from "./track-game-screen.scss";
 
 export default function TrackGameScreen({ navigation, route }) {
   return (

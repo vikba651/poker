@@ -1,6 +1,8 @@
+@import "/variables";
+
 .container {
     flex: 1;
-    background-color: lightblue;
+    background-color: $background-color;
     align-items: center;
     justify-content: center;
 }
