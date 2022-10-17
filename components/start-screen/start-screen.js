@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { Component, useState } from "react";
-import styles from "./start-screen.css";
+import styles from "./start-screen.scss";
 
 export default function StartScreen({ navigation }) {
   return (

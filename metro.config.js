@@ -6,10 +6,10 @@ module.exports = (async () => {
   } = await getDefaultConfig();
   return {
     transformer: {
-      babelTransformerPath: require.resolve("react-native-css-transformer"),
+      babelTransformerPath: require.resolve("react-native-sass-transformer"),
     },
     resolver: {
-      sourceExts: [...sourceExts, "css"],
+      sourceExts: [...sourceExts, "scss", "sass"],
     },
   };
 })();

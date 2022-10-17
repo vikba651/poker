@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, Button } from "react-native";
 import React, { useState } from "react";
-import styles from "./add-players-screen.css";
+import styles from "./add-players-screen.scss";
 import PlayerCard from "../player-card/player-card";
 
 export default function AddPlayersScreen({ navigation, route }) {
@@ -62,6 +62,7 @@ export default function AddPlayersScreen({ navigation, route }) {
           `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
         );
       }
+      navigation.navigate("SettleUpScreen", {players});
     }
   }
 
