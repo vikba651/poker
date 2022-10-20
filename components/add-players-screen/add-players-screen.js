@@ -1,5 +1,14 @@
-import { Text, View, ScrollView, Button } from 'react-native'
+import {
+  Text,
+  View,
+  ScrollView,
+  Button,
+  SafeAreaView,
+  KeyboardAvoidingView,
+} from 'react-native'
 import React, { useState } from 'react'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
+
 import styles from './add-players-screen.scss'
 import PlayerCard from '../player-card/player-card'
 
@@ -57,33 +66,39 @@ export default function AddPlayersScreen({ navigation, route }) {
         .map((player) => +player.chipsLeft)
         .reduce((a, b) => a + b)
 
-      if (potTotal !== chipsLeftTotal) {
-        console.log(
+      if (potTotal === chipsLeftTotal) {
+        navigation.navigate('SettleUpScreen', { players })
+      } else {
+        alert(
           `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
         )
       }
-      navigation.navigate('SettleUpScreen', { players })
     }
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollView}>
+    <SafeAreaView className={styles.container}>
       <Text className={styles.addPlayers}>Add players</Text>
-      {players.map((player) => {
-        return (
-          <PlayerCard
-            key={player.id}
-            player={player}
-            onChangeName={onChangeName}
-            onChangeBuyIn={onChangeBuyIn}
-            onChangeChipsLeft={onChangeChipsLeft}
-            onDeletePlayer={onDeletePlayer}
-          ></PlayerCard>
-        )
-      })}
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
+        <View className={styles.scrollView}>
+          {players.map((player) => {
+            return (
+              <PlayerCard
+                key={player.id}
+                player={player}
+                onChangeName={onChangeName}
+                onChangeBuyIn={onChangeBuyIn}
+                onChangeChipsLeft={onChangeChipsLeft}
+                onDeletePlayer={onDeletePlayer}
+              ></PlayerCard>
+            )
+          })}
+        </View>
 
-      <Button title="Add player" onPress={onAddPlayer}></Button>
-      <Button title="Done" onPress={onDone}></Button>
-    </ScrollView>
+        <Button title="Add player" onPress={onAddPlayer}></Button>
+        <Button title="Done" onPress={onDone}></Button>
+      </KeyboardAwareScrollView>
+      {/* <Text className={styles.addPlayers}>Hello</Text> */}
+    </SafeAreaView>
   )
 }

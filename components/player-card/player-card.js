@@ -21,7 +21,7 @@ export default function PlayerCard({
           style={{ flexGrow: 2 }}
         />
         <TouchableOpacity onPress={() => onDeletePlayer(player.id)}>
-          <Text>Delete</Text>
+          <Text className={styles.deleteButton}>Delete</Text>
         </TouchableOpacity>
       </View>
       <View className={styles.bottomRow}>
@@ -32,8 +32,8 @@ export default function PlayerCard({
           value={player.buyIn}
           placeholder="Buy in"
           maxLength={10}
-          className={styles.textInput}
-          style={{ width: '50%' }}
+          className={[styles.textInput, styles.bottomRowInput]}
+          style={{ marginRight: 10 }}
         />
         <TextInput
           key={'chipsLeft' + player.id}
@@ -42,7 +42,7 @@ export default function PlayerCard({
           value={player.chipsLeft}
           placeholder="Chips left"
           maxLength={10}
-          className={styles.textInput}
+          className={[styles.textInput, styles.bottomRowInput]}
         />
       </View>
     </View>
