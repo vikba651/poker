@@ -3,49 +3,51 @@ import React from 'react'
 import styles from './settle-up-screen.scss'
 
 export default function SettleUpScreen({ navigation, route }) {
-  // let players = route.params.players
-  let players = [
-    {
-      id: 0,
-      name: 'dude',
-      buyIn: 100,
-      chipsLeft: 98,
-    },
-    {
-      id: 1,
-      name: 'man',
-      buyIn: 100,
-      chipsLeft: 97,
-    },
-    {
-      id: 2,
-      name: 'guy',
-      buyIn: 100,
-      chipsLeft: 101,
-    },
-    {
-      id: 3,
-      name: 'guy',
-      buyIn: 100,
-      chipsLeft: 101,
-    },
-    {
-      id: 4,
-      name: 'guy',
-      buyIn: 100,
-      chipsLeft: 150,
-    },
-    id: 4,
-    name: 'guy',
-    buyIn: 100,
-    chipsLeft: 150,
-  },
-  id: 4,
-  name: 'guy',
-  buyIn: 100,
-  chipsLeft: 150,
-},
-  ]
+  let players = route.params.players
+  // let players = [
+  //   {
+  //     id: 0,
+  //     name: 'dude',
+  //     buyIn: 100,
+  //     chipsLeft: 98,
+  //   },
+  //   {
+  //     id: 1,
+  //     name: 'man',
+  //     buyIn: 100,
+  //     chipsLeft: 97,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'guy',
+  //     buyIn: 100,
+  //     chipsLeft: 101,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: 'guy',
+  //     buyIn: 100,
+  //     chipsLeft: 101,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'guy',
+  //     buyIn: 100,
+  //     chipsLeft: 150,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'guy',
+  //     buyIn: 100,
+  //     chipsLeft: 150,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'guy',
+  //     buyIn: 100,
+  //     chipsLeft: 150,
+  //   },
+  // ]
 
   const addPlayerDept = (sourceId, targetId, amount) => {
     return players.map((player) => {
@@ -120,15 +122,37 @@ export default function SettleUpScreen({ navigation, route }) {
     navigation.navigate('StartScreens')
   }
 
+  function getName(id) {
+    return players
+      .filter((player) => player.id === id)
+      .map((player) => player.name)
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       {players.map((player) => {
-        return (
-          <Text>
-            {player.name}
-            should swish *insert money calculating algo here* to person
-          </Text>
-        )
+        if (player.debts.length > 0) {
+          return (
+            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+              <Text style={{ fontWeight: 'bold' }} key={player.id}>
+                {player.name + ' '}
+              </Text>
+              <Text>
+                {'should swish '}
+                {player.debts.map((debt, i) => {
+                  return (
+                    <>
+                      <Text style={{ fontWeight: 'bold' }}>
+                        {debt.amount} to {getName(debt.to)}{' '}
+                      </Text>
+                      <Text>{i !== player.debts.length - 1 && 'and '}</Text>
+                    </>
+                  )
+                })}
+              </Text>
+            </View>
+          )
+        }
       })}
       <Button title="Back to Start" onPress={onBackToStart}></Button>
     </ScrollView>
