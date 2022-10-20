@@ -2,7 +2,7 @@
   display: flex;
   background-color: gainsboro;
   width: 100%;
-  border-radius: 10%;
+  border-radius: 10px;
   padding: 5%;
   margin: 1%;
 }
@@ -19,6 +19,7 @@
 
 .deleteButton {
   margin-left: 10px;
+  margin-top: 3px;
   color: red;
 }
 
@@ -35,6 +36,6 @@
   background-color: white;
   padding: 3px;
   border-radius: 3%;
-  border-color: gray;
+  border-color: #bbb;
   border-width: 1px;
 }
