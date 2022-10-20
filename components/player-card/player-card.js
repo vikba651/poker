@@ -1,5 +1,5 @@
-import { View, TextInput, Text, TouchableOpacity } from "react-native";
-import styles from "./player-card.scss";
+import { View, TextInput, Text, TouchableOpacity } from 'react-native'
+import styles from './player-card.scss'
 
 export default function PlayerCard({
   player,
@@ -12,7 +12,7 @@ export default function PlayerCard({
     <View key={player.id} className={styles.playerCard}>
       <View className={styles.topRow}>
         <TextInput
-          key={"name" + player.id}
+          key={'name' + player.id}
           onChangeText={(text) => onChangeName(text, player.id)}
           value={player.name}
           placeholder="Player name"
@@ -26,17 +26,17 @@ export default function PlayerCard({
       </View>
       <View className={styles.bottomRow}>
         <TextInput
-          key={"buyIn" + player.id}
+          key={'buyIn' + player.id}
           keyboardType="numeric"
           onChangeText={(text) => onChangeBuyIn(text, player.id)}
           value={player.buyIn}
           placeholder="Buy in"
           maxLength={10}
           className={styles.textInput}
-          style={{ width: "50%" }}
+          style={{ width: '50%' }}
         />
         <TextInput
-          key={"chipsLeft" + player.id}
+          key={'chipsLeft' + player.id}
           keyboardType="numeric"
           onChangeText={(text) => onChangeChipsLeft(text, player.id)}
           value={player.chipsLeft}
@@ -46,5 +46,5 @@ export default function PlayerCard({
         />
       </View>
     </View>
-  );
+  )
 }

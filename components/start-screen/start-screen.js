@@ -1,13 +1,6 @@
-import {
-  Button,
-  SafeAreaView,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-} from "react-native";
-import React, { Component, useState } from "react";
-import styles from "./start-screen.scss";
+import { Button, SafeAreaView, Text } from 'react-native'
+import React from 'react'
+import styles from './start-screen.scss'
 
 export default function StartScreen({ navigation }) {
   return (
@@ -15,21 +8,16 @@ export default function StartScreen({ navigation }) {
       <Text style={{ marginBottom: 40, fontSize: 24 }}>
         What do you want to do?
       </Text>
-      {/* <TextInput
-        style={styles.inputField}
-        onChangeText={setName}
-        value={name}
-      ></TextInput> */}
       <Button
-        onPress={() => navigation.navigate("AddPlayersScreen")}
+        onPress={() => navigation.navigate('AddPlayersScreen')}
         title="Settle up"
       />
       <Text>or</Text>
 
       <Button
-        onPress={() => navigation.navigate("TrackGameScreen")}
+        onPress={() => navigation.navigate('TrackGameScreen')}
         title="Track poker game"
       />
     </SafeAreaView>
-  );
+  )
 }
