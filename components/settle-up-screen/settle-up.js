@@ -3,7 +3,117 @@ import React from 'react'
 import styles from './settle-up.scss'
 
 export default function SettleUpScreen({ navigation, route }) {
-  const players = route.params.players
+  // let players = route.params.players
+  let players = [
+    {
+      id: 0,
+      name: 'dude',
+      buyIn: 100,
+      chipsLeft: 98,
+    },
+    {
+      id: 1,
+      name: 'man',
+      buyIn: 100,
+      chipsLeft: 97,
+    },
+    {
+      id: 2,
+      name: 'guy',
+      buyIn: 100,
+      chipsLeft: 101,
+    },
+    {
+      id: 3,
+      name: 'guy',
+      buyIn: 100,
+      chipsLeft: 101,
+    },
+    {
+      id: 4,
+      name: 'guy',
+      buyIn: 100,
+      chipsLeft: 150,
+    },
+    id: 4,
+    name: 'guy',
+    buyIn: 100,
+    chipsLeft: 150,
+  },
+  id: 4,
+  name: 'guy',
+  buyIn: 100,
+  chipsLeft: 150,
+},
+  ]
+
+  const addPlayerDept = (sourceId, targetId, amount) => {
+    return players.map((player) => {
+      if (player.id === sourceId) {
+        let newPlayer = { ...player }
+        newPlayer.debts.push({
+          to: targetId,
+          amount,
+        })
+        return newPlayer
+      }
+      return player
+    })
+  }
+
+  const settleDebts = () => {
+    let negBals = [
+      // [id, balance]
+      // {id: 0, balance: 100}
+      // {id: 1, balance: 100}
+    ]
+    let posBals = [
+      // [id, balance]
+    ]
+    players = players.map((player) => {
+      const balance = player.chipsLeft - player.buyIn
+      if (balance < 0) {
+        // negBals.push([player.id, -balance]);
+        negBals.push({
+          id: player.id,
+          balance: -balance,
+          name: player.name,
+        })
+      } else if (balance > 0) {
+        //posBals.push([player.id, balance]);
+        posBals.push({
+          id: player.id,
+          balance: balance,
+          name: player.name,
+        })
+      }
+      return {
+        ...player,
+        debts: [],
+      }
+    })
+    negBals = negBals.sort(function (a, b) {
+      return a.balance - b.balance
+    })
+    posBals = posBals.sort(function (a, b) {
+      return a.balance - b.balance
+    })
+
+    negBals.forEach((negBal) => {
+      while (negBal.balance > posBals[0].balance) {
+        players = addPlayerDept(negBal.id, posBals[0].id, posBals[0].balance)
+        negBal.balance -= posBals[0].balance
+        posBals = posBals.slice(1)
+      }
+      if (negBal.balance !== 0) {
+        players = addPlayerDept(negBal.id, posBals[0].id, negBal.balance)
+        posBals[0].balance -= negBal.balance
+        negBal.balance = 0
+      }
+    })
+  }
+
+  settleDebts()
   console.log(players)
 
   function onBackToStart() {
@@ -15,8 +125,8 @@ export default function SettleUpScreen({ navigation, route }) {
       {players.map((player) => {
         return (
           <Text>
-            {player.name} should swish *insert money calculating algo here* to
-            person
+            {player.name}
+            should swish *insert money calculating algo here* to person
           </Text>
         )
       })}
