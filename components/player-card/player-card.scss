@@ -1,10 +1,14 @@
 .playerCard {
   display: flex;
   background-color: gainsboro;
-  width: 75%;
+  width: 100%;
   border-radius: 10%;
   padding: 5%;
   margin: 1%;
+}
+
+.playerCard {
+  width: 100%;
 }
 
 .topRow {
@@ -15,8 +19,22 @@
 
 .deleteButton {
   margin-left: 10px;
+  color: red;
 }
 
 .bottomRow {
   flex-direction: row;
+  justify-content: space-between;
+}
+
+.bottomRowInput {
+  flex: 1;
+}
+
+.textInput {
+  background-color: white;
+  padding: 3px;
+  border-radius: 3%;
+  border-color: gray;
+  border-width: 1px;
 }

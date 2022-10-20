@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, Button } from 'react-native'
+import { Text, View, ScrollView, Button, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import styles from './add-players-screen.scss'
 import PlayerCard from '../player-card/player-card'
@@ -67,23 +67,25 @@ export default function AddPlayersScreen({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollView}>
+    <SafeAreaView className={styles.container}>
       <Text className={styles.addPlayers}>Add players</Text>
-      {players.map((player) => {
-        return (
-          <PlayerCard
-            key={player.id}
-            player={player}
-            onChangeName={onChangeName}
-            onChangeBuyIn={onChangeBuyIn}
-            onChangeChipsLeft={onChangeChipsLeft}
-            onDeletePlayer={onDeletePlayer}
-          ></PlayerCard>
-        )
-      })}
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        {players.map((player) => {
+          return (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              onChangeName={onChangeName}
+              onChangeBuyIn={onChangeBuyIn}
+              onChangeChipsLeft={onChangeChipsLeft}
+              onDeletePlayer={onDeletePlayer}
+            ></PlayerCard>
+          )
+        })}
 
-      <Button title="Add player" onPress={onAddPlayer}></Button>
-      <Button title="Done" onPress={onDone}></Button>
-    </ScrollView>
+        <Button title="Add player" onPress={onAddPlayer}></Button>
+        <Button title="Done" onPress={onDone}></Button>
+      </ScrollView>
+    </SafeAreaView>
   )
 }

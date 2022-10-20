@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, Button } from 'react-native'
 import React from 'react'
-import styles from './settle-up.scss'
+import styles from './settle-up-screen.scss'
 
 export default function SettleUpScreen({ navigation, route }) {
   const players = route.params.players

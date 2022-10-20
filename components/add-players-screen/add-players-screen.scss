@@ -2,16 +2,19 @@
 
 .container {
   flex: 1;
+  background-color: $background-color;
+  // align-items: center;
+  width: 100%;
 }
 
 .scrollView {
-  flex-grow: 1;
+  // flex-grow: 1;
   align-items: center;
   justify-content: center;
-  background-color: $background-color;
+  padding: 0 40px
 }
 
 .addPlayers {
-  margin: 40px 0;
+  margin: 40px auto;
   font-size: 30;
 }
