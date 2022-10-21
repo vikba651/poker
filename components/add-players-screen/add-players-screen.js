@@ -1,20 +1,18 @@
 import {
   Text,
   View,
-  ScrollView,
+  TextInput,
   Button,
   SafeAreaView,
-  KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native'
 import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 import styles from './add-players-screen.scss'
-import PlayerCard from '../player-card/player-card'
 
 export default function AddPlayersScreen({ navigation, route }) {
-  const [playerCount, setPlayerCount] = useState(3) // Add players here
-
+  const [playerCount, setPlayerCount] = useState(2) // Add players here
   const [players, setPlayers] = useState(
     Array.from({ length: playerCount }, (_, i) => {
       return {
@@ -52,6 +50,7 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onChangeBuyIn(text, id) {
     let newPlayers = [...players]
+
     if (newPlayers.every((player) => player.buyIn === 0)) {
       newPlayers = newPlayers.map((player) => {
         return {
@@ -64,6 +63,7 @@ export default function AddPlayersScreen({ navigation, route }) {
     } else {
       newPlayers.find((player) => player.id == id).buyIn = text
     }
+    console.log(newPlayers)
     setPlayers(newPlayers)
   }
 
@@ -74,7 +74,6 @@ export default function AddPlayersScreen({ navigation, route }) {
   }
 
   function onDone() {
-    console.log(players)
     if (players.length > 0) {
       const potTotal = players
         .map((player) => +player.buyIn)
@@ -100,24 +99,52 @@ export default function AddPlayersScreen({ navigation, route }) {
       <Text className={styles.addPlayers}>Add players</Text>
       <KeyboardAwareScrollView style={{ flex: 1 }}>
         <View className={styles.scrollView}>
-          {players.map((player) => {
+          {players.map((player, i) => {
             return (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onChangeName={onChangeName}
-                onChangeBuyIn={onChangeBuyIn}
-                onChangeChipsLeft={onChangeChipsLeft}
-                onDeletePlayer={onDeletePlayer}
-              ></PlayerCard>
+              <View key={player.id} className={styles.playerCard}>
+                <View className={styles.topRow}>
+                  <TextInput
+                    key={'name' + player.id}
+                    onChangeText={(text) => onChangeName(text, player.id)}
+                    value={player.name}
+                    placeholder="Player name"
+                    maxLength={25}
+                    className={styles.textInput}
+                    style={{ flexGrow: 2 }}
+                    autoFocus={i === 0}
+                  />
+                  <TouchableOpacity onPress={() => onDeletePlayer(player.id)}>
+                    <Text className={styles.deleteButton}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+                <View className={styles.bottomRow}>
+                  <TextInput
+                    key={'buyIn' + player.id}
+                    keyboardType="numeric"
+                    onChangeText={(text) => onChangeBuyIn(text, player.id)}
+                    value={player.buyIn}
+                    placeholder="Buy in"
+                    maxLength={10}
+                    className={[styles.textInput, styles.bottomRowInput]}
+                    style={{ marginRight: 10 }}
+                  />
+                  <TextInput
+                    key={'chipsLeft' + player.id}
+                    keyboardType="numeric"
+                    onChangeText={(text) => onChangeChipsLeft(text, player.id)}
+                    value={player.chipsLeft}
+                    placeholder="Chips left"
+                    maxLength={10}
+                    className={[styles.textInput, styles.bottomRowInput]}
+                  />
+                </View>
+              </View>
             )
           })}
         </View>
-
         <Button title="Add player" onPress={onAddPlayer}></Button>
         <Button title="Done" onPress={onDone}></Button>
       </KeyboardAwareScrollView>
-      {/* <Text className={styles.addPlayers}>Hello</Text> */}
     </SafeAreaView>
   )
 }
