@@ -13,12 +13,13 @@ import styles from './add-players-screen.scss'
 import PlayerCard from '../player-card/player-card'
 
 export default function AddPlayersScreen({ navigation, route }) {
+  const name = route.params.name
   const [playerCount, setPlayerCount] = useState(1)
 
   const [players, setPlayers] = useState([
     {
       id: 0,
-      name: '',
+      name,
       buyIn: 0,
       chipsLeft: 0,
     },
