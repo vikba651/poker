@@ -4,50 +4,6 @@ import styles from './settle-up-screen.scss'
 
 export default function SettleUpScreen({ navigation, route }) {
   let players = route.params.players
-  // let players = [
-  //   {
-  //     id: 0,
-  //     name: 'dude',
-  //     buyIn: 100,
-  //     chipsLeft: 98,
-  //   },
-  //   {
-  //     id: 1,
-  //     name: 'man',
-  //     buyIn: 100,
-  //     chipsLeft: 97,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'guy',
-  //     buyIn: 100,
-  //     chipsLeft: 101,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'guy',
-  //     buyIn: 100,
-  //     chipsLeft: 101,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'guy',
-  //     buyIn: 100,
-  //     chipsLeft: 150,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'guy',
-  //     buyIn: 100,
-  //     chipsLeft: 150,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'guy',
-  //     buyIn: 100,
-  //     chipsLeft: 150,
-  //   },
-  // ]
 
   const addPlayerDept = (sourceId, targetId, amount) => {
     return players.map((player) => {
@@ -64,25 +20,17 @@ export default function SettleUpScreen({ navigation, route }) {
   }
 
   const settleDebts = () => {
-    let negBals = [
-      // [id, balance]
-      // {id: 0, balance: 100}
-      // {id: 1, balance: 100}
-    ]
-    let posBals = [
-      // [id, balance]
-    ]
+    let negBals = []
+    let posBals = []
     players = players.map((player) => {
       const balance = player.chipsLeft - player.buyIn
       if (balance < 0) {
-        // negBals.push([player.id, -balance]);
         negBals.push({
           id: player.id,
           balance: -balance,
           name: player.name,
         })
       } else if (balance > 0) {
-        //posBals.push([player.id, balance]);
         posBals.push({
           id: player.id,
           balance: balance,
