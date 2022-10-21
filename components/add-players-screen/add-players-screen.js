@@ -13,16 +13,18 @@ import styles from './add-players-screen.scss'
 import PlayerCard from '../player-card/player-card'
 
 export default function AddPlayersScreen({ navigation, route }) {
-  const [playerCount, setPlayerCount] = useState(1)
+  const [playerCount, setPlayerCount] = useState(3) // Add players here
 
-  const [players, setPlayers] = useState([
-    {
-      id: 0,
-      name: '',
-      buyIn: 0,
-      chipsLeft: 0,
-    },
-  ])
+  const [players, setPlayers] = useState(
+    Array.from({ length: playerCount }, (_, i) => {
+      return {
+        id: i,
+        name: '',
+        buyIn: 0,
+        chipsLeft: 0,
+      }
+    })
+  )
 
   function onAddPlayer() {
     setPlayerCount(playerCount + 1)
@@ -34,8 +36,12 @@ export default function AddPlayersScreen({ navigation, route }) {
   }
 
   function onDeletePlayer(id) {
-    const newPlayers = players.filter((player) => player.id != id)
-    setPlayers(newPlayers)
+    if (players.length > 2) {
+      const newPlayers = players.filter((player) => player.id != id)
+      setPlayers(newPlayers)
+    } else {
+      alert('You need at least 2 players to play poker!')
+    }
   }
 
   function onChangeName(text, id) {
@@ -46,7 +52,18 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onChangeBuyIn(text, id) {
     let newPlayers = [...players]
-    newPlayers.find((player) => player.id == id).buyIn = text
+    if (newPlayers.every((player) => player.buyIn === 0)) {
+      newPlayers = newPlayers.map((player) => {
+        return {
+          id: player.id,
+          name: player.name,
+          buyIn: text,
+          player: player.chipsLeft,
+        }
+      })
+    } else {
+      newPlayers.find((player) => player.id == id).buyIn = text
+    }
     setPlayers(newPlayers)
   }
 
@@ -66,12 +83,14 @@ export default function AddPlayersScreen({ navigation, route }) {
         .map((player) => +player.chipsLeft)
         .reduce((a, b) => a + b)
 
-      if (potTotal === chipsLeftTotal) {
-        navigation.navigate('SettleUpScreen', { players })
-      } else {
+      if (potTotal === 0) {
+        alert(`Total pot is 0, add some 'buy ins'!`)
+      } else if (potTotal !== chipsLeftTotal) {
         alert(
           `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
         )
+      } else {
+        navigation.navigate('SettleUpScreen', { players })
       }
     }
   }
