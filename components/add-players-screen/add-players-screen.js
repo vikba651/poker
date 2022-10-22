@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 import styles from './add-players-screen.scss'
@@ -23,6 +23,12 @@ export default function AddPlayersScreen({ navigation, route }) {
       }
     })
   )
+
+  useEffect(() => {
+    let newPlayers = [...players]
+    newPlayers[0].name = route.params.name
+    setPlayers(newPlayers)
+  }, [route])
 
   function onAddPlayer() {
     setPlayerCount(playerCount + 1)
