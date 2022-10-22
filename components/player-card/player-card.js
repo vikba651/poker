@@ -1,4 +1,5 @@
 import { View, TextInput, Text, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import styles from './player-card.scss'
 
 export default function PlayerCard({
@@ -7,7 +8,9 @@ export default function PlayerCard({
   onChangeBuyIn,
   onChangeChipsLeft,
   onDeletePlayer,
+  onSetDefaultBuyIn,
 }) {
+  const [defaultBuyIn, setDefaultBuyIn] = useState(0)
   return (
     <View key={player.id} className={styles.playerCard}>
       <View className={styles.topRow}>
@@ -28,7 +31,11 @@ export default function PlayerCard({
         <TextInput
           key={'buyIn' + player.id}
           keyboardType="numeric"
-          onChangeText={(text) => onChangeBuyIn(text, player.id)}
+          onChangeText={(text) => {
+            onChangeBuyIn(text, player.id)
+            setDefaultBuyIn(text)
+          }}
+          onEndEditing={() => onSetDefaultBuyIn(defaultBuyIn, player.id)}
           value={player.buyIn}
           placeholder="Buy in"
           maxLength={10}

@@ -26,9 +26,7 @@ export default function NameScreen({ navigation }) {
 
   useEffect(() => {
     getData()
-    // console.log('name', name)
     if (name.length < 2) {
-      // navigation.navigate('StartScreens', { name })
     }
   }, [])
 
@@ -40,7 +38,7 @@ export default function NameScreen({ navigation }) {
         value={name}
         placeholder="Name"
         maxLength={25}
-        //className={styles.textInput}
+        className={styles.textInput}
         style={{ flexGrow: 2 }}
       />
       <Button

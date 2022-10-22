@@ -15,11 +15,12 @@ import PlayerCard from '../player-card/player-card'
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
+  const name = route.params.name
   const [players, setPlayers] = useState(
     Array.from({ length: playerCount }, (_, i) => {
       return {
         id: i,
-        name: '',
+        name: i ? '' : name,
         buyIn: 0,
         chipsLeft: 0,
       }
@@ -52,7 +53,18 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onChangeBuyIn(text, id) {
     let newPlayers = [...players]
-    if (newPlayers.every((player) => player.buyIn === 0)) {
+    newPlayers.find((player) => player.id == id).buyIn = text
+    setPlayers(newPlayers)
+  }
+
+  function onSetDefaultBuyIn(text) {
+    let newPlayers = [...players]
+
+    if (
+      newPlayers.length -
+        newPlayers.filter((player) => player.buyIn === 0).length ===
+      1
+    ) {
       newPlayers = newPlayers.map((player) => {
         return {
           id: player.id,
@@ -61,8 +73,6 @@ export default function AddPlayersScreen({ navigation, route }) {
           player: player.chipsLeft,
         }
       })
-    } else {
-      newPlayers.find((player) => player.id == id).buyIn = text
     }
     setPlayers(newPlayers)
   }
@@ -74,7 +84,6 @@ export default function AddPlayersScreen({ navigation, route }) {
   }
 
   function onDone() {
-    console.log(players)
     if (players.length > 0) {
       const potTotal = players
         .map((player) => +player.buyIn)
@@ -109,6 +118,7 @@ export default function AddPlayersScreen({ navigation, route }) {
                 onChangeBuyIn={onChangeBuyIn}
                 onChangeChipsLeft={onChangeChipsLeft}
                 onDeletePlayer={onDeletePlayer}
+                onSetDefaultBuyIn={onSetDefaultBuyIn}
               ></PlayerCard>
             )
           })}
