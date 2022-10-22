@@ -67,7 +67,7 @@ export default function SettleUpScreen({ navigation, route }) {
   console.log(players)
 
   function onBackToStart() {
-    navigation.navigate('StartScreens')
+    navigation.navigate('StartScreen')
   }
 
   function getName(id) {

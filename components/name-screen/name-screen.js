@@ -17,7 +17,7 @@ export default function NameScreen({ navigation }) {
       const value = await AsyncStorage.getItem('@storage_Key')
       if (value !== null) {
         setName(value)
-        navigation.navigate('StartScreens', { name: value })
+        navigation.navigate('StartScreen', { name: value })
       }
     } catch (e) {}
   }
@@ -26,30 +26,31 @@ export default function NameScreen({ navigation }) {
 
   useEffect(() => {
     getData()
-    if (name.length < 2) {
-    }
   }, [])
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ marginBottom: 40, fontSize: 24 }}>{prompt}</Text>
+      <Text style={{ marginBottom: 40, marginTop: 200, fontSize: 24 }}>
+        {prompt}
+      </Text>
       <TextInput
         onChangeText={setName}
         value={name}
         placeholder="Name"
         maxLength={25}
-        className={styles.textInput}
-        style={{ flexGrow: 2 }}
+        autoFocus={true}
+        style={{ marginBottom: 30, fontSize: 30 }}
       />
       <Button
         onPress={() => {
           if (name.length < 2) {
-            setPrompt(`${name} is not valid.`)
+            setPrompt(`'${name}' is not valid.`)
+          } else {
+            storeData(name)
+            navigation.navigate('StartScreen', { name: name })
           }
-          storeData(name)
-          navigation.navigate('StartScreens', { name: name })
         }}
-        title="Play"
+        title="Go"
       />
     </SafeAreaView>
   )
