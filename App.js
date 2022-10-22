@@ -13,7 +13,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        screenOptions={{ headerStyle: { backgroundColor: 'lightgray' } }}
+        screenOptions={{ headerStyle: { backgroundColor: '#bbb' } }}
       >
         <Stack.Screen
           name="NameScreen"

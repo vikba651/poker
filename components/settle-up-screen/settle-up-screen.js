@@ -67,7 +67,7 @@ export default function SettleUpScreen({ navigation, route }) {
   console.log(players)
 
   function onBackToStart() {
-    navigation.navigate('StartScreen')
+    navigation.navigate('StartScreen', { name: route.params.name })
   }
 
   function getName(id) {
@@ -81,7 +81,10 @@ export default function SettleUpScreen({ navigation, route }) {
       {players.map((player) => {
         if (player.debts.length > 0) {
           return (
-            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+            <View
+              key={player.id}
+              style={{ flexDirection: 'row', marginBottom: 20 }}
+            >
               <Text style={{ fontWeight: 'bold' }} key={player.id}>
                 {player.name + ' '}
               </Text>

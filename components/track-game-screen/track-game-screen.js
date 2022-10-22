@@ -1,19 +1,28 @@
-import { View, SafeAreaView, Image, TouchableOpacity, Text } from 'react-native'
+import {
+  View,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Text,
+  Button,
+} from 'react-native'
 import React, { useState } from 'react'
 import styles from './track-game-screen.scss'
+import SuiteChoose from '../suit-choose/suit-choose'
+import ValueChoose from '../value-choose/value-choose'
 
 export default function TrackGameScreen({ navigation, route }) {
   const [firstCard, setFirstCard] = useState({
     suit: '',
     suitImage: null,
-    value: null,
+    value: '',
   })
   const [secondCard, setSecondCard] = useState({
     suit: '',
     suitImage: null,
-    value: null,
+    value: '',
   })
-  const [selectedCard, setSelectedCard] = useState(0)
+  const [selectedCard, setSelectedCard] = useState(1) // 1 or 2
 
   const [isSuitMode, setIsSuitMode] = useState(true)
 
@@ -21,8 +30,6 @@ export default function TrackGameScreen({ navigation, route }) {
   const spadeImageSrc = require(`../../assets/spade.png`)
   const diamondImageSrc = require(`../../assets/diamond.png`)
   const clubImageSrc = require(`../../assets/club.png`)
-
-  const [imageSource, setImageSource] = useState(null)
 
   function getSuitImage(suit) {
     if (suit === 'heart') {
@@ -37,7 +44,7 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function selectSuit(suit) {
-    if (selectedCard === 0) {
+    if (selectedCard === 1) {
       setFirstCard({
         suit,
         suitImage: getSuitImage(suit),
@@ -50,7 +57,38 @@ export default function TrackGameScreen({ navigation, route }) {
         value: secondCard.value,
       })
     }
-    setImageSource(getSuitImage(suit))
+    setIsSuitMode(false)
+  }
+
+  function selectValue(value) {
+    if (selectedCard === 1) {
+      setFirstCard({
+        suit: firstCard.suit,
+        suitImage: firstCard.suit,
+        value,
+      })
+      setSelectedCard(2)
+      setIsSuitMode(true)
+    } else {
+      setSecondCard({
+        suit: secondCard.suit,
+        suitImage: secondCard.suitImage,
+        value,
+      })
+    }
+  }
+
+  function onSelectCard(cardNumber) {
+    setSelectedCard(cardNumber)
+    setIsSuitMode(true)
+  }
+
+  function onDone() {
+    if (firstCard.value.length > 0 && secondCard.value.length > 0) {
+      alert('good')
+    } else {
+      alert('bad')
+    }
   }
 
   return (
@@ -63,91 +101,55 @@ export default function TrackGameScreen({ navigation, route }) {
           alignItems: 'center',
         }}
       >
-        <Text>Choose {selectedCard === 0 ? 'first' : 'second'} card</Text>
-        {isSuitMode && (
-          <>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                className={styles.suit}
-                onPress={() => selectSuit('heart')}
-              >
+        <View className={styles.cardsView}>
+          <Text style={{ fontSize: '30px' }}>
+            Edit {selectedCard === 1 ? 'first' : 'second'} card
+          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity
+              className={[
+                styles.card,
+                selectedCard === 1 && styles.selectedCard,
+              ]}
+              onPress={() => onSelectCard(1)}
+            >
+              {!!firstCard.suit && (
                 <Image
-                  className={styles.suitImage}
+                  className={styles.cardSuit}
                   style={{ resizeMode: 'contain' }}
-                  source={require('../../assets/heart.png')}
-                ></Image>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className={styles.suit}
-                style={{ resizeMode: 'contain' }}
-                onPress={() => selectSuit('club')}
-              >
+                  source={firstCard.suitImage}
+                />
+              )}
+              {!!firstCard.value && (
+                <Text className={styles.cardValue}>{firstCard.value}</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={[
+                styles.card,
+                selectedCard === 2 && styles.selectedCard,
+              ]}
+              onPress={() => onSelectCard(2)}
+            >
+              {!!secondCard.suit && (
                 <Image
-                  className={styles.suitImage}
+                  className={styles.cardSuit}
                   style={{ resizeMode: 'contain' }}
-                  source={require('../../assets/club.png')}
-                ></Image>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                className={styles.suit}
-                onPress={() => selectSuit('diamond')}
-              >
-                <Image
-                  className={styles.suitImage}
-                  style={{ resizeMode: 'contain' }}
-                  source={require('../../assets/diamond.png')}
-                ></Image>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className={styles.suit}
-                onPress={() => selectSuit('spade')}
-              >
-                <Image
-                  className={styles.suitImage}
-                  style={{ resizeMode: 'contain' }}
-                  source={require('../../assets/spade.png')}
-                ></Image>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-      </View>
-      <View className={styles.cardsView}>
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            className={styles.card}
-            style={{
-              borderWidth: selectedCard === 0 ? 2 : 0,
-              borderColor: 'black',
-            }}
-            onPress={() => setSelectedCard(0)}
-          >
-            {!!firstCard.suit && (
-              <Image
-                className={styles.cardSuit}
-                style={{ resizeMode: 'contain' }}
-                source={firstCard.suitImage}
-              />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            className={styles.card}
-            style={{
-              borderWidth: selectedCard === 1 ? 2 : 0,
-              borderColor: 'black',
-            }}
-            onPress={() => setSelectedCard(1)}
-          >
-            {!!secondCard.suit && (
-              <Image
-                className={styles.cardSuit}
-                style={{ resizeMode: 'contain' }}
-                source={secondCard.suitImage}
-              />
-            )}
-          </TouchableOpacity>
+                  source={secondCard.suitImage}
+                />
+              )}
+              {!!secondCard.value && (
+                <Text className={styles.cardValue}>{secondCard.value}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View className={styles.chooseView}>
+          {isSuitMode && <SuiteChoose selectSuit={selectSuit}></SuiteChoose>}
+          {!isSuitMode && <ValueChoose selectValue={selectValue}></ValueChoose>}
+          <View style={{ paddingTop: 20 }}>
+            <Button title="Done" onPress={() => onDone()}></Button>
+          </View>
         </View>
       </View>
     </SafeAreaView>

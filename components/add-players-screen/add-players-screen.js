@@ -79,7 +79,6 @@ export default function AddPlayersScreen({ navigation, route }) {
         }
       })
     }
-    console.log(newPlayers)
     setPlayers(newPlayers)
   }
 
@@ -105,7 +104,10 @@ export default function AddPlayersScreen({ navigation, route }) {
           `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
         )
       } else {
-        navigation.navigate('SettleUpScreen', { players })
+        navigation.navigate('SettleUpScreen', {
+          players,
+          name: route.params.name,
+        })
       }
     }
   }
@@ -117,15 +119,44 @@ export default function AddPlayersScreen({ navigation, route }) {
         <View className={styles.scrollView}>
           {players.map((player, i) => {
             return (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onChangeName={onChangeName}
-                onChangeBuyIn={onChangeBuyIn}
-                onChangeChipsLeft={onChangeChipsLeft}
-                onDeletePlayer={onDeletePlayer}
-                onSetDefaultBuyIn={onSetDefaultBuyIn}
-              ></PlayerCard>
+              <View key={player.id} className={styles.playerCard}>
+                <View className={styles.topRow}>
+                  <TextInput
+                    key={'name' + player.id}
+                    onChangeText={(text) => onChangeName(text, player.id)}
+                    value={player.name}
+                    placeholder="Player name"
+                    maxLength={25}
+                    className={styles.textInput}
+                    style={{ flexGrow: 2 }}
+                  />
+                  <TouchableOpacity onPress={() => onDeletePlayer(player.id)}>
+                    <Text className={styles.deleteButton}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+                <View className={styles.bottomRow}>
+                  <TextInput
+                    key={'buyIn' + player.id}
+                    keyboardType="numeric"
+                    onChangeText={(text) => onChangeBuyIn(text, player.id)}
+                    value={player.buyIn}
+                    placeholder="Buy in"
+                    maxLength={10}
+                    className={[styles.textInput, styles.bottomRowInput]}
+                    style={{ marginRight: 10 }}
+                    autoFocus={i === 0}
+                  />
+                  <TextInput
+                    key={'chipsLeft' + player.id}
+                    keyboardType="numeric"
+                    onChangeText={(text) => onChangeChipsLeft(text, player.id)}
+                    value={player.chipsLeft}
+                    placeholder="Chips left"
+                    maxLength={10}
+                    className={[styles.textInput, styles.bottomRowInput]}
+                  />
+                </View>
+              </View>
             )
           })}
         </View>
