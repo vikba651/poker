@@ -5,3 +5,40 @@
     align-items: center;
     background-color: $background-color;
 }
+
+.suit {
+    height: 100px;
+    width: 100px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suitImage {
+    height: 50px;
+    width: 50px;
+}
+
+.cardsView {
+    width: 100%;
+    background-color: 'gray';
+    align-items: center;
+}
+
+.card {
+    height: 200px;
+    width: 150px;
+    background-color: white;
+    margin: 50px 10px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.cardSuit {
+    width: 50px;
+    height: 50px;
+    margin-top: 40px;
+}

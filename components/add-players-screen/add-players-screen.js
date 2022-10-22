@@ -1,16 +1,15 @@
 import {
   Text,
   View,
-  ScrollView,
+  TextInput,
   Button,
   SafeAreaView,
-  KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native'
 import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 import styles from './add-players-screen.scss'
-import PlayerCard from '../player-card/player-card'
 
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
@@ -74,6 +73,7 @@ export default function AddPlayersScreen({ navigation, route }) {
         }
       })
     }
+    console.log(newPlayers)
     setPlayers(newPlayers)
   }
 
@@ -109,7 +109,7 @@ export default function AddPlayersScreen({ navigation, route }) {
       <Text className={styles.addPlayers}>Add players</Text>
       <KeyboardAwareScrollView style={{ flex: 1 }}>
         <View className={styles.scrollView}>
-          {players.map((player) => {
+          {players.map((player, i) => {
             return (
               <PlayerCard
                 key={player.id}
@@ -123,11 +123,9 @@ export default function AddPlayersScreen({ navigation, route }) {
             )
           })}
         </View>
-
         <Button title="Add player" onPress={onAddPlayer}></Button>
         <Button title="Done" onPress={onDone}></Button>
       </KeyboardAwareScrollView>
-      {/* <Text className={styles.addPlayers}>Hello</Text> */}
     </SafeAreaView>
   )
 }
