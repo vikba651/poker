@@ -62,8 +62,10 @@ export default function AddPlayersScreen({ navigation, route }) {
     setPlayers(newPlayers)
   }
 
-  function onSetDefaultBuyIn(text) {
+  function onSetDefaultBuyIn() {
     let newPlayers = [...players]
+    playerChangedBuyIn = newPlayers.filter((player) => player.buyIn !== 0)
+    text = playerChangedBuyIn.length ? playerChangedBuyIn[0].buyIn : 0
 
     if (
       newPlayers.length -
@@ -139,6 +141,7 @@ export default function AddPlayersScreen({ navigation, route }) {
                     key={'buyIn' + player.id}
                     keyboardType="numeric"
                     onChangeText={(text) => onChangeBuyIn(text, player.id)}
+                    onEndEditing={onSetDefaultBuyIn}
                     value={player.buyIn}
                     placeholder="Buy in"
                     maxLength={10}
