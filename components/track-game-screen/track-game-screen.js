@@ -10,6 +10,7 @@ import React, { useState } from 'react'
 import styles from './track-game-screen.scss'
 import SuiteChoose from '../suit-choose/suit-choose'
 import ValueChoose from '../value-choose/value-choose'
+import { PokerHand } from '../../algorithms/poker-algorithms'
 
 export default function TrackGameScreen({ navigation, route }) {
   const [firstCard, setFirstCard] = useState({
@@ -85,6 +86,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onDone() {
     if (firstCard.value.length > 0 && secondCard.value.length > 0) {
+      PokerHand()
       alert('good')
     } else {
       alert('bad')

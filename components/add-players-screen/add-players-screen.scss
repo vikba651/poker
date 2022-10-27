@@ -3,7 +3,7 @@
 .container {
   flex: 1;
   background-color: $background-color;
-  // align-items: center;
+  // align-items: center; 
   width: 100%;
 }
 
@@ -17,15 +17,17 @@
 .addPlayers {
   margin: 30px auto;
   font-size: 30;
+  color: white;
 }
 
 .playerCard {
   display: flex;
-  background-color: gainsboro;
+  background-color: $player-card-color;
   width: 100%;
   border-radius: 10px;
   padding: 5%;
   margin: 1%;
+  box-shadow: 5px 5px 5px #101B21;
 }
 
 .playerCard {
@@ -54,7 +56,7 @@
 }
 
 .textInput {
-  background-color: white;
+  background-color: beige;
   padding: 3px;
   border-radius: 3%;
   border-color: #bbb;
