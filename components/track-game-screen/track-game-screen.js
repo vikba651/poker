@@ -23,6 +23,19 @@ export default function TrackGameScreen({ navigation, route }) {
     suitImage: null,
     value: '',
   })
+
+  const initialCardsList = [
+    { id: 0, suit: '', suitImage: null, value: '' },
+    { id: 1, suit: '', suitImage: null, value: '' },
+    { id: 2, suit: '', suitImage: null, value: '' },
+    { id: 3, suit: '', suitImage: null, value: '' },
+    { id: 4, suit: '', suitImage: null, value: '' },
+    { id: 5, suit: '', suitImage: null, value: '' },
+    { id: 6, suit: '', suitImage: null, value: '' },
+  ]
+
+  const [cards, setCards] = useState(initialCardsList)
+
   const [selectedCard, setSelectedCard] = useState(1) // 1 or 2
 
   const [isSuitMode, setIsSuitMode] = useState(true)
@@ -45,37 +58,23 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function selectSuit(suit) {
-    if (selectedCard === 1) {
-      setFirstCard({
-        suit,
-        suitImage: getSuitImage(suit),
-        value: firstCard.value,
-      })
-    } else {
-      setSecondCard({
-        suit,
-        suitImage: getSuitImage(suit),
-        value: secondCard.value,
-      })
-    }
+    let newCards = [...cards]
+    newCards.find((card) => card.id == selectedCard).suitImage =
+      getSuitImage(suit)
+    newCards.find((card) => card.id == selectedCard).suit = suit
+    setCards(newCards)
+
     setIsSuitMode(false)
   }
 
   function selectValue(value) {
-    if (selectedCard === 1) {
-      setFirstCard({
-        suit: firstCard.suit,
-        suitImage: firstCard.suit,
-        value,
-      })
-      setSelectedCard(2)
-      setIsSuitMode(true)
-    } else {
-      setSecondCard({
-        suit: secondCard.suit,
-        suitImage: secondCard.suitImage,
-        value,
-      })
+    let newCards = [...cards]
+    newCards.find((card) => card.id == selectedCard).value = value
+    setCards(newCards)
+
+    if (selectedCard < cards.length) {
+      setSelectedCard(selectedCard + 1)
+      setIsSuitMode(false)
     }
   }
 
@@ -86,7 +85,6 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onDone() {
     if (firstCard.value.length > 0 && secondCard.value.length > 0) {
-      PokerHand()
       alert('good')
     } else {
       alert('bad')
@@ -104,54 +102,66 @@ export default function TrackGameScreen({ navigation, route }) {
         }}
       >
         <View className={styles.cardsView}>
-          <Text style={{ fontSize: '30px' }}>
-            Edit {selectedCard === 1 ? 'first' : 'second'} card
-          </Text>
+          <Text style={{ fontSize: '30px' }}>Edit card {selectedCard}</Text>
           <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity
-              className={[
-                styles.card,
-                selectedCard === 1 && styles.selectedCard,
-              ]}
-              onPress={() => onSelectCard(1)}
-            >
-              {!!firstCard.suit && (
-                <Image
-                  className={styles.cardSuit}
-                  style={{ resizeMode: 'contain' }}
-                  source={firstCard.suitImage}
-                />
-              )}
-              {!!firstCard.value && (
-                <Text className={styles.cardValue}>{firstCard.value}</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              className={[
-                styles.card,
-                selectedCard === 2 && styles.selectedCard,
-              ]}
-              onPress={() => onSelectCard(2)}
-            >
-              {!!secondCard.suit && (
-                <Image
-                  className={styles.cardSuit}
-                  style={{ resizeMode: 'contain' }}
-                  source={secondCard.suitImage}
-                />
-              )}
-              {!!secondCard.value && (
-                <Text className={styles.cardValue}>{secondCard.value}</Text>
-              )}
-            </TouchableOpacity>
+            {cards.slice(0, 2).map((card, i) => {
+              return (
+                <View key={card.id} className={styles.playerCard}>
+                  <TouchableOpacity
+                    className={[
+                      styles.playerCard,
+                      selectedCard === card.id && styles.selectedCard,
+                    ]}
+                    onPress={() => onSelectCard(card.id)}
+                  >
+                    {!!card.suit && (
+                      <Image
+                        className={styles.cardSuit}
+                        style={{ resizeMode: 'contain' }}
+                        source={card.suitImage}
+                      />
+                    )}
+                    {!!card.value && (
+                      <Text className={styles.cardValue}>{card.value}</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )
+            })}
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            {cards.slice(2, 7).map((card, i) => {
+              return (
+                <View key={card.id} className={styles.playerCard}>
+                  <TouchableOpacity
+                    className={[
+                      styles.playerCard,
+                      selectedCard === card.id && styles.selectedCard,
+                    ]}
+                    onPress={() => onSelectCard(card.id)}
+                  >
+                    {!!card.suit && (
+                      <Image
+                        className={styles.cardSuit}
+                        style={{ resizeMode: 'contain' }}
+                        source={card.suitImage}
+                      />
+                    )}
+                    {!!card.value && (
+                      <Text className={styles.cardValue}>{card.value}</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )
+            })}
           </View>
         </View>
-        <View className={styles.chooseView}>
-          {isSuitMode && <SuiteChoose selectSuit={selectSuit}></SuiteChoose>}
-          {!isSuitMode && <ValueChoose selectValue={selectValue}></ValueChoose>}
-          <View style={{ paddingTop: 20 }}>
-            <Button title="Done" onPress={() => onDone()}></Button>
-          </View>
+      </View>
+      <View className={styles.chooseView}>
+        {isSuitMode && <SuiteChoose selectSuit={selectSuit}></SuiteChoose>}
+        {!isSuitMode && <ValueChoose selectValue={selectValue}></ValueChoose>}
+        <View style={{ paddingTop: 20 }}>
+          <Button title="Done" onPress={() => onDone()}></Button>
         </View>
       </View>
     </SafeAreaView>
