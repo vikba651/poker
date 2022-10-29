@@ -19,3 +19,25 @@
     font-size: 24;
     color: $primary-text-color
 }
+
+.settleMode {
+    height: 100px;
+    width: 100px;
+    background-color: #4C3465;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trackMode {
+    height: 100px;
+    width: 100px;
+    background-color: #65344D;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

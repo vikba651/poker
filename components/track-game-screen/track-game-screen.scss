@@ -6,6 +6,20 @@
     background-color: $background-color;
 }
 
+.holeRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-left: 2rem;
+}
+
+.riverRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-left: 2rem;
+}
+
 .chooseView {
     height: 50%;
     margin-top: 40px;
@@ -20,18 +34,18 @@
 }
 
 .playerCard {
-    height: 80px;
+    height: 70px;
     width: 40px;
-    background-color: white;
-    margin: 5px 10px;
-    border-radius: 5px;
+    background-color: aliceblue;
+    margin: 3px 10px;
+    border-radius: 3px;
     align-items: center;
-    box-shadow: 5px 5px 5px gray;
+    box-shadow: 5px 5px 5px black;
 }
 
 
 .selectedCard {
-    border: 2px solid #448;
+    border: 3px solid #E04D67;
 }
 
 .cardSuit {

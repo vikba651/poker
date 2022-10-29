@@ -13,16 +13,6 @@ import ValueChoose from '../value-choose/value-choose'
 import { PokerHand } from '../../algorithms/poker-algorithms'
 
 export default function TrackGameScreen({ navigation, route }) {
-  const [firstCard, setFirstCard] = useState({
-    suit: '',
-    suitImage: null,
-    value: '',
-  })
-  const [secondCard, setSecondCard] = useState({
-    suit: '',
-    suitImage: null,
-    value: '',
-  })
 
   const initialCardsList = [
     { id: 0, suit: '', suitImage: null, value: '' },
@@ -36,7 +26,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   const [cards, setCards] = useState(initialCardsList)
 
-  const [selectedCard, setSelectedCard] = useState(1) // 1 or 2
+  const [selectedCard, setSelectedCard] = useState(0) // 0-6
 
   const [isSuitMode, setIsSuitMode] = useState(true)
 
@@ -72,10 +62,13 @@ export default function TrackGameScreen({ navigation, route }) {
     newCards.find((card) => card.id == selectedCard).value = value
     setCards(newCards)
 
-    if (selectedCard < cards.length) {
-      setSelectedCard(selectedCard + 1)
-      setIsSuitMode(false)
+    if (selectedCard == cards.length - 1) {
+      setSelectedCard(0)
     }
+    else {
+      setSelectedCard(selectedCard + 1)
+    }
+    setIsSuitMode(true)
   }
 
   function onSelectCard(cardNumber) {
@@ -84,7 +77,7 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onDone() {
-    if (firstCard.value.length > 0 && secondCard.value.length > 0) {
+    if (cards[0].value.length > 0 && cards[1].value.length > 0) {
       alert('good')
     } else {
       alert('bad')
@@ -102,8 +95,8 @@ export default function TrackGameScreen({ navigation, route }) {
         }}
       >
         <View className={styles.cardsView}>
-          <Text style={{ fontSize: '30px' }}>Edit card {selectedCard}</Text>
-          <View style={{ flexDirection: 'row' }}>
+          <Text style={{ fontSize: '30px' }}>Edit card {selectedCard + 1}</Text>
+          <View style={styles.holeRow}>
             {cards.slice(0, 2).map((card, i) => {
               return (
                 <View key={card.id} className={styles.playerCard}>
@@ -129,7 +122,7 @@ export default function TrackGameScreen({ navigation, route }) {
               )
             })}
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={styles.riverRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
                 <View key={card.id} className={styles.playerCard}>
