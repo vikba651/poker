@@ -1,11 +1,4 @@
-import {
-  Text,
-  View,
-  TextInput,
-  Button,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native'
+import { Text, View, TextInput, Button, SafeAreaView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
@@ -34,10 +27,11 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onAddPlayer() {
     setPlayerCount(playerCount + 1)
-    const newPlayers = [
-      ...players,
-      { id: playerCount, name: '', buyIn: 0, chipsLeft: 0 },
-    ]
+
+    const newBuyIn = players.every((player) => player.buyIn === players.at(0).buyIn)
+      ? players.at(0).buyIn
+      : 0
+    const newPlayers = [...players, { id: playerCount, name: '', buyIn: newBuyIn, chipsLeft: 0 }]
     setPlayers(newPlayers)
   }
 
@@ -67,11 +61,7 @@ export default function AddPlayersScreen({ navigation, route }) {
     playerChangedBuyIn = newPlayers.filter((player) => player.buyIn !== 0)
     text = playerChangedBuyIn.length ? playerChangedBuyIn[0].buyIn : 0
 
-    if (
-      newPlayers.length -
-        newPlayers.filter((player) => player.buyIn === 0).length ===
-      1
-    ) {
+    if (newPlayers.length - newPlayers.filter((player) => player.buyIn === 0).length === 1) {
       newPlayers = newPlayers.map((player) => {
         return {
           id: player.id,
@@ -92,19 +82,13 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onDone() {
     if (players.length > 0) {
-      const potTotal = players
-        .map((player) => +player.buyIn)
-        .reduce((a, b) => a + b)
-      const chipsLeftTotal = players
-        .map((player) => +player.chipsLeft)
-        .reduce((a, b) => a + b)
+      const potTotal = players.map((player) => +player.buyIn).reduce((a, b) => a + b)
+      const chipsLeftTotal = players.map((player) => +player.chipsLeft).reduce((a, b) => a + b)
 
       if (potTotal === 0) {
         alert(`Total pot is 0, add some 'buy ins'!`)
       } else if (potTotal !== chipsLeftTotal) {
-        alert(
-          `Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`
-        )
+        alert(`Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`)
       } else {
         navigation.navigate('SettleUpScreen', {
           players,

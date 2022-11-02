@@ -30,16 +30,14 @@ export default function NameScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ marginBottom: 40, marginTop: 200, fontSize: 24 }}>
-        {prompt}
-      </Text>
+      <Text className={styles.prompt}>{prompt}</Text>
       <TextInput
         onChangeText={setName}
         value={name}
         placeholder="Name"
         maxLength={25}
         autoFocus={true}
-        style={{ marginBottom: 30, fontSize: 30 }}
+        className={styles.inputField}
       />
       <Button
         onPress={() => {

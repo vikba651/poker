@@ -10,27 +10,22 @@ export default function StartScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeText}>What do you want to do, {name}?</Text>
-      
+
       <View style={{ flexDirection: 'row' }}>
-      <TouchableOpacity 
-      className={styles.settleMode} 
-      onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
-      >
-        <Text>
-        Settle Up
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          className={styles.settleMode}
+          onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
+        >
+          <Text>Settle Up</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity 
-      className={styles.trackMode} 
-      onPress={() => navigation.navigate('TrackGameScreen')}
-      >
-        <Text>
-        Track Poker Game
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          className={styles.trackMode}
+          onPress={() => navigation.navigate('TrackGameScreen')}
+        >
+          <Text>Track Poker Game</Text>
+        </TouchableOpacity>
       </View>
-
     </SafeAreaView>
   )
 }

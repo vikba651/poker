@@ -1,11 +1,4 @@
-import {
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  Text,
-  Button,
-} from 'react-native'
+import { View, SafeAreaView, Image, TouchableOpacity, Text, Button } from 'react-native'
 import React, { useState } from 'react'
 import styles from './track-game-screen.scss'
 import SuiteChoose from '../suit-choose/suit-choose'
@@ -13,7 +6,6 @@ import ValueChoose from '../value-choose/value-choose'
 import { PokerHand } from '../../algorithms/poker-algorithms'
 
 export default function TrackGameScreen({ navigation, route }) {
-
   const initialCardsList = [
     { id: 0, suit: '', suitImage: null, value: '' },
     { id: 1, suit: '', suitImage: null, value: '' },
@@ -49,8 +41,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function selectSuit(suit) {
     let newCards = [...cards]
-    newCards.find((card) => card.id == selectedCard).suitImage =
-      getSuitImage(suit)
+    newCards.find((card) => card.id == selectedCard).suitImage = getSuitImage(suit)
     newCards.find((card) => card.id == selectedCard).suit = suit
     setCards(newCards)
 
@@ -64,8 +55,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
     if (selectedCard == cards.length - 1) {
       setSelectedCard(0)
-    }
-    else {
+    } else {
       setSelectedCard(selectedCard + 1)
     }
     setIsSuitMode(true)
@@ -99,12 +89,9 @@ export default function TrackGameScreen({ navigation, route }) {
           <View style={styles.holeRow}>
             {cards.slice(0, 2).map((card, i) => {
               return (
-                <View key={card.id} className={styles.playerCard}>
+                <View key={card.id}>
                   <TouchableOpacity
-                    className={[
-                      styles.playerCard,
-                      selectedCard === card.id && styles.selectedCard,
-                    ]}
+                    className={[styles.playerCard, selectedCard === card.id && styles.selectedCard]}
                     onPress={() => onSelectCard(card.id)}
                   >
                     {!!card.suit && (
@@ -114,9 +101,7 @@ export default function TrackGameScreen({ navigation, route }) {
                         source={card.suitImage}
                       />
                     )}
-                    {!!card.value && (
-                      <Text className={styles.cardValue}>{card.value}</Text>
-                    )}
+                    {!!card.value && <Text className={styles.cardValue}>{card.value}</Text>}
                   </TouchableOpacity>
                 </View>
               )
@@ -125,12 +110,9 @@ export default function TrackGameScreen({ navigation, route }) {
           <View style={styles.riverRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
-                <View key={card.id} className={styles.playerCard}>
+                <View key={card.id}>
                   <TouchableOpacity
-                    className={[
-                      styles.playerCard,
-                      selectedCard === card.id && styles.selectedCard,
-                    ]}
+                    className={[styles.playerCard, selectedCard === card.id && styles.selectedCard]}
                     onPress={() => onSelectCard(card.id)}
                   >
                     {!!card.suit && (
@@ -140,9 +122,7 @@ export default function TrackGameScreen({ navigation, route }) {
                         source={card.suitImage}
                       />
                     )}
-                    {!!card.value && (
-                      <Text className={styles.cardValue}>{card.value}</Text>
-                    )}
+                    {!!card.value && <Text className={styles.cardValue}>{card.value}</Text>}
                   </TouchableOpacity>
                 </View>
               )
