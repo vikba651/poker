@@ -12,33 +12,23 @@ const Stack = createNativeStackNavigator()
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{ headerStyle: { backgroundColor: '#bbb' } }}
-      >
-        <Stack.Screen
-          name="NameScreen"
-          component={NameScreen}
-          options={{ title: 'Name Screen' }}
-        />
-        <Stack.Screen
-          name="StartScreen"
-          component={StartScreen}
-          options={{ title: 'Start Screen' }}
-        />
+      <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#bbb' } }}>
+        <Stack.Screen name="NameScreen" component={NameScreen} options={{ title: '' }} />
+        <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Home' }} />
         <Stack.Screen
           name="AddPlayersScreen"
           component={AddPlayersScreen}
-          options={{ title: 'Add Players Screen' }}
+          options={{ title: 'Add Players' }}
         />
         <Stack.Screen
           name="TrackGameScreen"
           component={TrackGameScreen}
-          options={{ title: 'Track Game Screen' }}
+          options={{ title: 'Track Game' }}
         />
         <Stack.Screen
           name="SettleUpScreen"
           component={SettleUpScreen}
-          options={{ title: 'Settle Up Screen' }}
+          options={{ title: 'Settle Up' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -64,16 +64,13 @@ export default function SettleUpScreen({ navigation, route }) {
   }
 
   settleDebts()
-  console.log(players)
 
   function onBackToStart() {
     navigation.navigate('StartScreen', { name: route.params.name })
   }
 
   function getName(id) {
-    return players
-      .filter((player) => player.id === id)
-      .map((player) => player.name)
+    return players.filter((player) => player.id === id).map((player) => player.name)
   }
 
   return (
@@ -81,10 +78,7 @@ export default function SettleUpScreen({ navigation, route }) {
       {players.map((player) => {
         if (player.debts.length > 0) {
           return (
-            <View
-              key={player.id}
-              style={{ flexDirection: 'row', marginBottom: 20 }}
-            >
+            <View key={player.id} style={{ flexDirection: 'row', marginBottom: 20 }}>
               <Text style={{ fontWeight: 'bold' }} key={player.id}>
                 {player.name + ' '}
               </Text>
@@ -92,12 +86,12 @@ export default function SettleUpScreen({ navigation, route }) {
                 {'should swish '}
                 {player.debts.map((debt, i) => {
                   return (
-                    <>
+                    <Text key={i}>
                       <Text style={{ fontWeight: 'bold' }}>
                         {debt.amount} to {getName(debt.to)}{' '}
                       </Text>
                       <Text>{i !== player.debts.length - 1 && 'and '}</Text>
-                    </>
+                    </Text>
                   )
                 })}
               </Text>
