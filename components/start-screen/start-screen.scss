@@ -4,7 +4,7 @@
     flex: 1;
     background-color: $background-color;
     align-items: center;
-    justify-content: center;
+    justify-content: center; 
 }
 
 .inputField {
@@ -12,4 +12,32 @@
     padding: 5px;
     margin-top: 5px;
     min-width: 30%;
+}
+
+.welcomeText {
+    margin-bottom: 40px;
+    font-size: 24;
+    color: $primary-text-color
+}
+
+.settleMode {
+    height: 100px;
+    width: 100px;
+    background-color: #4C3465;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trackMode {
+    height: 100px;
+    width: 100px;
+    background-color: #65344D;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
