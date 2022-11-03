@@ -11,7 +11,7 @@ export default function StartScreen({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeText}>What do you want to do, {name}?</Text>
 
-      <View style={{ flexDirection: 'row' }}>
+      <View>
         <TouchableOpacity
           className={styles.settleMode}
           onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
