@@ -85,7 +85,7 @@ export default function TrackGameScreen({ navigation, route }) {
         }}
       >
         <View className={styles.cardsView}>
-          <Text style={{ fontSize: '30px' }}>Edit card {selectedCard + 1}</Text>
+          <Text style={styles.editCardText}>Edit card {selectedCard + 1}</Text>
           <View style={styles.holeRow}>
             {cards.slice(0, 2).map((card, i) => {
               return (
