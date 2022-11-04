@@ -4,7 +4,7 @@ import { PokerHand } from '../../algorithms/poker-algorithms'
 import styles from './start-screen.scss'
 
 export default function StartScreen({ navigation, route }) {
-  // PokerHand('AC KS 5S 8C AH')
+  PokerHand('AC KS')
   const name = route.params.name
 
   return (
