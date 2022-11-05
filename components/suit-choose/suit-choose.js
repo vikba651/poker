@@ -4,22 +4,16 @@ import styles from './suit-choose.scss'
 
 export default function SuiteChoose({ selectSuit }) {
   return (
-    <>
+    <View className={styles.selectionContainer}>
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity
-          className={styles.suit}
-          onPress={() => selectSuit('heart')}
-        >
+        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('heart')}>
           <Image
             className={styles.suitImage}
             style={{ resizeMode: 'contain' }}
             source={require('../../assets/heart.png')}
           ></Image>
         </TouchableOpacity>
-        <TouchableOpacity
-          className={styles.suit}
-          onPress={() => selectSuit('spade')}
-        >
+        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('spade')}>
           <Image
             className={styles.suitImage}
             style={{ resizeMode: 'contain' }}
@@ -39,10 +33,7 @@ export default function SuiteChoose({ selectSuit }) {
             source={require('../../assets/club.png')}
           ></Image>
         </TouchableOpacity>
-        <TouchableOpacity
-          className={styles.suit}
-          onPress={() => selectSuit('diamond')}
-        >
+        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('diamond')}>
           <Image
             className={styles.suitImage}
             style={{ resizeMode: 'contain' }}
@@ -50,6 +41,6 @@ export default function SuiteChoose({ selectSuit }) {
           ></Image>
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   )
 }
