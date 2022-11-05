@@ -1,8 +1,11 @@
-@import "/variables";
+@import "variables";
 
 .container {
-    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     background-color: $background-color;
 }
 
@@ -13,56 +16,169 @@
     color: white
 }
 
-.holeRow {
+.cardsView {
+    width: 90%;
+    border-radius: 35px;
+    margin-top: 10px;
+    position: relative;
+    z-index: -1;
+    align-items: center;
+}
+
+.boxShadow {
+    width: 100%;
+    box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
+    z-index: -1;
+}
+
+.chooseView {
+    margin: 0px 10px;
+    background-color: #E6E6E6;
+    border-radius: 35px;
+    margin-top: 10px;
+    position: relative;
+    align-items: center;
+}
+
+.statsView {
+    height: 150px;
+    margin: 0px 10px;
+    background-color: #E6E6E6;
+    border-radius: 35px;
+    position: relative ;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.myCardsRow {
     display: flex;
     flex-direction: row;
-    width: 100%;
     justify-content: center;
 }
+
+
+.myCards {
+    align-items: center;
+}
+
+.playerCard {
+    height: 68px;
+    width: 49px;
+    background-color: #EFEFEF;
+    // margin: 3px 10px;
+    border-radius: 3px;
+    align-items: center;
+    border-radius: 8px;
+    border: black;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    margin: 0px 10px;
+    justify-content: center;
+}
+
+
+.playerCardSuit {
+    width: 20px;
+}
+
+.tableCards {
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
 
 .riverRow {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
-.chooseView {
-    height: 50%;
-    margin-top: 40px;
-}
 
-.cardsView {
-    width: 100%;
-    height: 50%;
-    background-color: 'gray';
-    align-items: center;
-    padding-top: 50px;
-}
-
-.playerCard {
-    height: 70px;
-    width: 40px;
-    background-color: aliceblue;
-    margin: 3px 10px;
+.tableCard {
+    height: 69px;
+    width: 49px;
+    background-color: #EFEFEF;
+    // margin: 3px 10px;
     border-radius: 3px;
     align-items: center;
-    box-shadow: 5px 5px 5px black;
+    border-radius: 8px;
+    border: black;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    margin: 0px 4px;
+    justify-content: center;
+
+    
 }
 
+.tableCardSuit {
+    width: 20px;
+}
+
+
+.cardTopValue {
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.cardBottomValue {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    font-size: 20px;
+    font-weight: 400;
+}
 
 .selectedCard {
-    border: 3px solid #E04D67;
+    box-shadow: 5px 5px 3px rgba(0, 0, 0, 0.1);
+    // box-shadow: inset 0 0 10px #f8a100;
+    border-width: 3px;
+    overflow: hidden;
+    background-color: transparent;
+    border-color: black;
 }
 
-.cardSuit {
-    width: 20px;
-    height: 10px;
-    margin-top: 10px;
+.notSelectedCard {
+    border-radius: 8px;
+    border: black;
+    // box-shadow: inset 0 0 10px #f8a100;
+    border-width: 1px;
+    overflow: hidden;
 }
 
-.cardValue {
-    margin-top: 10px;
+.titleFont {
     font-size: 20px;
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.buttonFont {
+    font-size: 20px;
+    margin-top: 5%;
+    font-weight: 600;
+}
+
+.editSelection{
+    margin-left: 30px;
+    margin-top: 5px;
+}
+
+.restartButton {
+    height: 40px;
+    width: 120px;
+    border-radius: 50px;
+    background-color: white;
+    position: relative;
+    align-items: center;
+    justify-items: center;
+}
+
+.nextStepButtons {
+    display: flex;
+    width: 90%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }

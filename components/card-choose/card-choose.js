@@ -9,7 +9,7 @@ export default function CardChoose({ selectValue }) {
   const heartRowValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
   return (
-    <View>
+    <View className={styles.selectionContainer}>
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         {spadeRowValues.map((value) => (
           <TouchableOpacity key={value} className={styles.value} onPress={() => selectValue(value)}>

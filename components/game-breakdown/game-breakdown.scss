@@ -1,0 +1,29 @@
+.suit {
+    height: 100px;
+    width: 100px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #797979;
+}
+
+.suitImage {
+    height: 50px;
+    width: 50px;
+}
+
+.chooseView {
+    width: 90%;
+    margin: 0px 10px;
+    background-color: #E6E6E6;
+    border-radius: 35px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.50);
+    //box-shadow: 15px 15px 20px rgba(0, 0, 0, 1);
+    position: relative;
+    z-index: -1;
+    align-items: center;
+}
