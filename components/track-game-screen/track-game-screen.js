@@ -111,7 +111,7 @@ export default function TrackGameScreen({ navigation, route }) {
       const newAllRounds = [...allRounds, { round: currentRound, cards }]
       setAllRounds(newAllRounds)
       // console.log('ALLROUNDS ', allRounds)
-      navigation.navigate('GameBreakdown', { allRounds })
+      navigation.navigate('GameBreakdown', { allRounds: newAllRounds })
     }
   }
 

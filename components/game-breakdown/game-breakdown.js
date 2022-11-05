@@ -38,12 +38,10 @@ export default function GameBreakDown({ navigation, route }) {
       <Text style={{ fontSize: 40, margin: 20 }}>You played {rounds.length} rounds</Text>
       {rounds.map((round) => {
         return (
-          <View className={styles.chooseView}>
-            <Text key={round.round} style={{ fontSize: 32 }}>
-              {round.round}
-            </Text>
+          <View key={round.round} className={styles.chooseView}>
+            <Text style={{ fontSize: 32 }}>{round.round}</Text>
             {round.cards.map((card) => {
-              return <Text>{card.value + ' ' + card.suit}</Text>
+              return <Text key={card.id}>{card.value + ' ' + card.suit}</Text>
             })}
           </View>
         )
