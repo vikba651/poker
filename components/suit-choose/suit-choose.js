@@ -1,45 +1,77 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text } from 'react-native'
 import React, { useState } from 'react'
 import styles from './suit-choose.scss'
+import heart from '../../assets/heart.png'
+import spade from '../../assets/spade.png'
+import diamond from '../../assets/diamond.png'
+import club from '../../assets/club.png'
 
-export default function SuiteChoose({ selectSuit }) {
+
+export default function SuiteChoose({ selectSuit, statsActive }) {
+  
+  const suitsFirstRow = [
+    {
+      id: 'heart',
+      image: heart
+
+    },
+    {
+      id: 'spade',
+      image: spade
+
+    } 
+  ]
+
+  const suitsSecondRow = [
+    {
+      id: 'club',
+      image: club
+    },
+    {
+      id: 'diamond',
+      image: diamond
+    } 
+  ]
+
+
   return (
-    <View className={styles.selectionContainer}>
+    <View 
+    // styles={selectedCard === card.id ? styles.selectedCard : ''}
+    className={statsActive ? styles.selectionContainer : styles.statsActiveselectionContainer}>
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('heart')}>
+        {suitsFirstRow.map((suit) => (
+          <TouchableOpacity 
+          className={statsActive
+            ? [styles.suit]
+            : [styles.suit, styles.statsActiveSuit]} 
+            onPress={() => selectSuit(suit.id)}>
           <Image
-            className={styles.suitImage}
+            className={statsActive
+              ? styles.suitImage
+              : styles.statsActiveImage} 
             style={{ resizeMode: 'contain' }}
-            source={require('../../assets/heart.png')}
-          ></Image>
+            source={suit.image}
+            ></Image>
         </TouchableOpacity>
-        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('spade')}>
-          <Image
-            className={styles.suitImage}
-            style={{ resizeMode: 'contain' }}
-            source={require('../../assets/spade.png')}
-          ></Image>
-        </TouchableOpacity>
+            ))}
+            
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity
-          className={styles.suit}
-          style={{ resizeMode: 'contain' }}
-          onPress={() => selectSuit('club')}
-        >
+        {suitsSecondRow.map((suit) => (
+          <TouchableOpacity 
+          className={statsActive
+            ? [styles.suit]
+            : [styles.suit, styles.statsActiveSuit]} 
+          onPress={() => selectSuit(suit.id)}>
           <Image
-            className={styles.suitImage}
+            className={statsActive
+              ? styles.suitImage
+              : styles.statsActiveImage} 
             style={{ resizeMode: 'contain' }}
-            source={require('../../assets/club.png')}
-          ></Image>
+            source={suit.image}
+            ></Image>
         </TouchableOpacity>
-        <TouchableOpacity className={styles.suit} onPress={() => selectSuit('diamond')}>
-          <Image
-            className={styles.suitImage}
-            style={{ resizeMode: 'contain' }}
-            source={require('../../assets/diamond.png')}
-          ></Image>
-        </TouchableOpacity>
+            ))}
       </View>
     </View>
   )

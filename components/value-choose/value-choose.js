@@ -2,13 +2,14 @@ import { View, SafeAreaView, Image, TouchableOpacity, Text } from 'react-native'
 import React, { useState } from 'react'
 import styles from './value-choose.scss'
 
-export default function ValueChoose({ selectValue }) {
+export default function ValueChoose({ selectValue, statsActive }) {
   const firstRowValues = ['A', '2', '3', '4', '5']
   const secondRowValues = ['6', '7', '8', '9', '10']
   const thirdRowValues = ['J', 'Q', 'K']
 
   return (
-    <View className={styles.selectionContainer}>
+    <View 
+    className={statsActive ? styles.selectionContainer : styles.statsActiveselectionContainer}>
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         {firstRowValues.map((value) => (
           <TouchableOpacity key={value} className={styles.value} onPress={() => selectValue(value)}>
