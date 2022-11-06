@@ -4,16 +4,25 @@ import styles from './track-game-screen.scss'
 import SuiteChoose from '../suit-choose/suit-choose'
 import ValueChoose from '../value-choose/value-choose'
 import { PokerHand } from '../../algorithms/poker-algorithms'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
-    { id: 0, suit: '', suitImage: null, value: '' },
-    { id: 1, suit: '', suitImage: null, value: '' },
-    { id: 2, suit: '', suitImage: null, value: '' },
-    { id: 3, suit: '', suitImage: null, value: '' },
-    { id: 4, suit: '', suitImage: null, value: '' },
-    { id: 5, suit: '', suitImage: null, value: '' },
-    { id: 6, suit: '', suitImage: null, value: '' },
+    { id: 0, suit: '', suitImage: null, value: '', isActive: true },
+    { id: 1, suit: '', suitImage: null, value: '', isActive: true },
+    { id: 2, suit: '', suitImage: null, value: '', isActive: false },
+    { id: 3, suit: '', suitImage: null, value: '', isActive: false },
+    { id: 4, suit: '', suitImage: null, value: '', isActive: false },
+    { id: 5, suit: '', suitImage: null, value: '', isActive: false },
+    { id: 6, suit: '', suitImage: null, value: '', isActive: false },
+  ]
+
+  const stats = [
+    { id: 0, title: 'Hand Quality', percentage: 84 },
+    { id: 0, title: 'Pair chance', percentage: 64 },
+    { id: 0, title: 'Straight chance', percentage: 57 },
+    { id: 0, title: 'Triple chance', percentage: 43 },
+    { id: 0, title: 'Flush chance', percentage: 27 },
   ]
 
   const [statsActive, setStatsActive] = useState(true)
@@ -61,7 +70,35 @@ export default function TrackGameScreen({ navigation, route }) {
     } else {
       setSelectedCard(selectedCard + 1)
     }
+
+    findActiveCards()
     setIsSuitMode(true)
+  }
+
+  function findActiveCards() {
+
+    if (cards.slice(0, 6).every((card) => card.value && card.suit)) {
+
+      let newCards = [...cards];
+      newCards.find((card) => card.id == 6).isActive = true;
+      setCards(newCards)
+    }
+
+    if (cards.slice(0, 5).every((card) => card.value && card.suit)) {
+
+      let newCards = [...cards];
+      newCards.find((card) => card.id == 5).isActive = true;
+      setCards(newCards)
+    }
+
+    if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
+
+      let newCards = [...cards];
+      newCards.find((card) => card.id == 2).isActive = true;
+      newCards.find((card) => card.id == 3).isActive = true;
+      newCards.find((card) => card.id == 4).isActive = true;
+      setCards(newCards)
+    }
   }
 
   function onSelectCard(cardNumber) {
@@ -71,6 +108,13 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function isValidCards() {
     if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
+
+      let newCards = [...cards];
+      newCards.find((card) => card.id == 2).isActive = true;
+      newCards.find((card) => card.id == 3).isActive = true;
+      newCards.find((card) => card.id == 4).isActive = true;
+      setCards(newCards)
+
       const tableCards = cards.slice(2)
       const hasInvalidCard = tableCards.some(
         (card) => (card.suit && !card.value) || (!card.suit && card.value)
@@ -115,6 +159,29 @@ export default function TrackGameScreen({ navigation, route }) {
     }
   }
 
+  function onStatsChange() {
+    setStatsActive(!statsActive)
+  }
+
+  function getCardViewMode(cardId) {
+
+    let viewMode = [styles.playerCard]
+
+    if (!statsActive) {
+      viewMode.push(styles.statsNotActiveCard)
+    }
+
+    if (selectedCard === cardId) {
+      viewMode.push(styles.selectedCard)
+    }
+    else {
+      viewMode.push(styles.notSelectedCard)
+    }
+
+    return viewMode
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -125,6 +192,9 @@ export default function TrackGameScreen({ navigation, route }) {
         }}
       >
         <View className={styles.cardsView}>
+          <TouchableOpacity className={styles.restartButton} onPress={() => onStatsChange()}>
+            <Text className={styles.buttonFont}>Change Stats</Text>
+          </TouchableOpacity>
           <View className={styles.myCards}>
             <Text className={styles.titleFont}>My Cards</Text>
             <View className={styles.myCardsRow}>
@@ -132,11 +202,7 @@ export default function TrackGameScreen({ navigation, route }) {
                 return (
                   <View key={card.id}>
                     <TouchableOpacity
-                      className={
-                        selectedCard === card.id
-                          ? [styles.playerCard, styles.selectedCard]
-                          : [styles.playerCard, styles.notSelectedCard]
-                      }
+                      className={getCardViewMode(card.id)}
                       styles={{
                         backgroundColor: 'transparent',
                         overflow: 'hidden',
@@ -167,24 +233,30 @@ export default function TrackGameScreen({ navigation, route }) {
               {cards.slice(2, 7).map((card, i) => {
                 return (
                   <View key={card.id}>
-                    <TouchableOpacity
-                      className={
-                        selectedCard === card.id
-                          ? [styles.tableCard, styles.selectedCard]
-                          : [styles.tableCard, styles.notSelectedCard]
-                      }
-                      onPress={() => onSelectCard(card.id)}
-                    >
-                      {!!card.suit && (
-                        <Image
-                          className={styles.tableCardSuit}
-                          style={{ resizeMode: 'contain' }}
-                          source={card.suitImage}
-                        />
-                      )}
-                      {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
-                      {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
-                    </TouchableOpacity>
+                    {card.isActive &&
+                      <TouchableOpacity
+                        className={
+                          selectedCard === card.id
+                            ? [styles.playerCard, styles.selectedCard]
+                            : [styles.playerCard, styles.notSelectedCard]
+                        }
+                        onPress={() => onSelectCard(card.id)}
+                      >
+                        {!!card.suit && (
+                          <Image
+                            className={styles.tableCardSuit}
+                            style={{ resizeMode: 'contain' }}
+                            source={card.suitImage}
+                          />
+                        )}
+                        {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
+                        {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
+                      </TouchableOpacity>}
+                    {!card.isActive &&
+                      <View className={[styles.tableCard, styles.notActiveCard]}>
+
+                      </View>
+                    }
                   </View>
                 )
               })}
@@ -192,16 +264,31 @@ export default function TrackGameScreen({ navigation, route }) {
           </View>
         </View>
       </View>
-      <View className={styles.boxShadow}>
-        <View className={styles.statsView}>
-          <Text className={[styles.titleFont, styles.editSelection]}>Stats</Text>
+      {statsActive &&
+        <View className={styles.boxShadow}>
+          <View className={styles.statsView}>
+            <Text className={styles.titleFont}>Stats</Text>
+
+            <View className={styles.statsRow}>
+              <KeyboardAwareScrollView horizontal>
+                {stats.map((stat) => (
+                  <View key={stat.id} className={styles.stats}>
+                    <TouchableOpacity className={styles.statInfo}>
+                      <Text className={styles.statsTitle}>{stat.title}</Text>
+                      <Text className={styles.statsResult}>{stat.percentage}%</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </KeyboardAwareScrollView>
+            </View>
+          </View>
         </View>
-      </View>
+      }
       <View className={styles.boxShadow}>
         <View className={styles.chooseView}>
           <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
-          {isSuitMode && <SuiteChoose selectSuit={selectSuit}></SuiteChoose>}
-          {!isSuitMode && <ValueChoose selectValue={selectValue}></ValueChoose>}
+          {isSuitMode && <SuiteChoose selectSuit={selectSuit} statsActive={statsActive}></SuiteChoose>}
+          {!isSuitMode && <ValueChoose selectValue={selectValue} statsActive={statsActive}></ValueChoose>}
           <View className={styles.nextStepButtons}>
             <View className={styles.restartButton}>
               <TouchableOpacity className={styles.restartButton} onPress={() => onNextRound()}>
@@ -216,6 +303,6 @@ export default function TrackGameScreen({ navigation, route }) {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }

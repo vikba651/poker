@@ -2,6 +2,10 @@
     height: 220px;
 }
 
+.statsActiveselectionContainer {
+    height: 280px;
+}
+
 .suit {
     height: 90px;
     width: 90px;
@@ -14,7 +18,17 @@
     border: 1px solid #797979;
 }
 
+.statsActiveSuit {
+    height: 120;
+    width: 120px;
+}
+
 .suitImage {
     height: 40px;
     width: 40px;
+}
+
+.statsActiveImage {
+    height: 60px;
+    width: 60px;
 }
