@@ -1,3 +1,14 @@
+@import "variables";
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $background-color;
+}
+
 .suit {
     height: 100px;
     width: 100px;
@@ -15,15 +26,72 @@
     width: 50px;
 }
 
-.chooseView {
-    width: 90%;
+.scrollView {
+    width: 100%;
+    margin-top: 20px;
+    //box-shadow: 15px 15px 20px rgba(0, 0, 0, 1);
+}
+
+.breakdownView {
+    width: 95%;
     margin: 0px 10px;
     background-color: #E6E6E6;
     border-radius: 35px;
     margin-top: 20px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.50);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.30);
     //box-shadow: 15px 15px 20px rgba(0, 0, 0, 1);
     position: relative;
     z-index: -1;
     align-items: center;
+}
+
+.playerCard {
+    height: 68px;
+    width: 49px;
+    background-color: #EFEFEF;
+    // margin: 3px 10px;
+    border-radius: 3px;
+    align-items: center;
+    border-radius: 8px;
+    border: black;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    margin: 0px 5px;
+    justify-content: center;
+    margin-bottom: 3px;
+}
+
+.playerCardSuit {
+    width: 20px;
+}
+
+.cardsView {
+    width: 90%;
+    border-radius: 35px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: -1;
+    align-items: center;
+}
+
+.cardsRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.cardTopValue {
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.cardBottomValue {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    font-size: 20px;
+    font-weight: 400;
 }
