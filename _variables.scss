@@ -4,8 +4,28 @@
 $primary-color: #d3d3d3;
 $secondary-color: #d3d3d3;
 $background-color: #E0E0E0;
-$primary-text-color: #E04D67;
+
+$card-background-color: #E6E6E6;
 $player-card-color: #29475F;
+
 $font-large: 20px;
 $font-medium: 16px;
 $font-small: 12px;
+
+$primary-text-color: #E04D67;
+
+@mixin card {
+    background-color: $card-background-color;
+    width: 90%;
+    box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
+    z-index: -1;
+    border-radius: 35px;
+    margin: 15px;
+    padding: 10px 20px;
+}
+
+@mixin cardTitle {
+    font-size: $font-large;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
