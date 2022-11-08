@@ -7,12 +7,37 @@
     justify-content: center; 
 }
 
+.welcomeMessage {
+    width: 82%;
+    flex-grow: 1; //
+    justify-content: center;
+}
+
+.whatDoText {
+    font-size: 20;
+}
+
+.nameText {
+    font-size: 20;
+    font-weight: 600;
+}
+
+.yourGamesText {
+    @include cardTitle;
+    margin-left: 15px;
+}
+
 .yourGamesContainer {
     @include card;
+    padding-right: 0;
+    padding-left: 0;
+    height: 178px;
 }
 
 .gamesRow {
     flex-direction: row;
+    padding-left: 15px;
+    padding-right: 5px;
 }
 
 .game {
@@ -20,7 +45,35 @@
     height: 99px;
     width: 89px;
     border-radius: 13px;
-    
+    margin-right: 10px;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.gradient {
+    position: absolute;
+    right: 0;
+}
+
+.dateText {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.resultTextPlus {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0ACC40;
+}
+
+.resultTextMinus {
+    font-size: 16px;
+    font-weight: 600;
+    color: #FF0A0A;
+}
+
+.viewMoreText {
+    font-weight: 200;
 }
 
 .actionContainer {
@@ -47,11 +100,6 @@
 .markerImage {
     width: 100%;
     height: 100%;
-}
-
-.welcomeText {
-    font-size: 24;
-    color: $primary-text-color
 }
 
 .settleMode {

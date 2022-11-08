@@ -1,6 +1,5 @@
-import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { PokerHand } from '../../algorithms/poker-algorithms'
+import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import styles from './start-screen.scss'
 
 export default function StartScreen({ navigation, route }) {
@@ -12,42 +11,84 @@ export default function StartScreen({ navigation, route }) {
     {
       id: 0,
       date: '17 Oct',
-      result: '+114sek',
+      result: '114sek',
+      plus: true,
     },
     {
       id: 1,
       date: '12 Oct',
-      result: '+69sek',
+      result: '69sek',
+      plus: true,
     },
     {
       id: 2,
       date: '24 Sep',
-      result: '-420sek',
+      result: '420sek',
+      plus: false,
     },
     {
       id: 3,
       date: '17 Sep',
-      result: '-12sek',
+      result: '12sek',
+      plus: true,
     },
   ]
 
+  const [isGradientActivated, setIsGradientActivated] = useState(true)
+
+  const isCloseToEnd = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToEnd = 15
+    return layoutMeasurement.width + contentOffset.x >= contentSize.width - paddingToEnd
+  }
+
+  const opcaityStyle = {
+    opacity: isGradientActivated ? 1 : 0,
+    transition: 'all 1s ease-in',
+    resizeMode: 'contain',
+  }
+
   return (
     <SafeAreaView className={styles.container}>
-      <Text className={styles.welcomeText}>What do you want to do, {name}?</Text>
+      <View className={styles.welcomeMessage}>
+        <Text className={styles.whatDoText}>What do you want to do,</Text>
+        <Text className={styles.nameText}>{name}?</Text>
+      </View>
+
       <View className={styles.yourGamesContainer}>
-        <Text className={styles.cardTitle}>Your games</Text>
-        <View className={styles.gamesRow}>
-          {games.map((game) => {
-            return (
-              <View className={styles.game}>
-                <Text>17 Oct</Text>
-              </View>
-            )
-          })}
-          <View className={styles.game}>
-            <Text>17 Oct</Text>
+        <Text className={styles.yourGamesText}>Your games</Text>
+        <ScrollView
+          horizontal={true}
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToEnd(nativeEvent)) {
+              setIsGradientActivated(false)
+            } else {
+              setIsGradientActivated(true)
+            }
+          }}
+          scrollEventThrottle={400}
+        >
+          <View className={styles.gamesRow}>
+            {games.map((game) => {
+              return (
+                <TouchableOpacity key={game.id}>
+                  <View className={styles.game}>
+                    <Text className={styles.dateText}>{game.date}</Text>
+                    <Text className={game.plus ? styles.resultTextPlus : styles.resultTextMinus}>
+                      {(game.plus ? '+' : '-') + game.result}
+                    </Text>
+                    <Text className={styles.viewMoreText}>view more</Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            })}
           </View>
-        </View>
+        </ScrollView>
+
+        <Image
+          className={styles.gradient}
+          style={opcaityStyle}
+          source={require('../../assets/right-gradient.png')}
+        />
       </View>
 
       <View className={styles.actionContainer}>
