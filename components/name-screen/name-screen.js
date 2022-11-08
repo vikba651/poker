@@ -1,4 +1,4 @@
-import { Button, SafeAreaView, Text, TextInput } from 'react-native'
+import { TouchableOpacity, SafeAreaView, Text, TextInput, View} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -22,7 +22,7 @@ export default function NameScreen({ navigation }) {
     } catch (e) {}
   }
   const [name, setName] = useState('')
-  const [prompt, setPrompt] = useState("Welcome, what's your name?")
+  const [prompt, setPrompt] = useState("What's your name?")
 
   useEffect(() => {
     getData()
@@ -30,16 +30,21 @@ export default function NameScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text className={styles.titleText}>Pokerdex</Text>
       <Text className={styles.prompt}>{prompt}</Text>
+      <Text className={styles.promptSubText}>This will be displayed to your friends.</Text>
+      <View className={styles.inputBox}> 
       <TextInput
         onChangeText={setName}
         value={name}
-        placeholder="Name"
+        placeholder="Type your name here..."
         maxLength={25}
         autoFocus={true}
         className={styles.inputField}
-      />
-      <Button
+        />
+        </View>
+      <TouchableOpacity
+      className = {styles.opaqueButton}
         onPress={() => {
           if (name.length < 2) {
             setPrompt(`'${name}' is not valid.`)
@@ -48,8 +53,9 @@ export default function NameScreen({ navigation }) {
             navigation.navigate('StartScreen', { name: name })
           }
         }}
-        title="Go"
-      />
+      >
+        <Text className = {styles.buttonText}>Let's get started!</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
