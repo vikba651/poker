@@ -19,10 +19,10 @@ export default function TrackGameScreen({ navigation, route }) {
 
   const stats = [
     { id: 0, title: 'Hand Quality', percentage: 84 },
-    { id: 0, title: 'Pair chance', percentage: 64 },
-    { id: 0, title: 'Straight chance', percentage: 57 },
-    { id: 0, title: 'Triple chance', percentage: 43 },
-    { id: 0, title: 'Flush chance', percentage: 27 },
+    { id: 1, title: 'Pair chance', percentage: 64 },
+    { id: 2, title: 'Straight chance', percentage: 57 },
+    { id: 3, title: 'Triple chance', percentage: 43 },
+    { id: 4, title: 'Flush chance', percentage: 27 },
   ]
 
   const [statsActive, setStatsActive] = useState(true)
@@ -76,27 +76,23 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function findActiveCards() {
-
     if (cards.slice(0, 6).every((card) => card.value && card.suit)) {
-
-      let newCards = [...cards];
-      newCards.find((card) => card.id == 6).isActive = true;
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 6).isActive = true
       setCards(newCards)
     }
 
     if (cards.slice(0, 5).every((card) => card.value && card.suit)) {
-
-      let newCards = [...cards];
-      newCards.find((card) => card.id == 5).isActive = true;
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 5).isActive = true
       setCards(newCards)
     }
 
     if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
-
-      let newCards = [...cards];
-      newCards.find((card) => card.id == 2).isActive = true;
-      newCards.find((card) => card.id == 3).isActive = true;
-      newCards.find((card) => card.id == 4).isActive = true;
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 2).isActive = true
+      newCards.find((card) => card.id == 3).isActive = true
+      newCards.find((card) => card.id == 4).isActive = true
       setCards(newCards)
     }
   }
@@ -108,17 +104,14 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function isValidCards() {
     if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
-
-      let newCards = [...cards];
-      newCards.find((card) => card.id == 2).isActive = true;
-      newCards.find((card) => card.id == 3).isActive = true;
-      newCards.find((card) => card.id == 4).isActive = true;
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 2).isActive = true
+      newCards.find((card) => card.id == 3).isActive = true
+      newCards.find((card) => card.id == 4).isActive = true
       setCards(newCards)
 
       const tableCards = cards.slice(2)
-      const hasInvalidCard = tableCards.some(
-        (card) => (card.suit && !card.value) || (!card.suit && card.value)
-      )
+      const hasInvalidCard = tableCards.some((card) => (card.suit && !card.value) || (!card.suit && card.value))
       if (hasInvalidCard) {
         alert('Fill in both value and suit')
         return false
@@ -164,7 +157,6 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function getCardViewMode(cardId) {
-
     let viewMode = [styles.playerCard]
 
     if (!statsActive) {
@@ -173,13 +165,11 @@ export default function TrackGameScreen({ navigation, route }) {
 
     if (selectedCard === cardId) {
       viewMode.push(styles.selectedCard)
-    }
-    else {
+    } else {
       viewMode.push(styles.notSelectedCard)
     }
 
     return viewMode
-
   }
 
   return (
@@ -233,7 +223,7 @@ export default function TrackGameScreen({ navigation, route }) {
               {cards.slice(2, 7).map((card, i) => {
                 return (
                   <View key={card.id}>
-                    {card.isActive &&
+                    {card.isActive && (
                       <TouchableOpacity
                         className={
                           selectedCard === card.id
@@ -251,12 +241,9 @@ export default function TrackGameScreen({ navigation, route }) {
                         )}
                         {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
                         {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
-                      </TouchableOpacity>}
-                    {!card.isActive &&
-                      <View className={[styles.tableCard, styles.notActiveCard]}>
-
-                      </View>
-                    }
+                      </TouchableOpacity>
+                    )}
+                    {!card.isActive && <View className={[styles.tableCard, styles.notActiveCard]}></View>}
                   </View>
                 )
               })}
@@ -264,7 +251,7 @@ export default function TrackGameScreen({ navigation, route }) {
           </View>
         </View>
       </View>
-      {statsActive &&
+      {statsActive && (
         <View className={styles.boxShadow}>
           <View className={styles.statsView}>
             <Text className={styles.titleFont}>Stats</Text>
@@ -283,7 +270,7 @@ export default function TrackGameScreen({ navigation, route }) {
             </View>
           </View>
         </View>
-      }
+      )}
       <View className={styles.boxShadow}>
         <View className={styles.chooseView}>
           <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
@@ -303,6 +290,6 @@ export default function TrackGameScreen({ navigation, route }) {
           </View>
         </View>
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   )
 }
