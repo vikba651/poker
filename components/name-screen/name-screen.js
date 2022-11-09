@@ -1,4 +1,4 @@
-import { TouchableOpacity, SafeAreaView, Text, TextInput, View} from 'react-native'
+import { TouchableOpacity, SafeAreaView, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -22,7 +22,7 @@ export default function NameScreen({ navigation }) {
     } catch (e) {}
   }
   const [name, setName] = useState('')
-  const [prompt, setPrompt] = useState("What's your name?")
+  const [prompt, setPrompt] = useState('This will be displayed to your friends.')
 
   useEffect(() => {
     getData()
@@ -31,20 +31,21 @@ export default function NameScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text className={styles.titleText}>Pokerdex</Text>
-      <Text className={styles.prompt}>{prompt}</Text>
-      <Text className={styles.promptSubText}>This will be displayed to your friends.</Text>
-      <View className={styles.inputBox}> 
-      <TextInput
-        onChangeText={setName}
-        value={name}
-        placeholder="Type your name here..."
-        maxLength={25}
-        autoFocus={true}
-        className={styles.inputField}
+      <Text className={styles.prompt}>What's your name?</Text>
+      <Text className={styles.promptSubText}>{prompt}</Text>
+      <View className={styles.inputBox}>
+        <TextInput
+          onChangeText={setName}
+          value={name}
+          placeholder="Type your name here..."
+          maxLength={25}
+          autoFocus={true}
+          className={styles.inputField}
+          returnKeyType="go"
         />
-        </View>
+      </View>
       <TouchableOpacity
-      className = {styles.opaqueButton}
+        className={styles.opaqueButton}
         onPress={() => {
           if (name.length < 2) {
             setPrompt(`'${name}' is not valid.`)
@@ -54,7 +55,7 @@ export default function NameScreen({ navigation }) {
           }
         }}
       >
-        <Text className = {styles.buttonText}>Let's get started!</Text>
+        <Text className={styles.buttonText}>Let's get started!</Text>
       </TouchableOpacity>
     </SafeAreaView>
   )
