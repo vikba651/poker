@@ -34,14 +34,16 @@ export default function StartScreen({ navigation, route }) {
     },
   ]
 
-  const [isGradientActivated, setIsGradientActivated] = useState(true)
+  const [isGradientActivated, setIsGradientActivated] = useState(games.length > 3)
 
-  const isCloseToEnd = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const onScroll = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToEnd = 15
-    return layoutMeasurement.width + contentOffset.x >= contentSize.width - paddingToEnd
+    const isCloseToEnd = layoutMeasurement.width + contentOffset.x >= contentSize.width - paddingToEnd
+    // console.log(contentSize.width - layoutMeasurement.width - contentOffset.x)
+    setIsGradientActivated(!isCloseToEnd)
   }
 
-  const opcaityStyle = {
+  const opacityStyle = {
     opacity: isGradientActivated ? 1 : 0,
     transition: 'all 1s ease-in',
     resizeMode: 'contain',
@@ -59,11 +61,7 @@ export default function StartScreen({ navigation, route }) {
         <ScrollView
           horizontal={true}
           onScroll={({ nativeEvent }) => {
-            if (isCloseToEnd(nativeEvent)) {
-              setIsGradientActivated(false)
-            } else {
-              setIsGradientActivated(true)
-            }
+            onScroll(nativeEvent)
           }}
           scrollEventThrottle={400}
         >
@@ -84,35 +82,31 @@ export default function StartScreen({ navigation, route }) {
           </View>
         </ScrollView>
 
-        <Image
-          className={styles.gradient}
-          style={opcaityStyle}
-          source={require('../../assets/right-gradient.png')}
-        />
+        <Image className={styles.gradient} style={opacityStyle} source={require('../../assets/right-gradient.png')} />
       </View>
 
       <View className={styles.actionContainer}>
         <Text className={styles.cardTitle}>Actions</Text>
         <View className={styles.actionButtons}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('TrackGameScreen')}
-            className={styles.markerButton}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
             <Image
               className={styles.markerImage}
               style={{ resizeMode: 'contain' }}
               source={require('../../assets/blue-marker.png')}
             />
+            <View className={styles.actionTextView}>
+              <Text className={styles.actionText}>NEW GAME</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('TrackGameScreen')}
-            className={styles.markerButton}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
             <Image
               className={styles.markerImage}
               style={{ resizeMode: 'contain' }}
               source={require('../../assets/green-marker.png')}
             />
+            <View className={styles.actionTextView}>
+              <Text className={styles.actionText}>JOIN GAME</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
@@ -123,16 +117,19 @@ export default function StartScreen({ navigation, route }) {
               style={{ resizeMode: 'contain' }}
               source={require('../../assets/red-marker.png')}
             />
+            <View className={styles.actionTextView}>
+              <Text className={styles.actionText}>SETTLE UP</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('TrackGameScreen')}
-            className={styles.markerButton}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
             <Image
               className={styles.markerImage}
               style={{ resizeMode: 'contain' }}
               source={require('../../assets/black-marker.png')}
             />
+            <View className={styles.actionTextView}>
+              <Text className={styles.actionText}>STATS</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

@@ -20,7 +20,7 @@ $primary-text-color: #E04D67;
     box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
     z-index: -1;
     border-radius: 35px;
-    margin: 7px 15px;
+    margin: 7px 0px;
     padding: 10px 20px;
 }
 
@@ -28,4 +28,12 @@ $primary-text-color: #E04D67;
     font-size: $font-large;
     font-weight: 600;
     margin-bottom: 10px;
+}
+
+@mixin subCard {
+    background-color: #F5F5F5;
+    height: 99px;
+    width: 89px;
+    border-radius: 13px;
+    margin-right: 10px;
 }
