@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: space-between;
     background-color: $background-color;
+    flex: 1;
 }
 
 .editCardText {
@@ -15,6 +16,7 @@
 
 .cardsView {
     width: 90%;
+    flex: 1;
     border-radius: 35px;
     margin-top: 10px;
     position: relative;
@@ -65,7 +67,7 @@
 }
 
 .playerCardSuit {
-    width: 20px;
+    width: 15px;
 }
 
 .tableCards {
@@ -81,7 +83,7 @@
 }
 
 .tableCardSuit {
-    width: 20px;
+    width: 15px;
 }
 
 .cardTopValue {
@@ -126,30 +128,6 @@
     font-weight: 600;
 }
 
-.buttonFont {
-    font-size: 20px;
-    margin-top: 5%;
-    font-weight: 600;
-}
-
-.restartButton {
-    height: 40px;
-    width: 120px;
-    border-radius: 50px;
-    background-color: white;
-    position: relative;
-    align-items: center;
-    justify-items: center;
-}
-
-.nextStepButtons {
-    display: flex;
-    width: 90%;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
 .statistic {
     @include subCard;
     // height: 100px;
@@ -159,7 +137,7 @@
     // box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
     // margin: 0px 10px;
     justify-content: center;
-    height: 80px;
+    // height: 80px;
 }
 
 .statsView {
@@ -194,4 +172,52 @@
 .editSelectionView {
     @include card;
     align-items: center;
+}
+
+.selectionButton {
+    height: 45px;
+    width: 40px;
+    background-color: white;
+    margin: 5px 2px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #797979;
+}
+
+.suitImage {
+    height: 20px;
+    width: 20px;
+}
+
+.valueRows {
+    align-items: center;
+    border-top-width: 1px;
+    border-top-color: rgba(0,0,0,0.1);
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.valueText{
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.nextStepButtons {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    border-radius: 50px;
+    height: 50px;
+    background-color: white;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.buttonText {
+    font-size: 12px;
+    margin-top: 5%;
+    font-weight: 600;
 }
