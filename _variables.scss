@@ -14,20 +14,34 @@ $font-small: 12px;
 
 $primary-text-color: #E04D67;
 
-@mixin card {
-    background-color: $card-background-color;
-    width: 90%;
+@mixin cardBoxShadow {
     box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
     z-index: -1;
+    flex-direction: row;
+}
+
+@mixin card($horizontal-padding: 20px) {
+    background-color: $card-background-color;
+    z-index: 1;
+    width: 90%;
     border-radius: 35px;
     margin: 7px 0px;
-    padding: 10px 20px;
+    padding: 10px $horizontal-padding 20px $horizontal-padding;
+    overflow: hidden;
 }
 
 @mixin cardTitle {
     font-size: $font-large;
     font-weight: 600;
     margin-bottom: 10px;
+    width: 100%;
+}
+
+@mixin cardScrollView {
+    flex-direction: row;
+    padding-left: 15px;
+    padding-right: 5px;
+    overflow: hidden;
 }
 
 @mixin subCard {

@@ -24,20 +24,16 @@
 
 .yourGamesText {
     @include cardTitle;
-    margin-left: 15px;
+    margin-left: 15px; ///////
 }
 
 .yourGamesContainer {
-    @include card;
-    padding-right: 0;
-    padding-left: 0; //
-    height: 178px;
+    @include card(0px);
+    // height: 175px;
 }
 
 .gamesRow {
-    flex-direction: row;
-    padding-left: 15px;
-    padding-right: 5px;
+    @include cardScrollView;
 }
 
 .game {
@@ -72,9 +68,14 @@
     font-weight: 200;
 }
 
+.boxShadow {
+    @include cardBoxShadow; ///
+}
+
 .actionContainer {
-    @include card; ////////////////
+    @include card; //////////////////
     // height: 150px;
+    padding-bottom: -15px;
 }
 
 .cardTitle {
@@ -88,8 +89,8 @@
 }
 
 .markerButton {
-    width: 145px;
-    height: 145px;
+    width: 150px;
+    height: 150px;
     margin-bottom: 15px;
 }
 
@@ -114,26 +115,4 @@
 .markerImage {
     width: 100%;
     height: 100%;
-}
-
-.settleMode {
-    height: 60px;
-    width: 200px;
-    background-color: #4C3465;
-    margin: 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.trackMode {
-    height: 60px;
-    width: 200px;
-    background-color: #65344D;
-    margin: 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }

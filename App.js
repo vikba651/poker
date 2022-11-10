@@ -14,28 +14,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#bbb' } }}>
-        <Stack.Screen name="NameScreen" component={NameScreen} options={{ title: '' }} />
+        <Stack.Screen name="NameScreen" component={NameScreen} options={{ headerShown: false }} />
         <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Home' }} />
-        <Stack.Screen
-          name="AddPlayersScreen"
-          component={AddPlayersScreen}
-          options={{ title: 'Add Players' }}
-        />
-        <Stack.Screen
-          name="TrackGameScreen"
-          component={TrackGameScreen}
-          options={{ title: 'Track Game' }}
-        />
-        <Stack.Screen
-          name="SettleUpScreen"
-          component={SettleUpScreen}
-          options={{ title: 'Settle Up' }}
-        />
-        <Stack.Screen
-          name="GameBreakdown"
-          component={GameBreakDown}
-          options={{ title: 'Game Breakdown' }}
-        />
+        <Stack.Screen name="AddPlayersScreen" component={AddPlayersScreen} options={{ title: 'Add Players' }} />
+        <Stack.Screen name="TrackGameScreen" component={TrackGameScreen} options={{ title: 'Track Game' }} />
+        <Stack.Screen name="SettleUpScreen" component={SettleUpScreen} options={{ title: 'Settle Up' }} />
+        <Stack.Screen name="GameBreakdown" component={GameBreakDown} options={{ title: 'Game Breakdown' }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

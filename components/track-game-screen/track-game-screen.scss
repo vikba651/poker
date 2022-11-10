@@ -1,9 +1,6 @@
 @import "variables";
 
 .container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     background-color: $background-color;
@@ -26,29 +23,7 @@
 }
 
 .boxShadow {
-    width: 100%;
-    box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
-    z-index: -1;
-}
-
-.chooseView {
-    margin: 0px 10px;
-    background-color: #E6E6E6;
-    border-radius: 35px;
-    margin-top: 10px;
-    position: relative;
-    align-items: center;
-}
-
-
-.statsView {
-    height: 150px;
-    margin: 0px 10px;
-    background-color: #E6E6E6;
-    border-radius: 35px;
-    position: relative ;
-    margin-top: 10px;
-    align-items: center;
+    @include cardBoxShadow;  
 }
 
 .myCardsRow {
@@ -56,7 +31,6 @@
     flex-direction: row;
     justify-content: center;
 }
-
 
 .myCards {
     align-items: center;
@@ -71,7 +45,7 @@
     align-items: center;
     border-radius: 8px;
     border: black;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    // box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
     margin: 0px 10px;
     justify-content: center;
 }
@@ -85,14 +59,9 @@
     align-items: center;
     border-radius: 8px;
     border: black;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    // box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
     margin: 0px 10px;
     justify-content: center;
-}
-
-.statsNotActiveCard {
-    height: 102px;
-    width: 74px;
 }
 
 .playerCardSuit {
@@ -105,7 +74,6 @@
     margin-bottom: 10px;
 }
 
-
 .riverRow {
     display: flex;
     flex-direction: row;
@@ -115,7 +83,6 @@
 .tableCardSuit {
     width: 20px;
 }
-
 
 .cardTopValue {
     position: absolute;
@@ -165,11 +132,6 @@
     font-weight: 600;
 }
 
-.editSelection{
-    margin-left: 30px;
-    margin-top: 5px;
-}
-
 .restartButton {
     height: 40px;
     width: 120px;
@@ -188,33 +150,48 @@
     margin-bottom: 10px;
 }
 
-.stats {
-    height: 100px;
-    width: 100px;
-    border-radius: 15px;
-    background-color: #EFEFEF;
-    // margin: 3px 10px;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-    margin: 0px 10px;
-    z-index: -1;
+.statistic {
+    @include subCard;
+    // height: 100px;
+    // width: 100px;
+    // border-radius: 15px;
+    // background-color: #EFEFEF;
+    // box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    // margin: 0px 10px;
+    justify-content: center;
+    height: 80px;
+}
+
+.statsView {
+    @include card(0);
+    align-items: center;
 }
 
 .statsRow {
-    display: flex;
-    flex-direction: row;
+    @include cardScrollView;
 }
 
-.statsTitle {
+.statisticTitle {
     align-self: center;
-    font-size: 20px;
+    font-size: 12px;
     margin-bottom: 2px;
     font-weight: 600;
 }
 
-.statsResult {
+.statisticResult {
     align-self: center;
     font-size: 20px;
     margin-bottom: 2px;
     font-weight: 600;
     color: green;
+}
+
+.statsNotActiveCard {
+    height: 102px;
+    width: 74px;
+}
+
+.editSelectionView {
+    @include card;
+    align-items: center;
 }

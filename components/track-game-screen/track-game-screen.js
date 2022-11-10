@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Image, TouchableOpacity, Text, Button } from 'react-native'
+import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import styles from './track-game-screen.scss'
 import SuiteChoose from '../suit-choose/suit-choose'
@@ -174,37 +174,60 @@ export default function TrackGameScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          flex: 1,
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
-        <View className={styles.cardsView}>
-          <TouchableOpacity className={styles.restartButton} onPress={() => onStatsChange()}>
+      <View className={styles.cardsView}>
+        {/* <TouchableOpacity className={styles.restartButton} onPress={() => onStatsChange()}>
             <Text className={styles.buttonFont}>Change Stats</Text>
-          </TouchableOpacity>
-          <View className={styles.myCards}>
-            <Text className={styles.titleFont}>My Cards</Text>
-            <View className={styles.myCardsRow}>
-              {cards.slice(0, 2).map((card, i) => {
-                return (
-                  <View key={card.id}>
+          </TouchableOpacity> */}
+        <View className={styles.myCards}>
+          <Text className={styles.titleFont}>My Cards</Text>
+          <View className={styles.myCardsRow}>
+            {cards.slice(0, 2).map((card, i) => {
+              return (
+                <View key={card.id}>
+                  <TouchableOpacity
+                    className={getCardViewMode(card.id)}
+                    styles={{
+                      backgroundColor: 'transparent',
+                      overflow: 'hidden',
+                      // shadowColor: 'red',
+                      // shadowRadius: 1,
+                    }}
+                    // styles={selectedCard === card.id ? styles.selectedCard : ''}
+                    onPress={() => onSelectCard(card.id)}
+                  >
+                    {!!card.suit && (
+                      <Image
+                        className={styles.playerCardSuit}
+                        style={{ resizeMode: 'contain' }}
+                        source={card.suitImage}
+                      />
+                    )}
+                    {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
+                    {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
+                  </TouchableOpacity>
+                </View>
+              )
+            })}
+          </View>
+        </View>
+        <View className={styles.tableCards}>
+          <Text className={styles.titleFont}>Cards on table</Text>
+          <View className={styles.riverRow}>
+            {cards.slice(2, 7).map((card, i) => {
+              return (
+                <View key={card.id}>
+                  {card.isActive && (
                     <TouchableOpacity
-                      className={getCardViewMode(card.id)}
-                      styles={{
-                        backgroundColor: 'transparent',
-                        overflow: 'hidden',
-                        // shadowColor: 'red',
-                        // shadowRadius: 1,
-                      }}
-                      // styles={selectedCard === card.id ? styles.selectedCard : ''}
+                      className={
+                        selectedCard === card.id
+                          ? [styles.playerCard, styles.selectedCard]
+                          : [styles.playerCard, styles.notSelectedCard]
+                      }
                       onPress={() => onSelectCard(card.id)}
                     >
                       {!!card.suit && (
                         <Image
-                          className={styles.playerCardSuit}
+                          className={styles.tableCardSuit}
                           style={{ resizeMode: 'contain' }}
                           source={card.suitImage}
                         />
@@ -212,42 +235,11 @@ export default function TrackGameScreen({ navigation, route }) {
                       {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
                       {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
                     </TouchableOpacity>
-                  </View>
-                )
-              })}
-            </View>
-          </View>
-          <View className={styles.tableCards}>
-            <Text className={styles.titleFont}>Cards on table</Text>
-            <View className={styles.riverRow}>
-              {cards.slice(2, 7).map((card, i) => {
-                return (
-                  <View key={card.id}>
-                    {card.isActive && (
-                      <TouchableOpacity
-                        className={
-                          selectedCard === card.id
-                            ? [styles.playerCard, styles.selectedCard]
-                            : [styles.playerCard, styles.notSelectedCard]
-                        }
-                        onPress={() => onSelectCard(card.id)}
-                      >
-                        {!!card.suit && (
-                          <Image
-                            className={styles.tableCardSuit}
-                            style={{ resizeMode: 'contain' }}
-                            source={card.suitImage}
-                          />
-                        )}
-                        {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
-                        {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
-                      </TouchableOpacity>
-                    )}
-                    {!card.isActive && <View className={[styles.tableCard, styles.notActiveCard]}></View>}
-                  </View>
-                )
-              })}
-            </View>
+                  )}
+                  {!card.isActive && <View className={[styles.tableCard, styles.notActiveCard]}></View>}
+                </View>
+              )
+            })}
           </View>
         </View>
       </View>
@@ -256,23 +248,23 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.statsView}>
             <Text className={styles.titleFont}>Stats</Text>
 
-            <View className={styles.statsRow}>
-              <KeyboardAwareScrollView horizontal>
+            <ScrollView horizontal>
+              <View className={styles.statsRow}>
                 {stats.map((stat) => (
-                  <View key={stat.id} className={styles.stats}>
-                    <TouchableOpacity className={styles.statInfo}>
-                      <Text className={styles.statsTitle}>{stat.title}</Text>
-                      <Text className={styles.statsResult}>{stat.percentage}%</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity key={stat.id}>
+                    <View className={styles.statistic}>
+                      <Text className={styles.statisticTitle}>{stat.title}</Text>
+                      <Text className={styles.statisticResult}>{stat.percentage}%</Text>
+                    </View>
+                  </TouchableOpacity>
                 ))}
-              </KeyboardAwareScrollView>
-            </View>
+              </View>
+            </ScrollView>
           </View>
         </View>
       )}
       <View className={styles.boxShadow}>
-        <View className={styles.chooseView}>
+        <View className={styles.editSelectionView}>
           <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
           {isSuitMode && <SuiteChoose selectSuit={selectSuit} statsActive={statsActive}></SuiteChoose>}
           {!isSuitMode && <ValueChoose selectValue={selectValue} statsActive={statsActive}></ValueChoose>}
