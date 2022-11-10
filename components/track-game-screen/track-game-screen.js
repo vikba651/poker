@@ -6,6 +6,11 @@ import ValueChoose from '../value-choose/value-choose'
 import { PokerHand } from '../../algorithms/poker-algorithms'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
+import heart from '../../assets/heart.png'
+import spade from '../../assets/spade.png'
+import diamond from '../../assets/diamond.png'
+import club from '../../assets/club.png'
+
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
     { id: 0, suit: '', suitImage: null, value: '', isActive: true },
@@ -16,6 +21,28 @@ export default function TrackGameScreen({ navigation, route }) {
     { id: 5, suit: '', suitImage: null, value: '', isActive: false },
     { id: 6, suit: '', suitImage: null, value: '', isActive: false },
   ]
+
+  const suits = [
+    {
+      id: 'heart',
+      image: heart,
+    },
+    {
+      id: 'spade',
+      image: spade,
+    },
+    {
+      id: 'club',
+      image: club,
+    },
+    {
+      id: 'diamond',
+      image: diamond,
+    },
+  ]
+
+  const firstRowValues = ['A', '2', '3', '4', '5', '6']
+  const secondRowValues = ['7', '8', '9', '10', 'J', 'Q', 'K']
 
   const stats = [
     { id: 0, title: 'Hand Quality', percentage: 84 },
@@ -29,9 +56,9 @@ export default function TrackGameScreen({ navigation, route }) {
 
   const [cards, setCards] = useState(initialCardsList)
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
-  const [isSuitMode, setIsSuitMode] = useState(true)
-  const [currentRound, setCurrentRound] = useState(1)
+  const [firstClick, setFirstClick] = useState(true)
 
+  const [currentRound, setCurrentRound] = useState(1)
   const [allRounds, setAllRounds] = useState([])
 
   const heartImageSrc = require(`../../assets/heart.png`)
@@ -52,30 +79,37 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function selectSuit(suit) {
-    let newCards = [...cards]
-    newCards.find((card) => card.id == selectedCard).suitImage = getSuitImage(suit)
-    newCards.find((card) => card.id == selectedCard).suit = suit
+    const newCards = cards.map((card) => {
+      return card.id == selectedCard ? { ...card, suit: suit, suitImage: getSuitImage(suit) } : card
+    })
     setCards(newCards)
-
-    setIsSuitMode(false)
+    if (cards[selectedCard].value && !firstClick) {
+      setFirstClick(true)
+      findActiveCards(newCards)
+      const activeCardsCount = cards.filter((card) => card.isActive).length
+      setSelectedCard(Math.min(selectedCard + 1, activeCardsCount))
+    } else {
+      setFirstClick(false)
+    }
   }
 
   function selectValue(value) {
-    let newCards = [...cards]
-    newCards.find((card) => card.id == selectedCard).value = value
+    const newCards = cards.map((card) => {
+      return card.id == selectedCard ? { ...card, value } : card
+    })
     setCards(newCards)
 
-    if (selectedCard == cards.length - 1) {
-      setSelectedCard(0)
+    if (cards[selectedCard].suit && !firstClick) {
+      setFirstClick(true)
+      findActiveCards(newCards)
+      const activeCardsCount = cards.filter((card) => card.isActive).length
+      setSelectedCard(Math.min(selectedCard + 1, activeCardsCount))
     } else {
-      setSelectedCard(selectedCard + 1)
+      setFirstClick(false)
     }
-
-    findActiveCards()
-    setIsSuitMode(true)
   }
 
-  function findActiveCards() {
+  function findActiveCards(cards) {
     if (cards.slice(0, 6).every((card) => card.value && card.suit)) {
       let newCards = [...cards]
       newCards.find((card) => card.id == 6).isActive = true
@@ -87,7 +121,6 @@ export default function TrackGameScreen({ navigation, route }) {
       newCards.find((card) => card.id == 5).isActive = true
       setCards(newCards)
     }
-
     if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
       let newCards = [...cards]
       newCards.find((card) => card.id == 2).isActive = true
@@ -99,7 +132,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onSelectCard(cardNumber) {
     setSelectedCard(cardNumber)
-    setIsSuitMode(true)
+    setFirstClick(true)
   }
 
   function isValidCards() {
@@ -133,11 +166,23 @@ export default function TrackGameScreen({ navigation, route }) {
       setCurrentRound(currentRound + 1)
       setCards(initialCardsList)
       setSelectedCard(0)
-      setIsSuitMode(true)
       console.log('ALLROUNDS ', allRounds)
     } else {
       console.log('YOU ARE SO BAD')
     }
+  }
+
+  function onClearCard() {
+    // let newCards = [...cards]
+    // let card = newCards.find((card) => card.id === selectedCard)
+    // card.value = ''
+    // card.suit = ''
+    // card.suitImage = null
+
+    let newCards = cards.map((card) =>
+      card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
+    )
+    setCards(newCards)
   }
 
   function onEndGame() {
@@ -266,19 +311,41 @@ export default function TrackGameScreen({ navigation, route }) {
       <View className={styles.boxShadow}>
         <View className={styles.editSelectionView}>
           <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
-          {isSuitMode && <SuiteChoose selectSuit={selectSuit} statsActive={statsActive}></SuiteChoose>}
-          {!isSuitMode && <ValueChoose selectValue={selectValue} statsActive={statsActive}></ValueChoose>}
+          <View style={{ flexDirection: 'row' }}>
+            {suits.map((suit) => (
+              <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => selectSuit(suit.id)}>
+                <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View className={styles.valueRows}>
+            <View style={{ flexDirection: 'row' }}>
+              {firstRowValues.map((value) => (
+                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => selectValue(value)}>
+                  <Text className={styles.valueText}>{value}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              {secondRowValues.map((value) => (
+                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => selectValue(value)}>
+                  <Text className={styles.valueText}>{value}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
           <View className={styles.nextStepButtons}>
-            <View className={styles.restartButton}>
-              <TouchableOpacity className={styles.restartButton} onPress={() => onNextRound()}>
-                <Text className={styles.buttonFont}>New Deal</Text>
-              </TouchableOpacity>
-            </View>
-            <View className={styles.restartButton}>
-              <TouchableOpacity className={styles.restartButton} onPress={() => onEndGame()}>
-                <Text className={styles.buttonFont}>End Game</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => onEndGame()}>
+              <Text className={styles.buttonText}>End game</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onClearCard()}>
+              <Text className={styles.buttonText}>Clear card</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onNextRound()}>
+              <Text className={styles.buttonText}>Next round</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

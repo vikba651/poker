@@ -8,8 +8,10 @@ export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
   const name = route.params.name
-  const [players, setPlayers] = useState(
-    Array.from({ length: playerCount }, (_, i) => {
+  const [players, setPlayers] = useState([])
+
+  useEffect(() => {
+    let newPlayers = Array.from({ length: playerCount }, (_, i) => {
       return {
         id: i,
         name: i ? '' : name,
@@ -17,20 +19,13 @@ export default function AddPlayersScreen({ navigation, route }) {
         chipsLeft: 0,
       }
     })
-  )
-
-  useEffect(() => {
-    let newPlayers = [...players]
-    newPlayers[0].name = route.params.name
     setPlayers(newPlayers)
   }, [route])
 
   function onAddPlayer() {
     setPlayerCount(playerCount + 1)
 
-    const newBuyIn = players.every((player) => player.buyIn === players.at(0).buyIn)
-      ? players.at(0).buyIn
-      : 0
+    const newBuyIn = players.every((player) => player.buyIn === players.at(0).buyIn) ? players.at(0).buyIn : 0
     const newPlayers = [...players, { id: playerCount, name: '', buyIn: newBuyIn, chipsLeft: 0 }]
     setPlayers(newPlayers)
   }
@@ -82,8 +77,8 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onDone() {
     if (players.length > 0) {
-      const potTotal = players.map((player) => +player.buyIn).reduce((a, b) => a + b)
-      const chipsLeftTotal = players.map((player) => +player.chipsLeft).reduce((a, b) => a + b)
+      const potTotal = players.map((player) => +player.buyIn).reduce((a, b) => a + b, 0)
+      const chipsLeftTotal = players.map((player) => +player.chipsLeft).reduce((a, b) => a + b, 0)
 
       if (potTotal === 0) {
         alert(`Total pot is 0, add some 'buy ins'!`)
