@@ -1,10 +1,6 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import styles from './track-game-screen.scss'
-import SuiteChoose from '../suit-choose/suit-choose'
-import ValueChoose from '../value-choose/value-choose'
-import { PokerHand } from '../../algorithms/poker-algorithms'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
@@ -53,6 +49,7 @@ export default function TrackGameScreen({ navigation, route }) {
   ]
 
   const [statsActive, setStatsActive] = useState(true)
+  const [hideCards, setHideCards] = useState(false)
 
   const [cards, setCards] = useState(initialCardsList)
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
@@ -168,7 +165,6 @@ export default function TrackGameScreen({ navigation, route }) {
       setSelectedCard(0)
       console.log('ALLROUNDS ', allRounds)
     } else {
-      console.log('YOU ARE SO BAD')
     }
   }
 
@@ -201,20 +197,12 @@ export default function TrackGameScreen({ navigation, route }) {
     setStatsActive(!statsActive)
   }
 
-  function getCardViewMode(cardId) {
-    let viewMode = [styles.playerCard]
-
+  function getCardStyles(cardId) {
+    let cardStyles = [styles.card, selectedCard === cardId ? styles.selectedCard : styles.notSelectedCard]
     if (!statsActive) {
-      viewMode.push(styles.statsNotActiveCard)
+      cardStyles.push(styles.bigCard)
     }
-
-    if (selectedCard === cardId) {
-      viewMode.push(styles.selectedCard)
-    } else {
-      viewMode.push(styles.notSelectedCard)
-    }
-
-    return viewMode
+    return cardStyles
   }
 
   return (
@@ -225,24 +213,14 @@ export default function TrackGameScreen({ navigation, route }) {
           </TouchableOpacity> */}
         <View className={styles.myCards}>
           <Text className={styles.titleFont}>My Cards</Text>
-          <View className={styles.myCardsRow}>
-            {cards.slice(0, 2).map((card, i) => {
+          <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
+            {cards.slice(0, 2).map((card) => {
               return (
                 <View key={card.id}>
-                  <TouchableOpacity
-                    className={getCardViewMode(card.id)}
-                    styles={{
-                      backgroundColor: 'transparent',
-                      overflow: 'hidden',
-                      // shadowColor: 'red',
-                      // shadowRadius: 1,
-                    }}
-                    // styles={selectedCard === card.id ? styles.selectedCard : ''}
-                    onPress={() => onSelectCard(card.id)}
-                  >
+                  <TouchableOpacity className={getCardStyles(card.id)} onPress={() => onSelectCard(card.id)}>
                     {!!card.suit && (
                       <Image
-                        className={styles.playerCardSuit}
+                        className={statsActive ? styles.cardSuit : styles.bigCardSuit}
                         style={{ resizeMode: 'contain' }}
                         source={card.suitImage}
                       />
@@ -254,34 +232,29 @@ export default function TrackGameScreen({ navigation, route }) {
               )
             })}
           </View>
+          <TouchableOpacity className={styles.hideButton} onPress={() => setHideCards(!hideCards)}>
+            <Text>{hideCards ? 'show' : 'hide'}</Text>
+          </TouchableOpacity>
         </View>
         <View className={styles.tableCards}>
           <Text className={styles.titleFont}>Cards on table</Text>
-          <View className={styles.riverRow}>
+          <View className={styles.tableCardsRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
                 <View key={card.id}>
                   {card.isActive && (
                     <TouchableOpacity
-                      className={
-                        selectedCard === card.id
-                          ? [styles.playerCard, styles.selectedCard]
-                          : [styles.playerCard, styles.notSelectedCard]
-                      }
+                      className={selectedCard === card.id ? [styles.card, styles.selectedCard] : styles.card}
                       onPress={() => onSelectCard(card.id)}
                     >
                       {!!card.suit && (
-                        <Image
-                          className={styles.tableCardSuit}
-                          style={{ resizeMode: 'contain' }}
-                          source={card.suitImage}
-                        />
+                        <Image className={styles.cardSuit} style={{ resizeMode: 'contain' }} source={card.suitImage} />
                       )}
                       {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
                       {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
                     </TouchableOpacity>
                   )}
-                  {!card.isActive && <View className={[styles.tableCard, styles.notActiveCard]}></View>}
+                  {!card.isActive && <View className={[styles.card, styles.disabledCard]}></View>}
                 </View>
               )
             })}
