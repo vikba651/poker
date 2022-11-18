@@ -7,6 +7,7 @@ import TrackGameScreen from './components/track-game-screen/track-game-screen'
 import SettleUpScreen from './components/settle-up-screen/settle-up-screen'
 import NameScreen from './components/name-screen/name-screen'
 import GameBreakDown from './components/game-breakdown/game-breakdown'
+import TestScreen from './components/test-screen/test-screen'
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +21,7 @@ export default function App() {
         <Stack.Screen name="TrackGameScreen" component={TrackGameScreen} options={{ title: 'Track Game' }} />
         <Stack.Screen name="SettleUpScreen" component={SettleUpScreen} options={{ title: 'Settle Up' }} />
         <Stack.Screen name="GameBreakdown" component={GameBreakDown} options={{ title: 'Game Breakdown' }} />
+        <Stack.Screen name="TestScreen" component={TestScreen} options={{ title: 'Test screen' }} />
       </Stack.Navigator>
     </NavigationContainer>
   )
