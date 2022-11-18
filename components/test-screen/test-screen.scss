@@ -1,0 +1,23 @@
+@import "variables";
+
+
+.container {
+    // flex: 1;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: start;
+    background-color: $background-color;
+}
+
+.boxShadow {
+    @include cardBoxShadow;
+}
+
+.card {
+    @include card;
+}
+
+.cardTitle {
+    @include cardTitle;
+}

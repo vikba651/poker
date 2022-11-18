@@ -105,7 +105,10 @@ export default function StartScreen({ navigation, route }) {
                 <Text className={styles.actionText}>NEW GAME</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('TestScreen', { name })}
+              className={styles.markerButton}
+            >
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
