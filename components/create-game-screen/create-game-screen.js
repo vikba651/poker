@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
-import styles from './test-screen.scss'
+import styles from './create-game-screen.scss'
 import { io } from 'socket.io-client'
 
 // HTTP
 
-export default function TestScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.86.28:8020'
-
+export default function CreateGameScreen({ navigation, route }) {
+  const SERVER_ADDR = 'http://192.168.86.29:8020'
 
   const name = route.params.name
   const socket = useRef(io(SERVER_ADDR)).current
@@ -40,7 +39,7 @@ export default function TestScreen({ navigation, route }) {
     })
 
     socket.on('message', (message) => {
-      console.log('Websocket server', message)
+      console.log('Websocket message: ', message)
     })
 
     socket.on('sessionCreated', (session) => {
@@ -83,11 +82,32 @@ export default function TestScreen({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Text>{serverState}</Text>
       <View className={styles.boxShadow}>
-        <View className={styles.card}>
-          <Text className={styles.cardTitle}>Create session</Text>
-          <Text>Session code: {session && session.code}</Text>
-
-          <Button title="Create session" onPress={() => createSession(name)}></Button>
+        <View className={styles.lobbyView}>
+          {!session && (
+            <View className={styles.noSessionView}>
+              <Text>Are you playing with friends?</Text>
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(name)}>
+                <Text className={styles.createPartyText}>Create party</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {session && (
+            <>
+              <View style={{ alignItems: 'center' }}>
+                <Text>Session code:</Text>
+                <Text className={styles.sessionCode}>{session.code}</Text>
+              </View>
+              <View className={styles.sessionInfo}>
+                <Text className={styles.partyMembersText}>Party Members</Text>
+                <Text style={{ fontWeight: '800' }}>Players:</Text>
+                {session.players.map((player, i) => (
+                  <Text key={i}>
+                    {player} {player === name && '(you)'}
+                  </Text>
+                ))}
+              </View>
+            </>
+          )}
         </View>
       </View>
       <View className={styles.boxShadow}>
@@ -101,26 +121,15 @@ export default function TestScreen({ navigation, route }) {
           ></TextInput>
 
           <Button title="Join session" onPress={() => joinSession(inputCode)}></Button>
-
-          {session && (
-            <>
-              <Text className={styles.cardTitle}>Session Info</Text>
-              <Text style={{ fontWeight: '800' }}>Creator:</Text>
-              <Text>{session.creator}</Text>
-              <Text style={{ fontWeight: '800', marginTop: 20 }}>Players:</Text>
-              {session.players.map((player, i) => (
-                <Text key={i}>{player}</Text>
-              ))}
-            </>
-          )}
         </View>
       </View>
-      <View className={styles.boxShadow}>
-        <View className={styles.card}>
-          <Text className={styles.cardTitle}>HTTP request</Text>
-          <Button title="Test HTTP" onPress={() => HttpTest(name)}></Button>
-          {httpStatus && <Text>Http status: {httpStatus}</Text>}
-        </View>
+      <View>
+        <TouchableOpacity
+          className={styles.startTrackingButton}
+          onPress={() => navigation.navigate('TrackGameScreen', { session })}
+        >
+          <Text className={styles.startTrackingText}>Start Tracking</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
