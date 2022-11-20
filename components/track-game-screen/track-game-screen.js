@@ -169,12 +169,6 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onClearCard() {
-    // let newCards = [...cards]
-    // let card = newCards.find((card) => card.id === selectedCard)
-    // card.value = ''
-    // card.suit = ''
-    // card.suitImage = null
-
     let newCards = cards.map((card) =>
       card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
     )
