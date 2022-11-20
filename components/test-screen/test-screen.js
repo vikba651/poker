@@ -21,7 +21,7 @@ export default function TestScreen({ navigation, route }) {
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { userName, code })
+    socket.emit('joinSession', { name: userName, code })
   }
 
 

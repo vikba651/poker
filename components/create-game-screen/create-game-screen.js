@@ -21,7 +21,7 @@ export default function CreateGameScreen({ navigation, route }) {
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { userName, code })
+    socket.emit('joinSession', { name: userName, code })
   }
 
   useEffect(() => {
