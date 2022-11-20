@@ -1,14 +1,15 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
 import { io } from 'socket.io-client'
+import AppContext from '../../context/AppContext'
 
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
   const SERVER_ADDR = 'http://192.168.86.29:8020'
 
-  const name = route.params.name
+  const { userName } = useContext(AppContext)
   const socket = useRef(io(SERVER_ADDR)).current
   const [serverState, setServerState] = useState('Loading Websocket...')
 
@@ -20,7 +21,7 @@ export default function CreateGameScreen({ navigation, route }) {
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { name, code })
+    socket.emit('joinSession', { userName, code })
   }
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function CreateGameScreen({ navigation, route }) {
           {!session && (
             <View className={styles.noSessionView}>
               <Text>Are you playing with friends?</Text>
-              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(name)}>
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(userName)}>
                 <Text className={styles.createPartyText}>Create party</Text>
               </TouchableOpacity>
             </View>
@@ -102,7 +103,7 @@ export default function CreateGameScreen({ navigation, route }) {
                 <Text style={{ fontWeight: '800' }}>Players:</Text>
                 {session.players.map((player, i) => (
                   <Text key={i}>
-                    {player} {player === name && '(you)'}
+                    {player} {player === userName && '(you)'}
                   </Text>
                 ))}
               </View>
