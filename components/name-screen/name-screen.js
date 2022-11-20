@@ -1,9 +1,14 @@
 import { TouchableOpacity, SafeAreaView, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import AppContext from '../../context/AppContext';
 
 export default function NameScreen({ navigation }) {
+
+  const { userName, setUserName } = useContext(AppContext)
+  const [name, setName] = useState('')
+
   const storeData = async (value) => {
     try {
       await AsyncStorage.setItem('@storage_Key', value)
@@ -16,12 +21,12 @@ export default function NameScreen({ navigation }) {
     try {
       const value = await AsyncStorage.getItem('@storage_Key')
       if (value !== null) {
-        setName(value)
-        navigation.navigate('StartScreen', { name: value })
+        setUserName(value)
+        navigation.navigate('StartScreen')
       }
-    } catch (e) {}
+    } catch (e) { }
   }
-  const [name, setName] = useState('')
+
   const [prompt, setPrompt] = useState('This will be displayed to your friends.')
 
   useEffect(() => {
@@ -50,8 +55,9 @@ export default function NameScreen({ navigation }) {
           if (name.length < 2) {
             setPrompt(`'${name}' is not valid.`)
           } else {
-            storeData(name)
-            navigation.navigate('StartScreen', { name: name })
+            setUserName(name)
+            storeData(userName)
+            navigation.navigate('StartScreen')
           }
         }}
       >

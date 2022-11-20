@@ -1,13 +1,13 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styles from './start-screen.scss'
+import AppContext from '../../context/AppContext'
+
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
-  const name = route.params.name
-  // onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
-  // onPress={() => navigation.navigate('TrackGameScreen')}
+  const { userName } = useContext(AppContext)
 
   const games = [
     {
@@ -57,7 +57,7 @@ export default function StartScreen({ navigation, route }) {
     <SafeAreaView className={styles.container}>
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
-        <Text className={styles.nameText}>{name}?</Text>
+        <Text className={styles.nameText}>{userName}?</Text>
       </View>
 
       <View className={styles.boxShadow}>
@@ -106,7 +106,7 @@ export default function StartScreen({ navigation, route }) {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate('TestScreen', { name })}
+              onPress={() => navigation.navigate('TestScreen')}
               className={styles.markerButton}
             >
               <Image
@@ -119,7 +119,7 @@ export default function StartScreen({ navigation, route }) {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate('AddPlayersScreen', { name: name })}
+              onPress={() => navigation.navigate('AddPlayersScreen')}
               className={styles.markerButton}
             >
               <Image

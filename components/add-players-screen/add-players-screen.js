@@ -1,25 +1,26 @@
 import { Text, View, TextInput, Button, SafeAreaView, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
+import AppContext from '../../context/AppContext'
 
 import styles from './add-players-screen.scss'
 
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
-  const name = route.params.name
-  const [players, setPlayers] = useState([])
+  const { players, setPlayers } = useContext(AppContext)
+  const { userName } = useContext(AppContext)
 
   useEffect(() => {
     let newPlayers = Array.from({ length: playerCount }, (_, i) => {
       return {
         id: i,
-        name: i ? '' : name,
+        name: i ? '' : userName,
         buyIn: 0,
         chipsLeft: 0,
       }
     })
-    setPlayers(newPlayers)
+    setPlayers(newPlayers);
   }, [route])
 
   function onAddPlayer() {
