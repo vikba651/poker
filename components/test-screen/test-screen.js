@@ -1,15 +1,15 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './test-screen.scss'
 import { io } from 'socket.io-client'
+import AppContext from '../../context/AppContext'
 
 // HTTP
 
 export default function TestScreen({ navigation, route }) {
   const SERVER_ADDR = 'http://192.168.86.28:8020'
 
-
-  const name = route.params.name
+  const { userName } = useContext(AppContext)
   const socket = useRef(io(SERVER_ADDR)).current
   const [serverState, setServerState] = useState('Loading Websocket...')
 
@@ -21,7 +21,7 @@ export default function TestScreen({ navigation, route }) {
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { name, code })
+    socket.emit('joinSession', { userName, code })
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function TestScreen({ navigation, route }) {
           <Text className={styles.cardTitle}>Create session</Text>
           <Text>Session code: {session && session.code}</Text>
 
-          <Button title="Create session" onPress={() => createSession(name)}></Button>
+          <Button title="Create session" onPress={() => createSession(userName)}></Button>
         </View>
       </View>
       <View className={styles.boxShadow}>
@@ -118,7 +118,7 @@ export default function TestScreen({ navigation, route }) {
       <View className={styles.boxShadow}>
         <View className={styles.card}>
           <Text className={styles.cardTitle}>HTTP request</Text>
-          <Button title="Test HTTP" onPress={() => HttpTest(name)}></Button>
+          <Button title="Test HTTP" onPress={() => HttpTest(userName)}></Button>
           {httpStatus && <Text>Http status: {httpStatus}</Text>}
         </View>
       </View>

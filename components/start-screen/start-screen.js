@@ -3,7 +3,6 @@ import React, { useState, useContext } from 'react'
 import styles from './start-screen.scss'
 import AppContext from '../../context/AppContext'
 
-
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
@@ -95,10 +94,7 @@ export default function StartScreen({ navigation, route }) {
         <View className={styles.actionContainer}>
           <Text className={styles.cardTitle}>Actions</Text>
           <View className={styles.actionButtons}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('CreateGameScreen', { name })}
-              className={styles.markerButton}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate('CreateGameScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
@@ -108,10 +104,7 @@ export default function StartScreen({ navigation, route }) {
                 <Text className={styles.actionText}>NEW GAME</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TestScreen')}
-              className={styles.markerButton}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate('TestScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
@@ -121,10 +114,7 @@ export default function StartScreen({ navigation, route }) {
                 <Text className={styles.actionText}>JOIN GAME</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AddPlayersScreen')}
-              className={styles.markerButton}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate('AddPlayersScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
