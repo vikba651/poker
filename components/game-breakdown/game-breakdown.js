@@ -1,6 +1,7 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import styles from './game-breakdown.scss'
+import variables from '../../_variables.scss'
 
 export default function GameBreakDown({ navigation, route }) {
   // const initialCardsList = [

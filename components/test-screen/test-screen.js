@@ -6,7 +6,8 @@ import { io } from 'socket.io-client'
 // HTTP
 
 export default function TestScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.86.29:8020'
+  const SERVER_ADDR = 'http://192.168.86.28:8020'
+
 
   const name = route.params.name
   const socket = useRef(io(SERVER_ADDR)).current
