@@ -7,6 +7,7 @@ export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
   const { userName } = useContext(AppContext)
+  const { session } = useContext(AppContext)
 
   const games = [
     {
@@ -54,6 +55,11 @@ export default function StartScreen({ navigation, route }) {
 
   return (
     <SafeAreaView className={styles.container}>
+      {session && <View>
+        <Text>
+          Your current sesh: {session.code}
+        </Text>
+      </View>}
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
         <Text className={styles.nameText}>{userName}?</Text>

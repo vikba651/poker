@@ -10,34 +10,21 @@ export default function CreateGameScreen({ navigation, route }) {
   const SERVER_ADDR = 'http://192.168.86.29:8020'
 
   const { userName } = useContext(AppContext)
-  const socket = useRef(io(SERVER_ADDR)).current
-  const [serverState, setServerState] = useState('Loading Websocket...')
+  const { serverState } = useContext(AppContext)
 
   const [inputCode, setInputCode] = useState('')
-  const [session, setSession] = useState(null)
+  const { socket } = useContext(AppContext)
+  const { session, setSession } = useContext(AppContext)
 
   function createSession(name) {
     socket.emit('createSession', { name })
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { userName, code })
+    socket.emit('joinSession', { name: userName, code })
   }
 
   useEffect(() => {
-    // socket.onmessage = (e) => {
-    //   // serverMessagesList.push(e.data)
-    //   // setServerMessages([...serverMessagesList])
-    //   console.log('server message', e.data)
-    // }
-
-    socket.on('connect', () => {
-      setServerState('Connected to Websocket')
-    })
-
-    socket.on('disconnect', () => {
-      setServerState('Disconnected from Websocket')
-    })
 
     socket.on('message', (message) => {
       console.log('Websocket message: ', message)
