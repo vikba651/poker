@@ -7,14 +7,14 @@ import AppContext from '../../context/AppContext'
 // HTTP
 
 export default function TestScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.86.28:8020'
+  const SERVER_ADDR = 'http://192.168.86.29:8020'
 
   const { userName } = useContext(AppContext)
-  const socket = useRef(io(SERVER_ADDR)).current
-  const [serverState, setServerState] = useState('Loading Websocket...')
+  const { socket, setSocket } = useContext(AppContext)
+  const { serverState } = useContext(AppContext)
 
   const [inputCode, setInputCode] = useState('')
-  const [session, setSession] = useState(null)
+  const { session, setSession } = useContext(AppContext)
 
   function createSession(name) {
     socket.emit('createSession', { name })
@@ -24,20 +24,10 @@ export default function TestScreen({ navigation, route }) {
     socket.emit('joinSession', { userName, code })
   }
 
+
   useEffect(() => {
-    // socket.onmessage = (e) => {
-    //   // serverMessagesList.push(e.data)
-    //   // setServerMessages([...serverMessagesList])
-    //   console.log('server message', e.data)
-    // }
 
-    socket.on('connect', () => {
-      setServerState('Connected to Websocket')
-    })
 
-    socket.on('disconnect', () => {
-      setServerState('Disconnected from Websocket')
-    })
 
     socket.on('message', (message) => {
       console.log('Websocket server', message)
@@ -50,7 +40,7 @@ export default function TestScreen({ navigation, route }) {
     socket.on('sessionUpdated', (session) => {
       setSession(session)
     })
-  }, [])
+  }, [socket])
 
   const [httpStatus, setHttpStatus] = useState('')
 
