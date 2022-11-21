@@ -1,13 +1,15 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import styles from './start-screen.scss'
 import AppContext from '../../context/AppContext'
+import * as Location from 'expo-location'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
   const { userName } = useContext(AppContext)
   const { session } = useContext(AppContext)
+  const { location, setLocation } = useContext(AppContext);
 
   const games = [
     {
@@ -37,6 +39,21 @@ export default function StartScreen({ navigation, route }) {
   ]
 
   const [isGradientActivated, setIsGradientActivated] = useState(games.length > 3)
+
+  useEffect(() => {
+    (async () => {
+
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+
+  }, [])
 
   const onScroll = ({ layoutMeasurement, contentOffset, contentSize }) => {
     const paddingToEnd = 15
