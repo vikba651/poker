@@ -2,12 +2,10 @@ import { TouchableOpacity, SafeAreaView, Text, TextInput, View } from 'react-nat
 import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import AppContext from '../../context/AppContext';
+import AppContext from '../../context/AppContext'
 
 export default function NameScreen({ navigation }) {
-
   const { userName, setUserName } = useContext(AppContext)
-  const [name, setName] = useState('')
 
   const storeData = async (value) => {
     try {
@@ -24,7 +22,7 @@ export default function NameScreen({ navigation }) {
         setUserName(value)
         navigation.navigate('StartScreen')
       }
-    } catch (e) { }
+    } catch (e) {}
   }
 
   const [prompt, setPrompt] = useState('This will be displayed to your friends.')
@@ -40,8 +38,8 @@ export default function NameScreen({ navigation }) {
       <Text className={styles.promptSubText}>{prompt}</Text>
       <View className={styles.inputBox}>
         <TextInput
-          onChangeText={setName}
-          value={name}
+          onChangeText={setUserName}
+          value={userName}
           placeholder="Type your name here..."
           maxLength={25}
           autoFocus={true}
@@ -52,10 +50,10 @@ export default function NameScreen({ navigation }) {
       <TouchableOpacity
         className={styles.opaqueButton}
         onPress={() => {
-          if (name.length < 2) {
-            setPrompt(`'${name}' is not valid.`)
+          if (userName.length < 2) {
+            setPrompt(`'${userName}' is not valid.`)
           } else {
-            setUserName(name)
+            setUserName(userName)
             storeData(userName)
             navigation.navigate('StartScreen')
           }
