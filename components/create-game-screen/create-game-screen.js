@@ -7,16 +7,13 @@ import AppContext from '../../context/AppContext'
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.86.29:8020'
+  const SERVER_ADDR = 'http://192.168.0.11:8020'
 
-  const { userName } = useContext(AppContext)
-  const { serverState } = useContext(AppContext)
+  const { userName, serverState, socket, session, setSession, location } = useContext(AppContext)
 
+  const [isCreator, setIsCreator] = useState(true)
   const [inputCode, setInputCode] = useState('')
   const [nearbyGameCode, setNearbyGameCode] = useState('')
-  const { socket } = useContext(AppContext)
-  const { session, setSession } = useContext(AppContext)
-  const { location } = useContext(AppContext)
   const [closeEnough, setCloseEnough] = useState(false)
 
   function createSession(name) {
@@ -28,7 +25,6 @@ export default function CreateGameScreen({ navigation, route }) {
   }
 
   useEffect(() => {
-
     socket.on('message', (message) => {
       console.log('Websocket message: ', message)
     })
@@ -39,6 +35,7 @@ export default function CreateGameScreen({ navigation, route }) {
 
     socket.on('sessionUpdated', (session) => {
       setSession(session)
+      setIsCreator(session.creator === userName)
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
@@ -54,33 +51,16 @@ export default function CreateGameScreen({ navigation, route }) {
       }
     })
 
+    socket.on('trackingStarted', () => {
+      navigation.navigate('TrackGameScreen')
+    })
   }, [])
 
-  const [httpStatus, setHttpStatus] = useState('')
-
-  const HttpTest = (name) => {
-    fetch(`${SERVER_ADDR}/players/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name }),
-    })
-      .then(async (res) => {
-        try {
-          const jsonRes = await res.json()
-          console.log(jsonRes)
-          setHttpStatus(res.status)
-          if (res.status === 200) {
-            console.log('Good request, res:', jsonRes)
-          }
-        } catch (err) {
-          console.log(err)
-        }
-      })
-      .catch((err) => {
-        console.log('error', err)
-      })
+  function startTracking() {
+    if (session) {
+      socket.emit('startTracking', { sessionId: session.id })
+    }
+    navigation.navigate('TrackGameScreen')
   }
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -110,9 +90,11 @@ export default function CreateGameScreen({ navigation, route }) {
               <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(userName)}>
                 <Text className={styles.createPartyText}>Create party</Text>
               </TouchableOpacity>
-              {closeEnough && <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
-                <Text className={styles.createPartyText}>Join nearby game with code {nearbyGameCode}</Text>
-              </TouchableOpacity>}
+              {closeEnough && (
+                <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
+                  <Text className={styles.createPartyText}>Join nearby game with code {nearbyGameCode}</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
           {session && (
@@ -148,12 +130,13 @@ export default function CreateGameScreen({ navigation, route }) {
         </View>
       </View>
       <View>
-        <TouchableOpacity
-          className={styles.startTrackingButton}
-          onPress={() => navigation.navigate('TrackGameScreen', { session })}
-        >
-          <Text className={styles.startTrackingText}>Start Tracking</Text>
-        </TouchableOpacity>
+        {isCreator ? (
+          <TouchableOpacity className={styles.startTrackingButton} onPress={() => startTracking()}>
+            <Text className={styles.startTrackingText}>Start Tracking</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text>Wait for party leader to start game</Text>
+        )}
       </View>
     </SafeAreaView>
   )

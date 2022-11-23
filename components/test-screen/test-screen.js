@@ -9,12 +9,9 @@ import AppContext from '../../context/AppContext'
 export default function TestScreen({ navigation, route }) {
   const SERVER_ADDR = 'http://192.168.86.29:8020'
 
-  const { userName } = useContext(AppContext)
-  const { socket, setSocket } = useContext(AppContext)
-  const { serverState } = useContext(AppContext)
+  const { userName, socket, setSocket, serverState, session, setSession } = useContext(AppContext)
 
   const [inputCode, setInputCode] = useState('')
-  const { session, setSession } = useContext(AppContext)
 
   function createSession(name) {
     socket.emit('createSession', { name })
@@ -24,11 +21,7 @@ export default function TestScreen({ navigation, route }) {
     socket.emit('joinSession', { name: userName, code })
   }
 
-
   useEffect(() => {
-
-
-
     socket.on('message', (message) => {
       console.log('Websocket server', message)
     })

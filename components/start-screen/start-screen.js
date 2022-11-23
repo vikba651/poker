@@ -7,9 +7,7 @@ import * as Location from 'expo-location'
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
-  const { userName } = useContext(AppContext)
-  const { session } = useContext(AppContext)
-  const { location, setLocation } = useContext(AppContext);
+  const { userName, session, location, setLocation } = useContext(AppContext)
 
   const games = [
     {
@@ -41,18 +39,16 @@ export default function StartScreen({ navigation, route }) {
   const [isGradientActivated, setIsGradientActivated] = useState(games.length > 3)
 
   useEffect(() => {
-    (async () => {
-
-      let { status } = await Location.requestForegroundPermissionsAsync();
+    ;(async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
+        setErrorMsg('Permission to access location was denied')
+        return
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-
+      let location = await Location.getCurrentPositionAsync({})
+      setLocation(location)
+    })()
   }, [])
 
   const onScroll = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -72,11 +68,11 @@ export default function StartScreen({ navigation, route }) {
 
   return (
     <SafeAreaView className={styles.container}>
-      {session && <View>
-        <Text>
-          Your current sesh: {session.code}
-        </Text>
-      </View>}
+      {session && (
+        <View>
+          <Text>Your current sesh: {session.code}</Text>
+        </View>
+      )}
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
         <Text className={styles.nameText}>{userName}?</Text>

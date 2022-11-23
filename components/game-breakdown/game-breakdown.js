@@ -27,18 +27,18 @@ export default function GameBreakDown({ navigation, route }) {
   //     cards: initialCardsList,
   //   },
   // ]
-  const rounds = route.params.allRounds
+  const deals = route.params.allDeals
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ fontSize: 40, margin: 20 }}>You played {rounds.length} rounds</Text>
+      <Text style={{ fontSize: 40, margin: 20 }}>You played {deals.length} deals</Text>
       <ScrollView className={styles.scrollView}>
-        {rounds.map((round) => {
+        {deals.map((deal) => {
           return (
-            <View key={round.round} className={styles.breakdownView}>
-              <Text style={{ fontSize: 32 }}>{round.round}</Text>
+            <View key={deal.deal} className={styles.breakdownView}>
+              <Text style={{ fontSize: 32 }}>{deal.deal}</Text>
               <View className={styles.cardsView}>
                 <View className={styles.cardsRow}>
-                  {round.cards.slice(0, 2).map((card, i) => {
+                  {deal.cards.slice(0, 2).map((card, i) => {
                     return (
                       <View key={card.id} className={styles.playerCard}>
                         {!!card.suit && (
@@ -55,7 +55,7 @@ export default function GameBreakDown({ navigation, route }) {
                   })}
                 </View>
                 <View className={styles.cardsRow}>
-                  {round.cards.slice(2, 7).map((card, i) => {
+                  {deal.cards.slice(2, 7).map((card, i) => {
                     return (
                       <View key={card.id} className={styles.playerCard}>
                         {!!card.suit && (
@@ -69,9 +69,7 @@ export default function GameBreakDown({ navigation, route }) {
                         {<Text className={styles.cardBottomValue}>{card.value}</Text>}
                       </View>
                     )
-                  })
-
-                  }
+                  })}
                 </View>
               </View>
             </View>

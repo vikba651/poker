@@ -168,7 +168,7 @@
     font-weight: 400;
 }
 
-.nextStepButtons {
+.footerButtonsView {
     flex-direction: row;
     margin-top: 10px;
     border-radius: 50px;
@@ -176,6 +176,13 @@
     background-color: white;
     width: 100%;
     justify-content: space-around;
+    align-items: center;
+}
+
+.footerButton {
+    height: 80%;
+    width: 80px;
+    justify-content: center;
     align-items: center;
 }
 

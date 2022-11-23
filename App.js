@@ -1,6 +1,6 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AppProvider } from './context/AppContext';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { AppProvider } from './context/AppContext'
 
 import StartScreen from './components/start-screen/start-screen'
 import AddPlayersScreen from './components/add-players-screen/add-players-screen'
@@ -26,10 +26,8 @@ export default function App() {
           <Stack.Screen name="GameBreakdown" component={GameBreakDown} options={{ title: 'Game Breakdown' }} />
           <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{ title: 'Create Game' }} />
           <Stack.Screen name="TestScreen" component={TestScreen} options={{ title: 'Test screen' }} />
-          
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>
-
   )
 }
