@@ -39,6 +39,9 @@ export default function CreateGameScreen({ navigation, route }) {
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
+      if (!location || !serverLocation) {
+        return
+      }
       let lat1 = serverLocation.coords.latitude
       let lon1 = serverLocation.coords.longitude
       let lat2 = location.coords.latitude

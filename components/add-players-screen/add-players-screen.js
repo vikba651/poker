@@ -8,18 +8,32 @@ import styles from './add-players-screen.scss'
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
-  const { players, setPlayers, userName } = useContext(AppContext)
+  const { players, setPlayers, userName, session } = useContext(AppContext)
 
   useEffect(() => {
-    let newPlayers = Array.from({ length: playerCount }, (_, i) => {
-      return {
-        id: i,
-        name: i ? '' : userName,
-        buyIn: 0,
-        chipsLeft: 0,
-      }
-    })
-    setPlayers(newPlayers)
+
+    if (session) {
+      setPlayerCount(session.players.length)
+      let newPlayers = Array.from({ length: session.players.length }, (_, i) => {
+        return {
+          id: i,
+          name: session.players[i],
+          buyIn: 0,
+          chipsLeft: 0,
+        }
+      })
+      setPlayers(newPlayers);
+    } else {
+      let newPlayers = Array.from({ length: playerCount }, (_, i) => {
+        return {
+          id: i,
+          name: i ? '' : userName,
+          buyIn: 0,
+          chipsLeft: 0,
+        }
+      })
+      setPlayers(newPlayers)
+    }
   }, [route])
 
   function onAddPlayer() {
