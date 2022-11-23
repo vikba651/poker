@@ -1,7 +1,7 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import styles from './track-game-screen.scss'
-
+import AppContext from '../../context/AppContext'
 import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
@@ -18,6 +18,17 @@ export default function TrackGameScreen({ navigation, route }) {
     { id: 6, suit: '', suitImage: null, value: '', isActive: false },
   ]
 
+  const stats = [
+    { id: 0, title: 'Hand Quality', percentage: 84 },
+    { id: 1, title: 'Pair chance', percentage: 64 },
+    { id: 2, title: 'Straight chance', percentage: 57 },
+    { id: 3, title: 'Triple chance', percentage: 43 },
+    { id: 4, title: 'Flush chance', percentage: 27 },
+  ]
+
+  const firstRowValues = ['A', '2', '3', '4', '5', '6']
+  const secondRowValues = ['7', '8', '9', '10', 'J', 'Q', 'K']
+
   const suits = [
     {
       id: 'heart',
@@ -28,82 +39,101 @@ export default function TrackGameScreen({ navigation, route }) {
       image: spade,
     },
     {
-      id: 'club',
-      image: club,
-    },
-    {
       id: 'diamond',
       image: diamond,
     },
+    {
+      id: 'club',
+      image: club,
+    },
   ]
+  const [statsActive, setStatsActive] = useState(false)
+  const [hideCards, onHideCards] = useState(false)
 
-  const firstRowValues = ['A', '2', '3', '4', '5', '6']
-  const secondRowValues = ['7', '8', '9', '10', 'J', 'Q', 'K']
-
-  const stats = [
-    { id: 0, title: 'Hand Quality', percentage: 84 },
-    { id: 1, title: 'Pair chance', percentage: 64 },
-    { id: 2, title: 'Straight chance', percentage: 57 },
-    { id: 3, title: 'Triple chance', percentage: 43 },
-    { id: 4, title: 'Flush chance', percentage: 27 },
-  ]
-
-  const [statsActive, setStatsActive] = useState(true)
-  const [hideCards, setHideCards] = useState(false)
-
-  const [cards, setCards] = useState(initialCardsList)
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
-  const [firstClick, setFirstClick] = useState(true)
+  const [valueSelected, setValueSelected] = useState(false)
+  const [suitSelected, setSuitSelected] = useState(false)
+  const [cards, setCards] = useState(
+    initialCardsList.map((card) => {
+      // Deep copy
+      return { ...card }
+    })
+  )
+  const cardsRef = useRef([])
+  cardsRef.current = cards
 
-  const [currentRound, setCurrentRound] = useState(1)
-  const [allRounds, setAllRounds] = useState([])
+  const [currentDeal, setCurrentDeal] = useState(1)
+  const currentDealRef = useRef(1) // This kinda shit is needed to read state in ws event listeners
+  currentDealRef.current = currentDeal
 
-  const heartImageSrc = require(`../../assets/heart.png`)
-  const spadeImageSrc = require(`../../assets/spade.png`)
-  const diamondImageSrc = require(`../../assets/diamond.png`)
-  const clubImageSrc = require(`../../assets/club.png`)
+  const [allDeals, setAllDeals] = useState([])
+  const allDealsRef = useRef([])
+  allDealsRef.current = allDeals
 
-  function getSuitImage(suit) {
-    if (suit === 'heart') {
-      return heartImageSrc
-    } else if (suit === 'spade') {
-      return spadeImageSrc
-    } else if (suit === 'diamond') {
-      return diamondImageSrc
-    } else if (suit === 'club') {
-      return clubImageSrc
-    }
-  }
+  const { socket, session } = useContext(AppContext)
 
-  function selectSuit(suit) {
+  useEffect(() => {
+    setSuitSelected(false)
+    setValueSelected(false)
+  }, [selectedCard])
+
+  useEffect(() => {
+    socket.on('tableCardsUpdated', (tableCards) => {
+      const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
+      setCards(newCards)
+    })
+
+    socket.on('newDeal', () => {
+      newDeal()
+    })
+  }, [socket])
+
+  function onSelectSuit(suit) {
     const newCards = cards.map((card) => {
-      return card.id == selectedCard ? { ...card, suit: suit, suitImage: getSuitImage(suit) } : card
+      return card.id == selectedCard ? { ...card, suit, suitImage: suit.image } : card
     })
     setCards(newCards)
-    if (cards[selectedCard].value && !firstClick) {
-      setFirstClick(true)
-      findActiveCards(newCards)
-      const activeCardsCount = cards.filter((card) => card.isActive).length
-      setSelectedCard(Math.min(selectedCard + 1, activeCardsCount))
-    } else {
-      setFirstClick(false)
+    setSuitSelected(true)
+
+    if (cards[selectedCard].value) {
+      if (selectedCard < 6 && valueSelected && !cards[selectedCard + 1].suit && !cards[selectedCard + 1].value) {
+        setSelectedCard(selectedCard + 1)
+      }
+      if (session && selectedCard >= 2 && newCards !== cards) {
+        socket.emit('updateTableCards', { cards: newCards.slice(2), sessionId: session.id })
+      }
+      updateCardDone(newCards)
     }
   }
 
-  function selectValue(value) {
+  function onSelectValue(value) {
     const newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, value } : card
     })
     setCards(newCards)
+    setValueSelected(true)
 
-    if (cards[selectedCard].suit && !firstClick) {
-      setFirstClick(true)
-      findActiveCards(newCards)
-      const activeCardsCount = cards.filter((card) => card.isActive).length
-      setSelectedCard(Math.min(selectedCard + 1, activeCardsCount))
-    } else {
-      setFirstClick(false)
+    if (cards[selectedCard].suit) {
+      if (selectedCard < 6 && suitSelected && !cards[selectedCard + 1].suit && !cards[selectedCard + 1].value) {
+        setSelectedCard(selectedCard + 1)
+      }
+      if (session && selectedCard >= 2 && newCards !== cards) {
+        socket.emit('updateTableCards', { cards: newCards.slice(2), sessionId: session.id })
+      }
+      updateCardDone(newCards)
     }
+  }
+
+  function onClearCard() {
+    let newCards = cards.map((card) =>
+      card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
+    )
+    setCards(newCards)
+    updateCardDone(newCards)
+  }
+
+  function updateCardDone(newCards) {
+    findActiveCards(newCards)
   }
 
   function findActiveCards(cards) {
@@ -129,17 +159,10 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onSelectCard(cardNumber) {
     setSelectedCard(cardNumber)
-    setFirstClick(true)
   }
 
   function isValidCards() {
     if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
-      let newCards = [...cards]
-      newCards.find((card) => card.id == 2).isActive = true
-      newCards.find((card) => card.id == 3).isActive = true
-      newCards.find((card) => card.id == 4).isActive = true
-      setCards(newCards)
-
       const tableCards = cards.slice(2)
       const hasInvalidCard = tableCards.some((card) => (card.suit && !card.value) || (!card.suit && card.value))
       if (hasInvalidCard) {
@@ -157,37 +180,38 @@ export default function TrackGameScreen({ navigation, route }) {
     return false
   }
 
-  function onNextRound() {
-    if (isValidCards()) {
-      setAllRounds([...allRounds, { round: currentRound, cards }])
-      setCurrentRound(currentRound + 1)
-      setCards(initialCardsList)
-      setSelectedCard(0)
-      console.log('ALLROUNDS ', allRounds)
-    } else {
+  function onNewDeal() {
+    newDeal()
+    if (session) {
+      socket.emit('onNewDeal', { sessionId: session.id })
     }
   }
 
-  function onClearCard() {
-    let newCards = cards.map((card) =>
-      card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
-    )
-    setCards(newCards)
+  function newDeal() {
+    if (true /* isValidCards() */) {
+      // Disabled check valid cards for now
+      setAllDeals([...allDealsRef.current, { deal: currentDealRef.current, cards: cardsRef.current }])
+      setCurrentDeal(currentDealRef.current + 1)
+      setCards(
+        initialCardsList.map((card) => {
+          return { ...card }
+        })
+      )
+      setSelectedCard(0)
+    }
   }
 
   function onEndGame() {
     if (cards.every((card) => !card.suit && !card.value)) {
-      navigation.navigate('GameBreakdown', { allRounds })
+      navigation.navigate('GameBreakdown', { allDeals })
     }
     if (isValidCards()) {
-      const newAllRounds = [...allRounds, { round: currentRound, cards }]
-      setAllRounds(newAllRounds)
-      // console.log('ALLROUNDS ', allRounds)
-      navigation.navigate('GameBreakdown', { allRounds: newAllRounds })
+      setAllDeals([...allDealsRef.current, { deal: currentDealRef.current, cards }])
+      navigation.navigate('GameBreakdown', { allDeals })
     }
   }
 
-  function onStatsChange() {
+  function toggleStats() {
     setStatsActive(!statsActive)
   }
 
@@ -202,9 +226,15 @@ export default function TrackGameScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View className={styles.cardsView}>
-        {/* <TouchableOpacity className={styles.restartButton} onPress={() => onStatsChange()}>
+        {/* <TouchableOpacity className={styles.restartButton} onPress={() => toggleStats()}>
             <Text className={styles.buttonFont}>Change Stats</Text>
           </TouchableOpacity> */}
+
+        <View style={{ marginBottom: 40, alignItems: 'center' }}>
+          <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
+          {session && <Text>In party with {session.players.length} players</Text>}
+        </View>
+
         <View className={styles.myCards}>
           <Text className={styles.titleFont}>My Cards</Text>
           <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
@@ -226,7 +256,7 @@ export default function TrackGameScreen({ navigation, route }) {
               )
             })}
           </View>
-          <TouchableOpacity className={styles.hideButton} onPress={() => setHideCards(!hideCards)}>
+          <TouchableOpacity className={styles.hideButton} onPress={() => onHideCards(!hideCards)}>
             <Text>{hideCards ? 'show' : 'hide'}</Text>
           </TouchableOpacity>
         </View>
@@ -280,7 +310,7 @@ export default function TrackGameScreen({ navigation, route }) {
           <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
           <View style={{ flexDirection: 'row' }}>
             {suits.map((suit) => (
-              <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => selectSuit(suit.id)}>
+              <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => onSelectSuit(suit)}>
                 <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
               </TouchableOpacity>
             ))}
@@ -289,29 +319,34 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.valueRows}>
             <View style={{ flexDirection: 'row' }}>
               {firstRowValues.map((value) => (
-                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => selectValue(value)}>
+                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
                   <Text className={styles.valueText}>{value}</Text>
                 </TouchableOpacity>
               ))}
             </View>
             <View style={{ flexDirection: 'row' }}>
               {secondRowValues.map((value) => (
-                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => selectValue(value)}>
+                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
                   <Text className={styles.valueText}>{value}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          <View className={styles.nextStepButtons}>
-            <TouchableOpacity onPress={() => onEndGame()}>
+          <View className={styles.footerButtonsView}>
+            <TouchableOpacity onPress={() => onEndGame()} className={styles.footerButton}>
               <Text className={styles.buttonText}>End game</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => onClearCard()}>
+            <TouchableOpacity onPress={() => onClearCard()} className={styles.footerButton}>
               <Text className={styles.buttonText}>Clear card</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => onNextRound()}>
-              <Text className={styles.buttonText}>Next round</Text>
+            <TouchableOpacity
+              onPress={() => {
+                onNewDeal()
+              }}
+              className={styles.footerButton}
+            >
+              <Text className={styles.buttonText}>New deal</Text>
             </TouchableOpacity>
           </View>
         </View>

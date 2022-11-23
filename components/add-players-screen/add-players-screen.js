@@ -8,8 +8,7 @@ import styles from './add-players-screen.scss'
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
-  const { players, setPlayers } = useContext(AppContext)
-  const { userName } = useContext(AppContext)
+  const { players, setPlayers, userName } = useContext(AppContext)
 
   useEffect(() => {
     let newPlayers = Array.from({ length: playerCount }, (_, i) => {
@@ -20,7 +19,7 @@ export default function AddPlayersScreen({ navigation, route }) {
         chipsLeft: 0,
       }
     })
-    setPlayers(newPlayers);
+    setPlayers(newPlayers)
   }, [route])
 
   function onAddPlayer() {
