@@ -6,6 +6,9 @@ import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
 import club from '../../assets/club.png'
+import unhideButton from '../../assets/unhide-button.png'
+import hideButton from '../../assets/hide-button.png'
+import backside from '../../assets/card-backside.png'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -213,9 +216,9 @@ export default function TrackGameScreen({ navigation, route }) {
           </TouchableOpacity> */}
         <View className={styles.myCards}>
           <Text className={styles.titleFont}>My Cards</Text>
-          <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
+          <View className={styles.myCardsRow}>
             {cards.slice(0, 2).map((card) => {
-              return (
+              if (!hideCards) {return (
                 <View key={card.id}>
                   <TouchableOpacity className={getCardStyles(card.id)} onPress={() => onSelectCard(card.id)}>
                     {!!card.suit && (
@@ -229,12 +232,24 @@ export default function TrackGameScreen({ navigation, route }) {
                     {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
                   </TouchableOpacity>
                 </View>
-              )
+              )} else{
+                return (
+                  <View key={card.id}>
+                    <TouchableOpacity className={getCardStyles(card.id)}>
+                      <Image source={backside} className ={styles.card}style={{resizeMode: 'contain'}}/>
+                    </TouchableOpacity>
+                  </View>
+                )
+
+              }
             })}
           </View>
           <TouchableOpacity className={styles.hideButton} onPress={() => setHideCards(!hideCards)}>
-            <Text>{hideCards ? 'show' : 'hide'}</Text>
+          
+            <Image source={hideCards? unhideButton : hideButton}/>
+          
           </TouchableOpacity>
+          
         </View>
         <View className={styles.tableCards}>
           <Text className={styles.titleFont}>Cards on table</Text>

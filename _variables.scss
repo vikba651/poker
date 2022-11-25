@@ -15,7 +15,7 @@ $font-small: 12px;
 $primary-text-color: #E04D67;
 
 @mixin cardBoxShadow {
-    box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
+    box-shadow: inset 15px 15px 96px rgba(0, 0, 0, 0.15);
     z-index: -1;
     flex-direction: row;
 }

@@ -32,10 +32,12 @@
 
 .hideButton {
     position: absolute;
+    align-items: center;
     bottom: 0;
-    right: -30px;
-    background-color: white;
-    height: 30px;
+    right: -40px;
+    background-color: #F5F5F5;
+    height: 34px;
+    width: 34px;
     border-radius: 5px;
     justify-content: center;
     // border: black;
@@ -183,4 +185,18 @@
     font-size: 12px;
     margin-top: 5%;
     font-weight: 600;
+}
+
+
+.hideButtonBorder {
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 37px;
+    height: 34px;
+
+
+    background: #F7F7F7;
+    border: 1px solid #797979;
+    border-radius: 8px;
 }
