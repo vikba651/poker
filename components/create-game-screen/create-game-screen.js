@@ -111,7 +111,7 @@ export default function CreateGameScreen({ navigation, route }) {
                 <Text style={{ fontWeight: '800' }}>Players:</Text>
                 {session.players.map((player, i) => (
                   <Text key={i}>
-                    {player} {player === userName && '(you)'}
+                    {player.name} {player.name === userName && '(you)'}
                   </Text>
                 ))}
               </View>

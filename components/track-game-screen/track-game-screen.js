@@ -78,19 +78,26 @@ export default function TrackGameScreen({ navigation, route }) {
   }, [selectedCard])
 
   useEffect(() => {
-    socket.on('tableCardsUpdated', (tableCards) => {
-      const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
-      setCards(newCards)
-    })
-
-    socket.on('newDeal', () => {
-      newDeal()
+    socket.on('tableCardsUpdated', (tableCardsData, deal) => {
+      if (deal === currentDealRef.current) {
+        let tableCards = [...cardsRef.current.slice(2)]
+        for (let i = 0; i < tableCardsData.length; i++) {
+          if (tableCardsData[i].value && tableCardsData[i].suit) {
+            tableCards[i].value = tableCardsData[i].value
+            tableCards[i].suit = tableCardsData[i].suit
+            tableCards[i].suitImage = suits.find((suit) => suit.id === tableCardsData[i].suit).image
+          }
+        }
+        const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
+        setCards(newCards)
+        findActiveCards(newCards)
+      }
     })
   }, [socket])
 
   function onSelectSuit(suit) {
     const newCards = cards.map((card) => {
-      return card.id == selectedCard ? { ...card, suit, suitImage: suit.image } : card
+      return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
     })
     setCards(newCards)
     setSuitSelected(true)
@@ -100,7 +107,14 @@ export default function TrackGameScreen({ navigation, route }) {
         setSelectedCard(selectedCard + 1)
       }
       if (session && selectedCard >= 2 && newCards !== cards) {
-        socket.emit('updateTableCards', { cards: newCards.slice(2), sessionId: session.id })
+        const tableCards = newCards.slice(2).map((card) => {
+          return { value: card.value, suit: card.suit }
+        })
+        socket.emit('updateTableCards', {
+          cards: tableCards,
+          sessionId: session.id,
+          deal: currentDealRef.current,
+        })
       }
       updateCardDone(newCards)
     }
@@ -118,7 +132,14 @@ export default function TrackGameScreen({ navigation, route }) {
         setSelectedCard(selectedCard + 1)
       }
       if (session && selectedCard >= 2 && newCards !== cards) {
-        socket.emit('updateTableCards', { cards: newCards.slice(2), sessionId: session.id })
+        const tableCards = newCards.slice(2).map((card) => {
+          return { value: card.value, suit: card.suit }
+        })
+        socket.emit('updateTableCards', {
+          cards: tableCards,
+          sessionId: session.id,
+          deal: currentDealRef.current,
+        })
       }
       updateCardDone(newCards)
     }
@@ -136,23 +157,30 @@ export default function TrackGameScreen({ navigation, route }) {
     findActiveCards(newCards)
   }
 
+  // REFRACTOR
   function findActiveCards(cards) {
-    if (cards.slice(0, 6).every((card) => card.value && card.suit)) {
-      let newCards = [...cards]
-      newCards.find((card) => card.id == 6).isActive = true
-      setCards(newCards)
-    }
-
-    if (cards.slice(0, 5).every((card) => card.value && card.suit)) {
-      let newCards = [...cards]
-      newCards.find((card) => card.id == 5).isActive = true
-      setCards(newCards)
-    }
-    if (cards.slice(0, 2).every((card) => card.value && card.suit)) {
+    if (
+      cards.slice(2, 4).some((card) => card.value && card.suit) ||
+      cards.slice(0, 2).every((card) => card.value && card.suit)
+    ) {
+      // 3 valid
       let newCards = [...cards]
       newCards.find((card) => card.id == 2).isActive = true
       newCards.find((card) => card.id == 3).isActive = true
       newCards.find((card) => card.id == 4).isActive = true
+      setCards(newCards)
+    }
+    if (cards.slice(2, 5).every((card) => card.value && card.suit)) {
+      // 4 valid
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 5).isActive = true
+      setCards(newCards)
+    }
+
+    if (cards.slice(2, 6).every((card) => card.value && card.suit)) {
+      // 5 valid
+      let newCards = [...cards]
+      newCards.find((card) => card.id == 6).isActive = true
       setCards(newCards)
     }
   }
@@ -180,11 +208,18 @@ export default function TrackGameScreen({ navigation, route }) {
     return false
   }
 
-  function onNewDeal() {
-    newDeal()
+  function onNewDealPressed() {
     if (session) {
-      socket.emit('onNewDeal', { sessionId: session.id })
+      const cardData = cardsRef.current.map((card) => {
+        return { value: card.value, suit: card.suit }
+      })
+      socket.emit('onNewDeal', {
+        sessionId: session.id,
+        cards: cardData,
+        deal: currentDealRef.current,
+      })
     }
+    newDeal()
   }
 
   function newDeal() {
@@ -342,7 +377,7 @@ export default function TrackGameScreen({ navigation, route }) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                onNewDeal()
+                onNewDealPressed()
               }}
               className={styles.footerButton}
             >
