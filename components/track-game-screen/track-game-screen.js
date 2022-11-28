@@ -66,7 +66,7 @@ export default function TrackGameScreen({ navigation, route }) {
   const currentDealRef = useRef(1) // This kinda shit is needed to read state in ws event listeners
   currentDealRef.current = currentDeal
 
-  const [allDeals, setAllDeals] = useState([])
+  const [allDeals, setAllDeals] = useState([]) // Used when playing solo
   const allDealsRef = useRef([])
   allDealsRef.current = allDeals
 
@@ -210,10 +210,10 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onNewDealPressed() {
     if (session) {
-      const cardData = cardsRef.current.map((card) => {
+      const cardData = cardsRef.current.slice(0, 2).map((card) => {
         return { value: card.value, suit: card.suit }
       })
-      socket.emit('onNewDeal', {
+      socket.emit('newDeal', {
         sessionId: session.id,
         cards: cardData,
         deal: currentDealRef.current,
@@ -238,10 +238,15 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onEndGame() {
     if (cards.every((card) => !card.suit && !card.value)) {
+      socket.emit('endGame', { sessionId: session.id, currentDeal })
       navigation.navigate('GameBreakdown', { allDeals })
     }
     if (isValidCards()) {
       setAllDeals([...allDealsRef.current, { deal: currentDealRef.current, cards }])
+      const cardsData = cards.splice(0, 2).map((card) => {
+        return { value: card.value, suit: card.suit }
+      })
+      socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal })
       navigation.navigate('GameBreakdown', { allDeals })
     }
   }
