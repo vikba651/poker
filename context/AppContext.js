@@ -7,8 +7,6 @@ const SERVER_ADDR = 'http://192.168.0.11:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
-  // const socket = useRef(null)
-
   const [players, setPlayers] = useState([])
   const [userName, setUserName] = useState('')
   const [serverState, setServerState] = useState('Loading Websocket...')
