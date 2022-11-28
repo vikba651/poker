@@ -17,7 +17,7 @@ export default function AddPlayersScreen({ navigation, route }) {
       let newPlayers = Array.from({ length: session.players.length }, (_, i) => {
         return {
           id: i,
-          name: session.players[i],
+          name: session.players[i].name,
           buyIn: 0,
           chipsLeft: 0,
         }
