@@ -1,13 +1,13 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import styles from './start-screen.scss'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
 import * as Location from 'expo-location'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
-  const { userName, session, location, setLocation } = useContext(AppContext)
+  const { user, session, location, setLocation } = useContext(AppContext)
 
   const games = [
     {
@@ -75,7 +75,7 @@ export default function StartScreen({ navigation, route }) {
       )}
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
-        <Text className={styles.nameText}>{userName}?</Text>
+        <Text className={styles.nameText}>{user.name}?</Text>
       </View>
 
       <View className={styles.boxShadow}>

@@ -2,14 +2,14 @@ import { useEffect, useState, useRef, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
 import { io } from 'socket.io-client'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
 
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
   const SERVER_ADDR = 'http://192.168.0.11:8020'
 
-  const { userName, serverState, socket, session, setSession, location } = useContext(AppContext)
+  const { user, serverState, socket, session, setSession, location } = useContext(AppContext)
 
   const [isCreator, setIsCreator] = useState(true)
   const [inputCode, setInputCode] = useState('')
@@ -21,7 +21,7 @@ export default function CreateGameScreen({ navigation, route }) {
   }
 
   function joinSession(code) {
-    socket.emit('joinSession', { name: userName, code })
+    socket.emit('joinSession', { name: user.name, code })
   }
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function CreateGameScreen({ navigation, route }) {
 
     socket.on('sessionUpdated', (session) => {
       setSession(session)
-      setIsCreator(session.creator === userName)
+      setIsCreator(session.creator === user.name)
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
@@ -90,7 +90,7 @@ export default function CreateGameScreen({ navigation, route }) {
           {!session && (
             <View className={styles.noSessionView}>
               <Text>Are you playing with friends?</Text>
-              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(userName)}>
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(user.name)}>
                 <Text className={styles.createPartyText}>Create party</Text>
               </TouchableOpacity>
               {closeEnough && (
@@ -111,7 +111,7 @@ export default function CreateGameScreen({ navigation, route }) {
                 <Text style={{ fontWeight: '800' }}>Players:</Text>
                 {session.players.map((player, i) => (
                   <Text key={i}>
-                    {player.name} {player.name === userName && '(you)'}
+                    {player.name} {player.name === user.name && '(you)'}
                   </Text>
                 ))}
               </View>

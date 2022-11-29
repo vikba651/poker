@@ -1,7 +1,7 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import styles from './track-game-screen.scss'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
 import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'

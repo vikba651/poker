@@ -17,6 +17,7 @@
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
     "core-js": "^3.26.0",
     "expo": "~46.0.13",
+    "expo-location": "~14.3.0",
     "expo-status-bar": "~1.4.0",
     "prop-types": "^15.8.1",
     "react": "18.0.0",
@@ -26,8 +27,7 @@
     "react-native-sass-transformer": "^2.0.0",
     "react-native-screens": "~3.15.0",
     "sass": "^1.55.0",
-    "socket.io-client": "^4.5.3",
-    "expo-location": "~14.3.0"
+    "socket.io-client": "^4.5.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { AppProvider } from './context/AppContext'
 
+import { AppProvider } from './shared/AppContext'
 import StartScreen from './components/start-screen/start-screen'
 import AddPlayersScreen from './components/add-players-screen/add-players-screen'
 import TrackGameScreen from './components/track-game-screen/track-game-screen'
