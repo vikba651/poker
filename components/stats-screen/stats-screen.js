@@ -21,7 +21,8 @@ export default function StatsScreen({ navigation, route }) {
 
   function formatTime(dateTimeString) {
     const date = new Date(dateTimeString)
-    return date.toLocaleString()
+    const localeString = date.toLocaleString()
+    return localeString.slice(0, localeString.length - 3)
   }
 
   return (
@@ -31,6 +32,7 @@ export default function StatsScreen({ navigation, route }) {
         <View key={i}>
           <TouchableOpacity className={styles.roundButton}>
             <Text>{formatTime(round.startTime)}</Text>
+            <Text>{round.deals.length + ' deals'}</Text>
           </TouchableOpacity>
         </View>
       ))}
