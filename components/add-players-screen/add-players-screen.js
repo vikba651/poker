@@ -1,17 +1,16 @@
 import { Text, View, TextInput, Button, SafeAreaView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
 
 import styles from './add-players-screen.scss'
 
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
 
-  const { players, setPlayers, userName, session } = useContext(AppContext)
+  const { players, setPlayers, user, session } = useContext(AppContext)
 
   useEffect(() => {
-
     if (session) {
       setPlayerCount(session.players.length)
       let newPlayers = Array.from({ length: session.players.length }, (_, i) => {
@@ -22,12 +21,12 @@ export default function AddPlayersScreen({ navigation, route }) {
           chipsLeft: 0,
         }
       })
-      setPlayers(newPlayers);
+      setPlayers(newPlayers)
     } else {
       let newPlayers = Array.from({ length: playerCount }, (_, i) => {
         return {
           id: i,
-          name: i ? '' : userName,
+          name: i ? '' : user.name,
           buyIn: 0,
           chipsLeft: 0,
         }
@@ -101,7 +100,6 @@ export default function AddPlayersScreen({ navigation, route }) {
       } else {
         navigation.navigate('SettleUpScreen', {
           players,
-          name: route.params.name,
         })
       }
     }

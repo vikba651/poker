@@ -1,0 +1,18 @@
+@import "/variables";
+
+.container {
+    flex: 1;
+    background-color: $background-color;
+    align-items: center;
+    justify-content: center; 
+}
+
+.roundButton {
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    height: 40px;
+    width: 200px;
+    border-radius: 5px;
+    margin: 5px;
+}

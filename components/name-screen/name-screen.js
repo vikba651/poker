@@ -2,34 +2,58 @@ import { TouchableOpacity, SafeAreaView, Text, TextInput, View } from 'react-nat
 import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import AppContext from '../../context/AppContext'
+import AppContext, { SERVER_ADDR } from '../../shared/AppContext'
+import { getPlayer, createPlayer } from '../../shared/api'
 
 export default function NameScreen({ navigation }) {
-  const { userName, setUserName } = useContext(AppContext)
+  const [prompt, setPrompt] = useState('This will be displayed to your friends.')
+  const [userName, setUserName] = useState('')
+  const { setUser } = useContext(AppContext)
 
-  const storeData = async (value) => {
+  useEffect(() => {
+    loadUserName()
+  }, [])
+
+  const loadUserName = async () => {
     try {
-      await AsyncStorage.setItem('@storage_Key', value)
+      const value = await AsyncStorage.getItem('userName')
+      if (value !== null) {
+        getPlayer(value).then((player) => {
+          setUserName(value)
+          if (player) {
+            setUser(player)
+          }
+        })
+        navigation.navigate('StartScreen')
+      }
     } catch (e) {
-      // saving error
+      console.log(e)
     }
   }
 
-  const getData = async () => {
+  const saveUserName = async (name) => {
     try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      if (value !== null) {
-        setUserName(value)
-        navigation.navigate('StartScreen')
+      await AsyncStorage.setItem('userName', name)
+      let player = await getPlayer(name)
+      if (!player) {
+        player = await createPlayer(name)
       }
-    } catch (e) {}
+      if (player) {
+        setUser(player)
+      }
+      navigation.navigate('StartScreen')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
-  const [prompt, setPrompt] = useState('This will be displayed to your friends.')
-
-  useEffect(() => {
-    getData()
-  }, [])
+  const onGetStarted = () => {
+    if (userName.length > 1) {
+      saveUserName(userName)
+    } else {
+      setPrompt(`'${userName}' is not valid.`)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,19 +71,8 @@ export default function NameScreen({ navigation }) {
           returnKeyType="go"
         />
       </View>
-      <TouchableOpacity
-        className={styles.opaqueButton}
-        onPress={() => {
-          if (userName.length < 2) {
-            setPrompt(`'${userName}' is not valid.`)
-          } else {
-            setUserName(userName)
-            storeData(userName)
-            navigation.navigate('StartScreen')
-          }
-        }}
-      >
-        <Text className={styles.buttonText}>Let's get started!</Text>
+      <TouchableOpacity className={styles.opaqueButton} onPress={() => onGetStarted()}>
+        <Text className={styles.buttonText}>Go</Text>
       </TouchableOpacity>
     </SafeAreaView>
   )

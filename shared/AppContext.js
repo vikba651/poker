@@ -3,20 +3,20 @@ import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
 
-const SERVER_ADDR = 'http://192.168.0.11:8020'
+export const SERVER_ADDR = 'http://10.1.11.3:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
   const [players, setPlayers] = useState([])
-  const [userName, setUserName] = useState('')
+  const [user, setUser] = useState({ name: 'No connection boy' })
   const [serverState, setServerState] = useState('Loading Websocket...')
   const [session, setSession] = useState(null)
   const [location, setLocation] = useState(null)
 
   const providers = {
     socket,
-    userName,
-    setUserName,
+    user,
+    setUser,
     players,
     setPlayers,
     serverState,
