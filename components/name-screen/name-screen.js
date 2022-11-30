@@ -18,12 +18,13 @@ export default function NameScreen({ navigation }) {
     try {
       const value = await AsyncStorage.getItem('userName')
       if (value !== null) {
-        const player = await getPlayer(value)
-        if (player) {
-          setUserName(player.name)
-          setUser(player)
-          navigation.navigate('StartScreen')
-        }
+        getPlayer(value).then((player) => {
+          setUserName(value)
+          if (player) {
+            setUser(player)
+          }
+        })
+        navigation.navigate('StartScreen')
       }
     } catch (e) {
       console.log(e)

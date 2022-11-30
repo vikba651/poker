@@ -100,7 +100,6 @@ export default function AddPlayersScreen({ navigation, route }) {
       } else {
         navigation.navigate('SettleUpScreen', {
           players,
-          name: route.params.name,
         })
       }
     }

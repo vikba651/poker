@@ -23,6 +23,10 @@ export const createPlayer = (name) => {
   return postRequest(`${SERVER_ADDR}/players/create`, { name })
 }
 
-export const getPlayer = async (name) => {
+export const getPlayer = (name) => {
   return postRequest(`${SERVER_ADDR}/players/`, { name })
+}
+
+export const getRounds = (name) => {
+  return postRequest(`${SERVER_ADDR}/players/rounds/`, { name })
 }

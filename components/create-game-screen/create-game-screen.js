@@ -1,26 +1,25 @@
-import { useEffect, useState, useRef, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
-import { io } from 'socket.io-client'
 import AppContext from '../../shared/AppContext'
 
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.0.11:8020'
-
   const { user, serverState, socket, session, setSession, location } = useContext(AppContext)
 
   const [isCreator, setIsCreator] = useState(true)
+  const [sessionCreated, setSessionCreated] = useState(false)
   const [inputCode, setInputCode] = useState('')
   const [nearbyGameCode, setNearbyGameCode] = useState('')
   const [closeEnough, setCloseEnough] = useState(false)
 
-  function createSession(name) {
-    socket.emit('createSession', { name, location })
+  function onCreateSession() {
+    // socket.emit('createSession', { name: user.name, location })
+    setSessionCreated(true)
   }
 
-  function joinSession(code) {
+  function onJoinSession(code) {
     socket.emit('joinSession', { name: user.name, code })
   }
 
@@ -57,6 +56,10 @@ export default function CreateGameScreen({ navigation, route }) {
     socket.on('trackingStarted', () => {
       navigation.navigate('TrackGameScreen')
     })
+
+    // Always create session, even if using the app alone
+    // maybe we should just do a post request to save a round instead
+    socket.emit('createSession', { name: user.name, location })
   }, [])
 
   function startTracking() {
@@ -87,20 +90,20 @@ export default function CreateGameScreen({ navigation, route }) {
       <Text>{serverState}</Text>
       <View className={styles.boxShadow}>
         <View className={styles.lobbyView}>
-          {!session && (
+          {!sessionCreated && (
             <View className={styles.noSessionView}>
               <Text>Are you playing with friends?</Text>
-              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(user.name)}>
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => onCreateSession()}>
                 <Text className={styles.createPartyText}>Create party</Text>
               </TouchableOpacity>
               {closeEnough && (
-                <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
+                <TouchableOpacity className={styles.createSessionButton} onPress={() => onJoinSession(nearbyGameCode)}>
                   <Text className={styles.createPartyText}>Join nearby game with code {nearbyGameCode}</Text>
                 </TouchableOpacity>
               )}
             </View>
           )}
-          {session && (
+          {sessionCreated && (
             <>
               <View style={{ alignItems: 'center' }}>
                 <Text>Session code:</Text>
@@ -129,7 +132,7 @@ export default function CreateGameScreen({ navigation, route }) {
             autoCorrect={false}
           ></TextInput>
 
-          <Button title="Join session" onPress={() => joinSession(inputCode)}></Button>
+          <Button title="Join session" onPress={() => onJoinSession(inputCode)}></Button>
         </View>
       </View>
       <View>

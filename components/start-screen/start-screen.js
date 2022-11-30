@@ -68,11 +68,6 @@ export default function StartScreen({ navigation, route }) {
 
   return (
     <SafeAreaView className={styles.container}>
-      {session && (
-        <View>
-          <Text>Your current sesh: {session.code}</Text>
-        </View>
-      )}
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
         <Text className={styles.nameText}>{user.name}?</Text>
@@ -143,7 +138,7 @@ export default function StartScreen({ navigation, route }) {
                 <Text className={styles.actionText}>SETTLE UP</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
+            <TouchableOpacity onPress={() => navigation.navigate('StatsScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}

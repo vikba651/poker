@@ -66,7 +66,7 @@ export default function SettleUpScreen({ navigation, route }) {
   settleDebts()
 
   function onBackToStart() {
-    navigation.navigate('StartScreen', { name: route.params.name })
+    navigation.navigate('StartScreen')
   }
 
   function getName(id) {
