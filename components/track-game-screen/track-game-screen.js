@@ -6,6 +6,7 @@ import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
 import club from '../../assets/club.png'
+import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -242,12 +243,13 @@ export default function TrackGameScreen({ navigation, route }) {
       navigation.navigate('GameBreakdown', { allDeals })
     }
     if (isValidCards()) {
-      setAllDeals([...allDealsRef.current, { deal: currentDealRef.current, cards }])
+      const newAllDeals = [...allDeals, { deal: currentDeal, cards }]
+      setAllDeals(newAllDeals)
       const cardsData = cards.splice(0, 2).map((card) => {
         return { value: card.value, suit: card.suit }
       })
       socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal })
-      navigation.navigate('GameBreakdown', { allDeals })
+      navigation.navigate('GameBreakdown', { allDeals: newAllDeals })
     }
   }
 
@@ -272,7 +274,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
         <View style={{ marginBottom: 40, alignItems: 'center' }}>
           <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
-          {session && <Text>In party with {session.players.length} players</Text>}
+          {session.players.length > 1 && <Text>In party with {session.players.length} players</Text>}
         </View>
 
         <View className={styles.myCards}>
@@ -297,7 +299,7 @@ export default function TrackGameScreen({ navigation, route }) {
             })}
           </View>
           <TouchableOpacity className={styles.hideButton} onPress={() => onHideCards(!hideCards)}>
-            <Text>{hideCards ? 'show' : 'hide'}</Text>
+            {hideCards ? <EyeIcon color="black" /> : <EyeSlashIcon color="black" />}
           </TouchableOpacity>
         </View>
         <View className={styles.tableCards}>

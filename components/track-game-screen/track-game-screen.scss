@@ -33,11 +33,13 @@
 .hideButton {
     position: absolute;
     bottom: 0;
-    right: -30px;
+    right: -35px;
     background-color: white;
     height: 30px;
-    border-radius: 5px;
+    width: 30px;
     justify-content: center;
+    align-items: center;
+    border-radius: 5px;
     // border: black;
 }
 

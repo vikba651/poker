@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
 import AppContext from '../../shared/AppContext'
+import { UserGroupIcon } from 'react-native-heroicons/outline'
+import MainButton from '../main-button/main-button'
 
 // HTTP
 
@@ -95,10 +97,11 @@ export default function CreateGameScreen({ navigation, route }) {
               <Text>Are you playing with friends?</Text>
               <TouchableOpacity className={styles.createSessionButton} onPress={() => onCreateSession()}>
                 <Text className={styles.createPartyText}>Create party</Text>
+                <UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />
               </TouchableOpacity>
               {closeEnough && (
                 <TouchableOpacity className={styles.createSessionButton} onPress={() => onJoinSession(nearbyGameCode)}>
-                  <Text className={styles.createPartyText}>Join nearby game with code {nearbyGameCode}</Text>
+                  <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -106,7 +109,7 @@ export default function CreateGameScreen({ navigation, route }) {
           {sessionCreated && (
             <>
               <View style={{ alignItems: 'center' }}>
-                <Text>Session code:</Text>
+                <Text>Party code:</Text>
                 <Text className={styles.sessionCode}>{session.code}</Text>
               </View>
               <View className={styles.sessionInfo}>
@@ -124,22 +127,20 @@ export default function CreateGameScreen({ navigation, route }) {
       </View>
       <View className={styles.boxShadow}>
         <View className={styles.card}>
-          <Text className={styles.cardTitle}>Join session</Text>
+          <Text className={styles.cardTitle}>Join party</Text>
           <TextInput
             autoCapitalize={'characters'}
-            placeholder="Enter session code"
+            placeholder="Enter party code"
             onChangeText={setInputCode}
             autoCorrect={false}
           ></TextInput>
 
-          <Button title="Join session" onPress={() => onJoinSession(inputCode)}></Button>
+          <Button title="Join party" onPress={() => onJoinSession(inputCode)}></Button>
         </View>
       </View>
       <View>
         {isCreator ? (
-          <TouchableOpacity className={styles.startTrackingButton} onPress={() => startTracking()}>
-            <Text className={styles.startTrackingText}>Start Tracking</Text>
-          </TouchableOpacity>
+          <MainButton title="Start tracking" onPress={() => startTracking()} />
         ) : (
           <Text>Wait for party leader to start game</Text>
         )}

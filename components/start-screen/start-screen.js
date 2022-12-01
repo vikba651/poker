@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import styles from './start-screen.scss'
 import AppContext from '../../shared/AppContext'
 import * as Location from 'expo-location'
+import { PlusIcon, ChartBarIcon, UserPlusIcon, CurrencyDollarIcon } from 'react-native-heroicons/outline'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
@@ -115,6 +116,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/blue-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <PlusIcon color="white" />
                 <Text className={styles.actionText}>NEW GAME</Text>
               </View>
             </TouchableOpacity>
@@ -125,6 +127,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/green-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <UserPlusIcon color="white" />
                 <Text className={styles.actionText}>JOIN GAME</Text>
               </View>
             </TouchableOpacity>
@@ -135,6 +138,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/red-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <CurrencyDollarIcon color="white" />
                 <Text className={styles.actionText}>SETTLE UP</Text>
               </View>
             </TouchableOpacity>
@@ -145,6 +149,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/black-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <ChartBarIcon color="white" />
                 <Text className={styles.actionText}>STATS</Text>
               </View>
             </TouchableOpacity>

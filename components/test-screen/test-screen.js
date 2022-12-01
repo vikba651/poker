@@ -2,13 +2,11 @@ import { useEffect, useState, useRef, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './test-screen.scss'
 import { io } from 'socket.io-client'
-import AppContext from '../../shared/AppContext'
+import AppContext, { SERVER_ADDR } from '../../shared/AppContext'
 
 // HTTP
 
 export default function TestScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.86.29:8020'
-
   const { user, socket, setSocket, serverState, session, setSession } = useContext(AppContext)
 
   const [inputCode, setInputCode] = useState('')
@@ -92,7 +90,7 @@ export default function TestScreen({ navigation, route }) {
               <Text>{session.creator}</Text>
               <Text style={{ fontWeight: '800', marginTop: 20 }}>Players:</Text>
               {session.players.map((player, i) => (
-                <Text key={i}>{player}</Text>
+                <Text key={i}>{player.name}</Text>
               ))}
             </>
           )}
