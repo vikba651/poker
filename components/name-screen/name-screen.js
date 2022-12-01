@@ -1,9 +1,10 @@
-import { TouchableOpacity, SafeAreaView, Text, TextInput, View } from 'react-native'
+import { SafeAreaView, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import AppContext, { SERVER_ADDR } from '../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 import { getPlayer, createPlayer } from '../../shared/api'
+import MainButton from '../main-button/main-button'
 
 export default function NameScreen({ navigation }) {
   const [prompt, setPrompt] = useState('This will be displayed to your friends.')
@@ -69,11 +70,11 @@ export default function NameScreen({ navigation }) {
           autoFocus={true}
           className={styles.inputField}
           returnKeyType="go"
+          onSubmitEditing={() => onGetStarted()}
+          autoCorrect={false}
         />
       </View>
-      <TouchableOpacity className={styles.opaqueButton} onPress={() => onGetStarted()}>
-        <Text className={styles.buttonText}>Go</Text>
-      </TouchableOpacity>
+      <MainButton title="Here we go" onPress={() => onGetStarted()} />
     </SafeAreaView>
   )
 }

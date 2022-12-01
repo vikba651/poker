@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { StatusBar } from 'react-native'
 
 import { AppProvider } from './shared/AppContext'
 import StartScreen from './components/start-screen/start-screen'
@@ -17,8 +18,9 @@ const Stack = createNativeStackNavigator()
 export default function App() {
   return (
     <AppProvider>
+      <StatusBar animated={true} backgroundColor="#61dafb" barStyle="dark-content" />
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#bbb' } }}>
+        <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#EEE' } }}>
           <Stack.Screen name="NameScreen" component={NameScreen} options={{ headerShown: false }} />
           <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Home' }} />
           <Stack.Screen name="AddPlayersScreen" component={AddPlayersScreen} options={{ title: 'Add Players' }} />
