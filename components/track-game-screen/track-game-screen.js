@@ -83,15 +83,14 @@ export default function TrackGameScreen({ navigation, route }) {
       if (deal === currentDealRef.current) {
         let tableCards = [...cardsRef.current.slice(2)]
         for (let i = 0; i < tableCardsData.length; i++) {
-          if (tableCardsData[i].value && tableCardsData[i].suit) {
-            tableCards[i].value = tableCardsData[i].value
-            tableCards[i].suit = tableCardsData[i].suit
-            tableCards[i].suitImage = suits.find((suit) => suit.id === tableCardsData[i].suit).image
-          }
+          tableCards[i].value = tableCardsData[i].value
+          tableCards[i].suit = tableCardsData[i].suit
+          const suitImageIndex = suits.findIndex((suit) => suit.id === tableCardsData[i].suit)
+          tableCards[i].suitImage = suitImageIndex >= 0 ? suits[suitImageIndex].image : null
         }
         const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
         setCards(newCards)
-        findActiveCards(newCards)
+        setActiveCards(newCards)
       }
     })
   }, [socket])
@@ -104,7 +103,14 @@ export default function TrackGameScreen({ navigation, route }) {
     setSuitSelected(true)
 
     if (cards[selectedCard].value) {
-      if (selectedCard < 6 && valueSelected && !cards[selectedCard + 1].suit && !cards[selectedCard + 1].value) {
+      setActiveCards(newCards)
+      if (
+        selectedCard < 6 &&
+        valueSelected &&
+        cards[selectedCard + 1].isActive &&
+        !cards[selectedCard + 1].suit &&
+        !cards[selectedCard + 1].value
+      ) {
         setSelectedCard(selectedCard + 1)
       }
       if (session && selectedCard >= 2 && newCards !== cards) {
@@ -117,7 +123,6 @@ export default function TrackGameScreen({ navigation, route }) {
           deal: currentDealRef.current,
         })
       }
-      updateCardDone(newCards)
     }
   }
 
@@ -129,7 +134,14 @@ export default function TrackGameScreen({ navigation, route }) {
     setValueSelected(true)
 
     if (cards[selectedCard].suit) {
-      if (selectedCard < 6 && suitSelected && !cards[selectedCard + 1].suit && !cards[selectedCard + 1].value) {
+      setActiveCards(newCards)
+      if (
+        selectedCard < 6 &&
+        suitSelected &&
+        cards[selectedCard + 1].isActive &&
+        !cards[selectedCard + 1].suit &&
+        !cards[selectedCard + 1].value
+      ) {
         setSelectedCard(selectedCard + 1)
       }
       if (session && selectedCard >= 2 && newCards !== cards) {
@@ -142,7 +154,6 @@ export default function TrackGameScreen({ navigation, route }) {
           deal: currentDealRef.current,
         })
       }
-      updateCardDone(newCards)
     }
   }
 
@@ -151,21 +162,28 @@ export default function TrackGameScreen({ navigation, route }) {
       card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
     )
     setCards(newCards)
-    updateCardDone(newCards)
-  }
-
-  function updateCardDone(newCards) {
-    findActiveCards(newCards)
+    if (selectedCard > 1) {
+      socket.emit('updateTableCards', {
+        cards: newCards.slice(2),
+        sessionId: session.id,
+        deal: currentDeal,
+      })
+    }
+    setActiveCards(newCards)
   }
 
   // REFRACTOR
-  function findActiveCards(cards) {
+  function setActiveCards(cards) {
+    let newCards = [
+      ...cards.map((card) => {
+        return { ...card, isActive: false }
+      }),
+    ]
     if (
       cards.slice(2, 4).some((card) => card.value && card.suit) ||
       cards.slice(0, 2).every((card) => card.value && card.suit)
     ) {
       // 3 valid
-      let newCards = [...cards]
       newCards.find((card) => card.id == 2).isActive = true
       newCards.find((card) => card.id == 3).isActive = true
       newCards.find((card) => card.id == 4).isActive = true
@@ -173,14 +191,12 @@ export default function TrackGameScreen({ navigation, route }) {
     }
     if (cards.slice(2, 5).every((card) => card.value && card.suit)) {
       // 4 valid
-      let newCards = [...cards]
       newCards.find((card) => card.id == 5).isActive = true
       setCards(newCards)
     }
 
     if (cards.slice(2, 6).every((card) => card.value && card.suit)) {
       // 5 valid
-      let newCards = [...cards]
       newCards.find((card) => card.id == 6).isActive = true
       setCards(newCards)
     }

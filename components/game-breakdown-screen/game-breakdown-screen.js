@@ -1,12 +1,13 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import styles from './game-breakdown.scss'
+import React, { useContext, useEffect, useState } from 'react'
+import styles from './game-breakdown-screen.scss'
 import AllDeals from './all-deals'
 import GeneralStats from './general-stats'
+import AppContext from '../../shared/AppContext'
 
-
-export default function GameBreakDown({ navigation, route }) {
+export default function GameBreakDownScreen({ navigation, route }) {
   const deals = route.params.allDeals
+  const { socket, session } = useContext(AppContext)
 
   const [showAllDeals, setShowAllDeals] = useState(false)
 
@@ -22,9 +23,10 @@ export default function GameBreakDown({ navigation, route }) {
     navigation.navigate('StartScreen')
   }
 
+  useEffect(() => {}, [])
+
   return (
     <SafeAreaView style={styles.container}>
-
       {!showAllDeals && <GeneralStats></GeneralStats>}
       {showAllDeals && <AllDeals deals={deals}></AllDeals>}
 
