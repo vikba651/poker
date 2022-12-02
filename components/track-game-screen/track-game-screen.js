@@ -7,6 +7,8 @@ import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
 import club from '../../assets/club.png'
 import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
+import EditSelection from '../edit-selection/edit-selection'
+import InGameStatistics from '../in-game-statistics/in-game-statistics'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -18,17 +20,6 @@ export default function TrackGameScreen({ navigation, route }) {
     { id: 5, suit: '', suitImage: null, value: '', isActive: false },
     { id: 6, suit: '', suitImage: null, value: '', isActive: false },
   ]
-
-  const stats = [
-    { id: 0, title: 'Hand Quality', percentage: 84 },
-    { id: 1, title: 'Pair chance', percentage: 64 },
-    { id: 2, title: 'Straight chance', percentage: 57 },
-    { id: 3, title: 'Triple chance', percentage: 43 },
-    { id: 4, title: 'Flush chance', percentage: 27 },
-  ]
-
-  const firstRowValues = ['A', '2', '3', '4', '5', '6']
-  const secondRowValues = ['7', '8', '9', '10', 'J', 'Q', 'K']
 
   const suits = [
     {
@@ -343,72 +334,15 @@ export default function TrackGameScreen({ navigation, route }) {
           </View>
         </View>
       </View>
-      {statsActive && (
-        <View className={styles.boxShadow}>
-          <View className={styles.statsView}>
-            <Text className={styles.titleFont}>Stats</Text>
-
-            <ScrollView horizontal>
-              <View className={styles.statsRow}>
-                {stats.map((stat) => (
-                  <TouchableOpacity key={stat.id}>
-                    <View className={styles.statistic}>
-                      <Text className={styles.statisticTitle}>{stat.title}</Text>
-                      <Text className={styles.statisticResult}>{stat.percentage}%</Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      )}
-      <View className={styles.boxShadow}>
-        <View className={styles.editSelectionView}>
-          <Text className={[styles.titleFont, styles.editSelection]}>Edit selection</Text>
-          <View style={{ flexDirection: 'row' }}>
-            {suits.map((suit) => (
-              <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => onSelectSuit(suit)}>
-                <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <View className={styles.valueRows}>
-            <View style={{ flexDirection: 'row' }}>
-              {firstRowValues.map((value) => (
-                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                  <Text className={styles.valueText}>{value}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              {secondRowValues.map((value) => (
-                <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                  <Text className={styles.valueText}>{value}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View className={styles.footerButtonsView}>
-            <TouchableOpacity onPress={() => onEndGame()} className={styles.footerButton}>
-              <Text className={styles.buttonText}>End game</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => onClearCard()} className={styles.footerButton}>
-              <Text className={styles.buttonText}>Clear card</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                onNewDealPressed()
-              }}
-              className={styles.footerButton}
-            >
-              <Text className={styles.buttonText}>New deal</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      {statsActive && <InGameStatistics />}
+      <EditSelection
+        suits={suits}
+        onSelectSuit={onSelectSuit}
+        onSelectValue={onSelectValue}
+        onEndGame={onEndGame}
+        onClearCard={onClearCard}
+        onNewDealPressed={onNewDealPressed}
+      />
     </SafeAreaView>
   )
 }
