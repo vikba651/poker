@@ -18,7 +18,8 @@ export default function StatsScreen({ navigation, route }) {
   async function fetchRounds() {
     const rounds = await getRounds(user.name)
     if (rounds) {
-      setRounds(rounds)
+      setRounds(rounds.sort((a, b) => b.startTime - a.startTime))
+      console.log(rounds[0])
     }
     setIsLoading(false)
   }
