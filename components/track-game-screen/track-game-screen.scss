@@ -51,7 +51,8 @@
     border-radius: 8px;
     margin: 0px 7px;
     justify-content: center;
-    // border: black;
+    border: transparent;
+    border-width: 3px;
 }
 
 .bigCard {
@@ -95,7 +96,7 @@
 }
 
 .selectedCard {
-    border-width: 3px;
+    border-color: black;
 }
 
 .disabledCard {
