@@ -1,0 +1,33 @@
+@import "variables";
+
+.boxShadow {
+    @include cardBoxShadow;  
+}
+
+.statsView {
+    @include card(0);
+    align-items: center;
+}
+
+.statsRow {
+    @include cardScrollView;
+}
+
+.statistic {
+    @include subCard;
+    justify-content: center;
+    align-items: center;
+}
+
+.statisticTitle {
+    font-size: 12px;
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.statisticResult {
+    font-size: 20px;
+    margin-bottom: 2px;
+    font-weight: 600;
+    color: #0ACC40;
+}

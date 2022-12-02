@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import AppContext from '../../shared/AppContext'
 
 import styles from './add-players-screen.scss'
+import { TrashIcon } from 'react-native-heroicons/outline'
 
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
@@ -125,7 +126,7 @@ export default function AddPlayersScreen({ navigation, route }) {
                       style={{ flexGrow: 2 }}
                     />
                     <TouchableOpacity onPress={() => onDeletePlayer(player.id)}>
-                      <Text className={styles.deleteButton}>Delete</Text>
+                      <TrashIcon className={styles.deleteButton} />
                     </TouchableOpacity>
                   </View>
                   <View className={styles.bottomRow}>
