@@ -1,0 +1,11 @@
+@import 'variables';
+
+.statsView {
+    @include card(0);
+    align-items: center;
+  }
+  
+  .boxShadow {
+    @include cardBoxShadow;
+  }
+  

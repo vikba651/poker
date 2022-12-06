@@ -25,12 +25,6 @@
   width: 50px;
 }
 
-.scrollView {
-  width: 100%;
-  margin-top: 20px;
-  //box-shadow: 15px 15px 20px rgba(0, 0, 0, 1);
-}
-
 .breakdownView {
   width: 95%;
   margin: 0px 10px;
@@ -116,13 +110,4 @@
   width: 80px;
   justify-content: center;
   align-items: center;
-}
-
-.statsView {
-  @include card(0);
-  align-items: center;
-}
-
-.boxShadow {
-  @include cardBoxShadow;
 }

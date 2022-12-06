@@ -1,6 +1,6 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React from 'react'
-import styles from './game-breakdown-screen.scss'
+import styles from './general-stats.scss'
 
 export default function GeneralStats({ navigation, deals }) {
   return (
