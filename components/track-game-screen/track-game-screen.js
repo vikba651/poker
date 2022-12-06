@@ -9,6 +9,7 @@ import club from '../../assets/club.png'
 import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
 import EditSelection from '../edit-selection/edit-selection'
 import InGameStatistics from '../in-game-statistics/in-game-statistics'
+import PlayingCard from '../playing-card/playing-card'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -87,18 +88,18 @@ export default function TrackGameScreen({ navigation, route }) {
   }, [socket])
 
   function onSelectSuit(suit) {
-    const newCards = cards.map((card) => {
+    let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
     })
     setCards(newCards)
     setSuitSelected(true)
 
     if (cards[selectedCard].value) {
-      setActiveCards(newCards)
+      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         valueSelected &&
-        cards[selectedCard + 1].isActive &&
+        newCards[selectedCard + 1].isActive &&
         !cards[selectedCard + 1].suit &&
         !cards[selectedCard + 1].value
       ) {
@@ -118,18 +119,18 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onSelectValue(value) {
-    const newCards = cards.map((card) => {
+    let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, value } : card
     })
     setCards(newCards)
     setValueSelected(true)
 
     if (cards[selectedCard].suit) {
-      setActiveCards(newCards)
+      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         suitSelected &&
-        cards[selectedCard + 1].isActive &&
+        newCards[selectedCard + 1].isActive &&
         !cards[selectedCard + 1].suit &&
         !cards[selectedCard + 1].value
       ) {
@@ -165,11 +166,14 @@ export default function TrackGameScreen({ navigation, route }) {
 
   // REFRACTOR
   function setActiveCards(cards) {
-    let newCards = [
-      ...cards.map((card) => {
-        return { ...card, isActive: false }
-      }),
-    ]
+    let newCards = []
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i]
+      if (i >= 2) {
+        cards[i].isActive = false
+      }
+      newCards.push(card)
+    }
     if (
       cards.slice(2, 4).some((card) => card.value && card.suit) ||
       cards.slice(0, 2).every((card) => card.value && card.suit)
@@ -191,6 +195,7 @@ export default function TrackGameScreen({ navigation, route }) {
       newCards.find((card) => card.id == 6).isActive = true
       setCards(newCards)
     }
+    return newCards
   }
 
   function onSelectCard(cardNumber) {
@@ -246,8 +251,9 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onEndGame() {
     if (cards.every((card) => !card.suit && !card.value)) {
-      socket.emit('endGame', { sessionId: session.id, currentDeal })
-      navigation.navigate('GameBreakdown', { allDeals })
+      socket.emit('endGame', { sessionId: session.id, currentDeal }, (round) => {
+        navigation.navigate('GameBreakdown', { round })
+      })
     }
     if (isValidCards()) {
       const newAllDeals = [...allDeals, { deal: currentDeal, cards }]
@@ -255,8 +261,9 @@ export default function TrackGameScreen({ navigation, route }) {
       const cardsData = cards.splice(0, 2).map((card) => {
         return { value: card.value, suit: card.suit }
       })
-      socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal })
-      navigation.navigate('GameBreakdown', { allDeals: newAllDeals })
+      socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal }, (round) => {
+        navigation.navigate('GameBreakdown', { round })
+      })
     }
   }
 
@@ -289,19 +296,15 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
             {cards.slice(0, 2).map((card) => {
               return (
-                <View key={card.id}>
-                  <TouchableOpacity className={getCardStyles(card.id)} onPress={() => onSelectCard(card.id)}>
-                    {!!card.suit && (
-                      <Image
-                        className={statsActive ? styles.cardSuit : styles.bigCardSuit}
-                        style={{ resizeMode: 'contain' }}
-                        source={card.suitImage}
-                      />
-                    )}
-                    {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
-                    {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
+                  <PlayingCard
+                    value={card.value}
+                    suit={card.suit}
+                    isSelected={selectedCard === card.id}
+                    isActive={card.isActive}
+                    isBigCard={!statsActive}
+                  />
+                </TouchableOpacity>
               )
             })}
           </View>
@@ -314,21 +317,15 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.tableCardsRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
-                <View key={card.id}>
-                  {card.isActive && (
-                    <TouchableOpacity
-                      className={selectedCard === card.id ? [styles.card, styles.selectedCard] : styles.card}
-                      onPress={() => onSelectCard(card.id)}
-                    >
-                      {!!card.suit && (
-                        <Image className={styles.cardSuit} style={{ resizeMode: 'contain' }} source={card.suitImage} />
-                      )}
-                      {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
-                      {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
-                    </TouchableOpacity>
-                  )}
-                  {!card.isActive && <View className={[styles.card, styles.disabledCard]}></View>}
-                </View>
+                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
+                  <PlayingCard
+                    value={card.value}
+                    suit={card.suit}
+                    isSelected={selectedCard === card.id}
+                    isActive={card.isActive}
+                    isBigCard={false}
+                  />
+                </TouchableOpacity>
               )
             })}
           </View>

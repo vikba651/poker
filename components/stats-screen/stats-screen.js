@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { SafeAreaView, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native'
+import { SafeAreaView, Text, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native'
 import { getRounds } from '../../shared/api'
 import AppContext from '../../shared/AppContext'
 import Svg, { Circle } from 'react-native-svg'
@@ -19,7 +19,6 @@ export default function StatsScreen({ navigation, route }) {
     const rounds = await getRounds(user.name)
     if (rounds) {
       setRounds(rounds.sort((a, b) => b.startTime - a.startTime))
-      console.log(rounds[0])
     }
     setIsLoading(false)
   }
@@ -35,12 +34,11 @@ export default function StatsScreen({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView className={styles.container}>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : rounds.length === 0 ? (
-        <Text>You have no rounds.</Text>
-      ) : (
+    <ScrollView className={styles.container} contentContainerStyle={{ alignItems: 'center' }}>
+      {isLoading && <ActivityIndicator />}
+      {!isLoading && rounds.length === 0 && <Text>You have no rounds.</Text>}
+      {!isLoading &&
+        rounds.length > 0 &&
         rounds.map((round, i) => (
           <View key={i}>
             <TouchableOpacity className={styles.roundButton} onPress={() => onClickRound(round)}>
@@ -48,17 +46,7 @@ export default function StatsScreen({ navigation, route }) {
               <Text>{round.deals.length + ' deals'}</Text>
             </TouchableOpacity>
           </View>
-        ))
-      )}
-      {/* {rounds.length === 0 && <Text>You have no rounds.</Text>}
-      {rounds.map((round, i) => (
-        <View key={i}>
-          <TouchableOpacity className={styles.roundButton}>
-            <Text>{formatTime(round.startTime)}</Text>
-            <Text>{round.deals.length + ' deals'}</Text>
-          </TouchableOpacity>
-        </View>
-      ))} */}
-    </SafeAreaView>
+        ))}
+    </ScrollView>
   )
 }
