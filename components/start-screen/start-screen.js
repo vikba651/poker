@@ -40,7 +40,7 @@ export default function StartScreen({ navigation, route }) {
   const [isGradientActivated, setIsGradientActivated] = useState(games.length > 3)
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied')
@@ -107,7 +107,7 @@ export default function StartScreen({ navigation, route }) {
 
       <View className={styles.boxShadow}>
         <View className={styles.actionContainer}>
-          <Text className={styles.cardTitle}>Actions</Text>
+          <Text className={styles.actionTitle}>Actions</Text>
           <View className={styles.actionButtons}>
             <TouchableOpacity onPress={() => navigation.navigate('CreateGameScreen')} className={styles.markerButton}>
               <Image
