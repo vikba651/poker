@@ -1,27 +1,28 @@
-import { useEffect, useState, useRef, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
-import { io } from 'socket.io-client'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
+import { UserGroupIcon } from 'react-native-heroicons/outline'
+import MainButton from '../main-button/main-button'
 
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
-  const SERVER_ADDR = 'http://192.168.0.11:8020'
-
-  const { userName, serverState, socket, session, setSession, location } = useContext(AppContext)
+  const { user, serverState, socket, session, setSession, location } = useContext(AppContext)
 
   const [isCreator, setIsCreator] = useState(true)
+  const [sessionCreated, setSessionCreated] = useState(false)
   const [inputCode, setInputCode] = useState('')
   const [nearbyGameCode, setNearbyGameCode] = useState('')
   const [closeEnough, setCloseEnough] = useState(false)
 
-  function createSession(name) {
-    socket.emit('createSession', { name, location })
+  function onCreateSession() {
+    // socket.emit('createSession', { name: user.name, location })
+    setSessionCreated(true)
   }
 
-  function joinSession(code) {
-    socket.emit('joinSession', { name: userName, code })
+  function onJoinSession(code) {
+    socket.emit('joinSession', { name: user.name, code })
   }
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function CreateGameScreen({ navigation, route }) {
 
     socket.on('sessionUpdated', (session) => {
       setSession(session)
-      setIsCreator(session.creator === userName)
+      setIsCreator(session.creator === user.name)
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
@@ -57,6 +58,10 @@ export default function CreateGameScreen({ navigation, route }) {
     socket.on('trackingStarted', () => {
       navigation.navigate('TrackGameScreen')
     })
+
+    // Always create session, even if using the app alone
+    // maybe we should just do a post request to save a round instead
+    socket.emit('createSession', { name: user.name, location })
   }, [])
 
   function startTracking() {
@@ -87,23 +92,24 @@ export default function CreateGameScreen({ navigation, route }) {
       <Text>{serverState}</Text>
       <View className={styles.boxShadow}>
         <View className={styles.lobbyView}>
-          {!session && (
+          {!sessionCreated && (
             <View className={styles.noSessionView}>
               <Text>Are you playing with friends?</Text>
-              <TouchableOpacity className={styles.createSessionButton} onPress={() => createSession(userName)}>
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => onCreateSession()}>
                 <Text className={styles.createPartyText}>Create party</Text>
+                <UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />
               </TouchableOpacity>
               {closeEnough && (
-                <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
-                  <Text className={styles.createPartyText}>Join nearby game with code {nearbyGameCode}</Text>
+                <TouchableOpacity className={styles.createSessionButton} onPress={() => onJoinSession(nearbyGameCode)}>
+                  <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
                 </TouchableOpacity>
               )}
             </View>
           )}
-          {session && (
+          {sessionCreated && (
             <>
               <View style={{ alignItems: 'center' }}>
-                <Text>Session code:</Text>
+                <Text>Party code:</Text>
                 <Text className={styles.sessionCode}>{session.code}</Text>
               </View>
               <View className={styles.sessionInfo}>
@@ -111,7 +117,7 @@ export default function CreateGameScreen({ navigation, route }) {
                 <Text style={{ fontWeight: '800' }}>Players:</Text>
                 {session.players.map((player, i) => (
                   <Text key={i}>
-                    {player.name} {player.name === userName && '(you)'}
+                    {player.name} {player.name === user.name && '(you)'}
                   </Text>
                 ))}
               </View>
@@ -121,22 +127,20 @@ export default function CreateGameScreen({ navigation, route }) {
       </View>
       <View className={styles.boxShadow}>
         <View className={styles.card}>
-          <Text className={styles.cardTitle}>Join session</Text>
+          <Text className={styles.cardTitle}>Join party</Text>
           <TextInput
             autoCapitalize={'characters'}
-            placeholder="Enter session code"
+            placeholder="Enter party code"
             onChangeText={setInputCode}
             autoCorrect={false}
           ></TextInput>
 
-          <Button title="Join session" onPress={() => joinSession(inputCode)}></Button>
+          <Button title="Join party" onPress={() => onJoinSession(inputCode)}></Button>
         </View>
       </View>
       <View>
         {isCreator ? (
-          <TouchableOpacity className={styles.startTrackingButton} onPress={() => startTracking()}>
-            <Text className={styles.startTrackingText}>Start Tracking</Text>
-          </TouchableOpacity>
+          <MainButton title="Start tracking" onPress={() => startTracking()} />
         ) : (
           <Text>Wait for party leader to start game</Text>
         )}

@@ -100,8 +100,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
+    padding-top: 20%
 }
 
 .actionText {
@@ -110,6 +111,7 @@
     width: 50%;
     word-wrap: break-word;
     text-align: center;
+    margin-top: 7%;
 }
 
 .markerImage {

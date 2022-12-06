@@ -1,13 +1,14 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import styles from './start-screen.scss'
-import AppContext from '../../context/AppContext'
+import AppContext from '../../shared/AppContext'
 import * as Location from 'expo-location'
+import { PlusIcon, ChartBarIcon, UserPlusIcon, CurrencyDollarIcon } from 'react-native-heroicons/outline'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
-  const { userName, session, location, setLocation } = useContext(AppContext)
+  const { user, session, location, setLocation } = useContext(AppContext)
 
   const games = [
     {
@@ -68,14 +69,9 @@ export default function StartScreen({ navigation, route }) {
 
   return (
     <SafeAreaView className={styles.container}>
-      {session && (
-        <View>
-          <Text>Your current sesh: {session.code}</Text>
-        </View>
-      )}
       <View className={styles.welcomeMessage}>
         <Text className={styles.whatDoText}>What do you want to do,</Text>
-        <Text className={styles.nameText}>{userName}?</Text>
+        <Text className={styles.nameText}>{user.name}?</Text>
       </View>
 
       <View className={styles.boxShadow}>
@@ -120,6 +116,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/blue-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <PlusIcon color="white" />
                 <Text className={styles.actionText}>NEW GAME</Text>
               </View>
             </TouchableOpacity>
@@ -130,6 +127,7 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/green-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <UserPlusIcon color="white" />
                 <Text className={styles.actionText}>JOIN GAME</Text>
               </View>
             </TouchableOpacity>
@@ -140,16 +138,18 @@ export default function StartScreen({ navigation, route }) {
                 source={require('../../assets/red-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <CurrencyDollarIcon color="white" />
                 <Text className={styles.actionText}>SETTLE UP</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('TrackGameScreen')} className={styles.markerButton}>
+            <TouchableOpacity onPress={() => navigation.navigate('StatsScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
                 source={require('../../assets/black-marker.png')}
               />
               <View className={styles.actionTextView}>
+                <ChartBarIcon color="white" />
                 <Text className={styles.actionText}>STATS</Text>
               </View>
             </TouchableOpacity>
