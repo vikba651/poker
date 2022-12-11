@@ -19,6 +19,7 @@ export default function PlayingCard({ value, suit, isSelected, isActive, isBigCa
   return (
     <View className={getCardStyles()}>
       <Image
+        key={suitImages[suit]}
         className={isBigCard ? styles.bigCardSuit : styles.cardSuit}
         style={{ resizeMode: 'contain' }}
         source={suitImages[suit]}

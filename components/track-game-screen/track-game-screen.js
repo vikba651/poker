@@ -80,9 +80,9 @@ export default function TrackGameScreen({ navigation, route }) {
           const suitImageIndex = suits.findIndex((suit) => suit.id === tableCardsData[i].suit)
           tableCards[i].suitImage = suitImageIndex >= 0 ? suits[suitImageIndex].image : null
         }
-        const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
+        let newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
+        newCards = setActiveCards(newCards)
         setCards(newCards)
-        setActiveCards(newCards)
       }
     })
   }, [socket])
@@ -91,11 +91,11 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
     })
+    newCards = setActiveCards(newCards)
     setCards(newCards)
     setSuitSelected(true)
 
     if (cards[selectedCard].value) {
-      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         valueSelected &&
@@ -122,11 +122,11 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, value } : card
     })
+    newCards = setActiveCards(newCards)
     setCards(newCards)
     setValueSelected(true)
 
     if (cards[selectedCard].suit) {
-      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         suitSelected &&
@@ -153,6 +153,7 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) =>
       card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
     )
+    newCards = setActiveCards(newCards)
     setCards(newCards)
     if (selectedCard > 1) {
       socket.emit('updateTableCards', {
@@ -161,7 +162,6 @@ export default function TrackGameScreen({ navigation, route }) {
         deal: currentDeal,
       })
     }
-    setActiveCards(newCards)
   }
 
   // REFRACTOR
@@ -182,18 +182,15 @@ export default function TrackGameScreen({ navigation, route }) {
       newCards.find((card) => card.id == 2).isActive = true
       newCards.find((card) => card.id == 3).isActive = true
       newCards.find((card) => card.id == 4).isActive = true
-      setCards(newCards)
     }
     if (cards.slice(2, 5).every((card) => card.value && card.suit)) {
       // 4 valid
       newCards.find((card) => card.id == 5).isActive = true
-      setCards(newCards)
     }
 
     if (cards.slice(2, 6).every((card) => card.value && card.suit)) {
       // 5 valid
       newCards.find((card) => card.id == 6).isActive = true
-      setCards(newCards)
     }
     return newCards
   }

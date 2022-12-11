@@ -18,7 +18,9 @@ export default function EditSelection({
         <View style={{ flexDirection: 'row' }}>
           {suits.map((suit) => (
             <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => onSelectSuit(suit)}>
-              <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
+              <View className={styles.selectionButtonView}>
+                <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -27,14 +29,18 @@ export default function EditSelection({
           <View style={{ flexDirection: 'row' }}>
             {firstRowValues.map((value) => (
               <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                <Text className={styles.valueText}>{value}</Text>
+                <View className={styles.selectionButtonView}>
+                  <Text className={styles.valueText}>{value}</Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
           <View style={{ flexDirection: 'row' }}>
             {secondRowValues.map((value) => (
               <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                <Text className={styles.valueText}>{value}</Text>
+                <View className={styles.selectionButtonView}>
+                  <Text className={styles.valueText}>{value}</Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
