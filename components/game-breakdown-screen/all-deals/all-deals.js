@@ -18,7 +18,7 @@ export default function AllDeals(round) {
     playerCards = playerCards.filter((cards) => cards) // Filter undefined
     if (playerCards) {
       const deals = []
-      for (let i = 0; i < round.deals.length; i++) {
+      for (let i = 0; i < playerCards.length; i++) {
         deals.push(<Deal key={i} playerCards={playerCards[i]} tableCards={round.deals[i].tableCards} />)
       }
       return deals
