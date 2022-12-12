@@ -283,7 +283,7 @@ export default function TrackGameScreen({ navigation, route }) {
             <Text className={styles.buttonFont}>Change Stats</Text>
           </TouchableOpacity> */}
 
-        <View style={{ marginBottom: 40, alignItems: 'center' }}>
+        <View style={{ alignItems: 'center', marginBottom: statsActive ? 0 : 40 }}>
           <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
           {session.players.length > 1 && <Text>In party with {session.players.length} players</Text>}
         </View>
@@ -314,7 +314,7 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.tableCardsRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
-                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
+                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)} disabled={!card.isActive}>
                   <PlayingCard
                     value={card.value}
                     suit={card.suit}
