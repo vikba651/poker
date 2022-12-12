@@ -4,24 +4,27 @@ import styles from './all-deals.scss'
 import AppContext from '../../../shared/AppContext'
 import Deal from '../deal/deal'
 
-export default function AllDeals(round) {
+export default function AllDeals({ deals }) {
   const [myCards, setMyCards] = useState([])
   const { user } = useContext(AppContext)
+
   useEffect(() => {
-    let newMyCards = round.deals.map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
+    let newMyCards = deals.map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
     newMyCards = newMyCards.filter((cards) => cards) // Filter undefined
     setMyCards(newMyCards)
-  }, [round])
+  }, [deals])
 
   function renderDeals(name) {
-    let playerCards = round.deals.map((deal) => deal.playerCards.find((cards) => cards.name === name)?.cards)
-    playerCards = playerCards.filter((cards) => cards) // Filter undefined
-    if (playerCards) {
-      const deals = []
-      for (let i = 0; i < playerCards.length; i++) {
-        deals.push(<Deal key={i} playerCards={playerCards[i]} tableCards={round.deals[i].tableCards} />)
+    if (deals.length > 0) {
+      let playerCards = deals.map((deal) => deal.playerCards.find((cards) => cards.name === name)?.cards)
+      playerCards = playerCards.filter((cards) => cards) // Filter undefined
+      if (playerCards) {
+        const dealComponents = []
+        for (let i = 0; i < playerCards.length; i++) {
+          dealComponents.push(<Deal key={i} playerCards={playerCards[i]} tableCards={deals[i].tableCards} />)
+        }
+        return dealComponents
       }
-      return deals
     }
   }
 

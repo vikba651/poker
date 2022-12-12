@@ -27,7 +27,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!showAllDeals && <GeneralStats></GeneralStats>}
+      {!showAllDeals && <GeneralStats deals={round.deals}></GeneralStats>}
       {showAllDeals && <AllDeals deals={round.deals}></AllDeals>}
 
       <View className={styles.footerButtonsView}>
