@@ -5,7 +5,7 @@ import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
 import club from '../../assets/club.png'
 
-export default function PlayingCard({ value, suit, isSelected, isActive, isBigCard }) {
+export default function PlayingCard({ rank, suit, isSelected, isActive, isBigCard }) {
   function getCardStyles() {
     let cardStyles = [styles.card, isSelected ? styles.selectedCard : styles.notSelectedCard]
     if (isBigCard) {
@@ -25,8 +25,8 @@ export default function PlayingCard({ value, suit, isSelected, isActive, isBigCa
         source={suitImages[suit]}
       />
 
-      <Text className={styles.cardTopValue}>{value}</Text>
-      <Text className={styles.cardBottomValue}>{value}</Text>
+      <Text className={styles.cardTopRank}>{rank}</Text>
+      <Text className={styles.cardBottomRank}>{rank}</Text>
       {!isActive && <View className={[styles.card, styles.disabledCard]}></View>}
     </View>
   )

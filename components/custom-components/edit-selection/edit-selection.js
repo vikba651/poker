@@ -1,16 +1,9 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import styles from './edit-selection.scss'
 
-export default function EditSelection({
-  suits,
-  onSelectSuit,
-  onSelectValue,
-  onEndGame,
-  onClearCard,
-  onNewDealPressed,
-}) {
-  const firstRowValues = ['A', '2', '3', '4', '5', '6']
-  const secondRowValues = ['7', '8', '9', '10', 'J', 'Q', 'K']
+export default function EditSelection({ suits, onSelectSuit, onSelectRank, onEndGame, onClearCard, onNewDealPressed }) {
+  const firstRowRanks = ['A', '2', '3', '4', '5', '6']
+  const secondRowRanks = ['7', '8', '9', '10', 'J', 'Q', 'K']
   return (
     <View className={styles.boxShadow}>
       <View className={styles.editSelectionView}>
@@ -23,18 +16,18 @@ export default function EditSelection({
           ))}
         </View>
 
-        <View className={styles.valueRows}>
+        <View className={styles.rankRows}>
           <View style={{ flexDirection: 'row' }}>
-            {firstRowValues.map((value) => (
-              <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                <Text className={styles.valueText}>{value}</Text>
+            {firstRowRanks.map((rank) => (
+              <TouchableOpacity key={rank} className={styles.selectionButton} onPress={() => onSelectRank(rank)}>
+                <Text className={styles.rankText}>{rank}</Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={{ flexDirection: 'row' }}>
-            {secondRowValues.map((value) => (
-              <TouchableOpacity key={value} className={styles.selectionButton} onPress={() => onSelectValue(value)}>
-                <Text className={styles.valueText}>{value}</Text>
+            {secondRowRanks.map((rank) => (
+              <TouchableOpacity key={rank} className={styles.selectionButton} onPress={() => onSelectRank(rank)}>
+                <Text className={styles.rankText}>{rank}</Text>
               </TouchableOpacity>
             ))}
           </View>

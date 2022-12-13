@@ -44,8 +44,8 @@ export default function AllDeals(round) {
                             source={card.suitImage}
                           />
                         )}
-                        {!!card.value && <Text className={styles.cardTopValue}>{card.value}</Text>}
-                        {!!card.value && <Text className={styles.cardBottomValue}>{card.value}</Text>}
+                        {!!card.rank && <Text className={styles.cardTopRank}>{card.rank}</Text>}
+                        {!!card.rank && <Text className={styles.cardBottomRank}>{card.rank}</Text>}
                       </View>
                     )
                   })}
@@ -61,8 +61,8 @@ export default function AllDeals(round) {
                             source={card.suitImage}
                           />
                         )}
-                        {<Text className={styles.cardTopValue}>{card.value}</Text>}
-                        {<Text className={styles.cardBottomValue}>{card.value}</Text>}
+                        {<Text className={styles.cardTopRank}>{card.rank}</Text>}
+                        {<Text className={styles.cardBottomRank}>{card.rank}</Text>}
                       </View>
                     )
                   })}

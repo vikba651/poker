@@ -11,7 +11,7 @@ export default function Deal({ playerCards, tableCards }) {
             return (
               <PlayingCard
                 key={i}
-                value={card.value}
+                rank={card.rank}
                 suit={card.suit}
                 isSelected={false}
                 isActive={true}
@@ -25,7 +25,7 @@ export default function Deal({ playerCards, tableCards }) {
             return (
               <PlayingCard
                 key={i}
-                value={card.value}
+                rank={card.rank}
                 suit={card.suit}
                 isSelected={false}
                 isActive={true}
