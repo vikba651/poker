@@ -16,28 +16,22 @@
 }
 
 .selectionButton {
-    height: 48px;
-    width: 41px;
-    align-items: center;
-    justify-content: center;
-    // margin: 5px 2px;
-    // border: 1px solid #797979;
-}
-
-.selectionButtonView {
-    border-radius: 5px;
+    height: 45px;
+    width: 40px;
     background-color: white;
     margin: 5px 2px;
-    width: 90%;
-    height: 85%;
+    border-radius: 5px;
     align-items: center;
     justify-content: center;
+    // border: 1px solid #797979;
 }
 
 .suitImage {
     height: 20px;
     width: 20px;
 }
+
+
 
 .valueRows {
     align-items: center;

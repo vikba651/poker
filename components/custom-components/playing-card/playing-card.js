@@ -1,9 +1,9 @@
 import { View, Image, Text } from 'react-native'
 import styles from './playing-card.scss'
-import heart from '../../assets/heart.png'
-import spade from '../../assets/spade.png'
-import diamond from '../../assets/diamond.png'
-import club from '../../assets/club.png'
+import heart from '../../../assets/heart.png'
+import spade from '../../../assets/spade.png'
+import diamond from '../../../assets/diamond.png'
+import club from '../../../assets/club.png'
 
 export default function PlayingCard({ value, suit, isSelected, isActive, isBigCard }) {
   function getCardStyles() {
@@ -19,7 +19,6 @@ export default function PlayingCard({ value, suit, isSelected, isActive, isBigCa
   return (
     <View className={getCardStyles()}>
       <Image
-        key={suitImages[suit]}
         className={isBigCard ? styles.bigCardSuit : styles.cardSuit}
         style={{ resizeMode: 'contain' }}
         source={suitImages[suit]}

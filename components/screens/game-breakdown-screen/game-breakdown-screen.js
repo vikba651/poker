@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import styles from './game-breakdown-screen.scss'
 import AllDeals from './all-deals/all-deals'
 import GeneralStats from './general-stats/general-stats'
-import AppContext from '../../shared/AppContext'
+import AppContext from '../../../shared/AppContext'
 
 export default function GameBreakDownScreen({ navigation, route }) {
   const round = route.params.round
@@ -23,11 +23,11 @@ export default function GameBreakDownScreen({ navigation, route }) {
     navigation.navigate('StartScreen')
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => { }, [])
 
   return (
     <SafeAreaView style={styles.container}>
-      {!showAllDeals && <GeneralStats deals={round.deals}></GeneralStats>}
+      {!showAllDeals && <GeneralStats></GeneralStats>}
       {showAllDeals && <AllDeals deals={round.deals}></AllDeals>}
 
       <View className={styles.footerButtonsView}>

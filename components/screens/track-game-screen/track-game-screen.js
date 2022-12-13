@@ -1,15 +1,15 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import styles from './track-game-screen.scss'
-import AppContext from '../../shared/AppContext'
-import heart from '../../assets/heart.png'
-import spade from '../../assets/spade.png'
-import diamond from '../../assets/diamond.png'
-import club from '../../assets/club.png'
+import AppContext from '../../../shared/AppContext'
+import heart from '../../../assets/heart.png'
+import spade from '../../../assets/spade.png'
+import diamond from '../../../assets/diamond.png'
+import club from '../../../assets/club.png'
 import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
-import EditSelection from '../edit-selection/edit-selection'
-import InGameStatistics from '../in-game-statistics/in-game-statistics'
-import PlayingCard from '../playing-card/playing-card'
+import EditSelection from '../../custom-components/edit-selection/edit-selection'
+import InGameStatistics from '../../custom-components/in-game-statistics/in-game-statistics'
+import PlayingCard from '../../custom-components/playing-card/playing-card'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -80,9 +80,9 @@ export default function TrackGameScreen({ navigation, route }) {
           const suitImageIndex = suits.findIndex((suit) => suit.id === tableCardsData[i].suit)
           tableCards[i].suitImage = suitImageIndex >= 0 ? suits[suitImageIndex].image : null
         }
-        let newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
-        newCards = setActiveCards(newCards)
+        const newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
         setCards(newCards)
+        setActiveCards(newCards)
       }
     })
   }, [socket])
@@ -91,11 +91,11 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
     })
-    newCards = setActiveCards(newCards)
     setCards(newCards)
     setSuitSelected(true)
 
     if (cards[selectedCard].value) {
+      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         valueSelected &&
@@ -122,11 +122,11 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) => {
       return card.id == selectedCard ? { ...card, value } : card
     })
-    newCards = setActiveCards(newCards)
     setCards(newCards)
     setValueSelected(true)
 
     if (cards[selectedCard].suit) {
+      newCards = setActiveCards(newCards)
       if (
         selectedCard < 6 &&
         suitSelected &&
@@ -153,7 +153,6 @@ export default function TrackGameScreen({ navigation, route }) {
     let newCards = cards.map((card) =>
       card.id === selectedCard ? { ...card, value: '', suit: '', suitImage: null } : card
     )
-    newCards = setActiveCards(newCards)
     setCards(newCards)
     if (selectedCard > 1) {
       socket.emit('updateTableCards', {
@@ -162,6 +161,7 @@ export default function TrackGameScreen({ navigation, route }) {
         deal: currentDeal,
       })
     }
+    setActiveCards(newCards)
   }
 
   // REFRACTOR
@@ -182,15 +182,18 @@ export default function TrackGameScreen({ navigation, route }) {
       newCards.find((card) => card.id == 2).isActive = true
       newCards.find((card) => card.id == 3).isActive = true
       newCards.find((card) => card.id == 4).isActive = true
+      setCards(newCards)
     }
     if (cards.slice(2, 5).every((card) => card.value && card.suit)) {
       // 4 valid
       newCards.find((card) => card.id == 5).isActive = true
+      setCards(newCards)
     }
 
     if (cards.slice(2, 6).every((card) => card.value && card.suit)) {
       // 5 valid
       newCards.find((card) => card.id == 6).isActive = true
+      setCards(newCards)
     }
     return newCards
   }
@@ -283,7 +286,7 @@ export default function TrackGameScreen({ navigation, route }) {
             <Text className={styles.buttonFont}>Change Stats</Text>
           </TouchableOpacity> */}
 
-        <View style={{ alignItems: 'center', marginBottom: statsActive ? 0 : 40 }}>
+        <View style={{ marginBottom: 40, alignItems: 'center' }}>
           <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
           {session.players.length > 1 && <Text>In party with {session.players.length} players</Text>}
         </View>
@@ -314,7 +317,7 @@ export default function TrackGameScreen({ navigation, route }) {
           <View className={styles.tableCardsRow}>
             {cards.slice(2, 7).map((card, i) => {
               return (
-                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)} disabled={!card.isActive}>
+                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
                   <PlayingCard
                     value={card.value}
                     suit={card.suit}
