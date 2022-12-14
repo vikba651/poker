@@ -1,17 +1,73 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { Dimensions } from 'react-native'
+import { BarChart, LineChart } from 'react-native-chart-kit'
 import styles from './general-stats.scss'
+import AppContext from '../../../../shared/AppContext'
 
-export default function GeneralStats({ navigation, deals }) {
+export default function GeneralStats({ deals }) {
+  const [cardDistributions, _setCardDistributions] = useState({
+    labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'],
+    datasets: [
+      {
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      },
+    ],
+  })
+
+  const { user } = useContext(AppContext)
+
+  function createCardDistributionData(cards) {
+    const newCardDistributions = { ...cardDistributions }
+    for (const cardPair of cards) {
+      for (const card of cardPair) {
+        if (card.value) {
+          const index = cardDistributions.labels.indexOf(card.value)
+          newCardDistributions.datasets[0].data[index] += 1
+        }
+      }
+    }
+    setCardDistributions(newCardDistributions)
+  }
+
+  useEffect(() => {
+    let myCards = deals.map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
+    if (myCards.length > 0) {
+      createCardDistributionData(myCards)
+    }
+  }, [deals])
+
   return (
     <SafeAreaView>
       <Text style={{ fontSize: 40, margin: 20 }}>This is general stats</Text>
-
-      <View className={styles.boxShadow}>
-        <View className={styles.statsView}>
-          <Text>This will be replaced with some random ass good statz knawimean</Text>
-        </View>
-      </View>
+      <Text>Card distributions</Text>
+      <BarChart
+        data={cardDistributions}
+        width={Dimensions.get('window').width}
+        height={200}
+        fromZero={true}
+        chartConfig={{
+          decimalPlaces: 0,
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          barPercentage: 0.2,
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        }}
+      />
+      <Text>Card distributions</Text>
+      <LineChart
+        data={cardDistributions}
+        width={Dimensions.get('window').width}
+        height={200}
+        fromZero={true}
+        chartConfig={{
+          decimalPlaces: 0,
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          barPercentage: 0.2,
+          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        }}
+      />
     </SafeAreaView>
   )
 }

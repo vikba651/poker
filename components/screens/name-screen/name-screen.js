@@ -24,9 +24,10 @@ export default function NameScreen({ navigation }) {
           setUserName(value)
           if (player) {
             setUser(player)
+            navigation.navigate('StartScreen')
           }
         })
-        navigation.navigate('StartScreen')
+        console.log('value', value)
       }
     } catch (e) {
       console.log(e)
@@ -39,8 +40,7 @@ export default function NameScreen({ navigation }) {
       let player = await getPlayer(name)
       if (!player) {
         player = await createPlayer(name)
-      }
-      if (player) {
+      } else {
         setUser(player)
       }
       navigation.navigate('StartScreen')
