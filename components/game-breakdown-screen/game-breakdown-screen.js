@@ -4,12 +4,13 @@ import styles from './game-breakdown-screen.scss'
 import AllDeals from './all-deals/all-deals'
 import GeneralStats from './general-stats/general-stats'
 import AppContext from '../../shared/AppContext'
+import { getRoundSummary } from '../../shared/api'
 
 export default function GameBreakDownScreen({ navigation, route }) {
   const round = route.params.round
   const { socket, session } = useContext(AppContext)
-
   const [showAllDeals, setShowAllDeals] = useState(false)
+  const [roundSummary, setRoundSummary] = useState()
 
   function onToggleViewAll() {
     setShowAllDeals(!showAllDeals)
@@ -23,11 +24,21 @@ export default function GameBreakDownScreen({ navigation, route }) {
     navigation.navigate('StartScreen')
   }
 
-  useEffect(() => {}, [])
+  const fetchRoundSummary = async () => {
+    const roundId = round._id
+    const roundSummary = await getRoundSummary(roundId)
+    setRoundSummary(roundSummary)
+    console.log(roundSummary)
+    console.log(roundSummary.userSummaries[0].handSummary)
+  }
+
+  useEffect(() => {
+    fetchRoundSummary()
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
-      {!showAllDeals && <GeneralStats deals={round.deals}></GeneralStats>}
+      {!showAllDeals && <GeneralStats deals={round.deals} roundSummary={roundSummary}></GeneralStats>}
       {showAllDeals && <AllDeals deals={round.deals}></AllDeals>}
 
       <View className={styles.footerButtonsView}>
