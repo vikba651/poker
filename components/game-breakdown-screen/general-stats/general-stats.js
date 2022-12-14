@@ -25,8 +25,8 @@ export default function GeneralStats({ deals }) {
     const newCardDistributions = { ...cardDistributions }
     for (const cards of myCards) {
       for (const card of cards) {
-        if (card.value) {
-          const index = cardDistributions.labels.indexOf(card.value)
+        if (card.rank) {
+          const index = cardDistributions.labels.indexOf(card.rank)
           newCardDistributions.datasets[0].data[index] += 1
         }
       }
