@@ -2,10 +2,9 @@ import { SafeAreaView, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import AppContext from '../../../shared/AppContext'
-import { getPlayer, createPlayer } from '../../../shared/api'
-import PrimaryButton from '../../custom-components/primary-button/primary-button'
-import { ArrowRightIcon } from 'react-native-heroicons/solid'
+import AppContext from '../../shared/AppContext'
+import { getPlayer, createPlayer } from '../../shared/api'
+import MainButton from '../main-button/main-button'
 
 export default function NameScreen({ navigation }) {
   const [prompt, setPrompt] = useState('This will be displayed to your friends.')
@@ -75,11 +74,7 @@ export default function NameScreen({ navigation }) {
           autoCorrect={false}
         />
       </View>
-      <PrimaryButton
-        title="Here we go"
-        onPress={() => onGetStarted()}
-        icon={<ArrowRightIcon className={styles.arrowRightIcon} color="black" size={30} />}
-      />
+      <MainButton title="Here we go" onPress={() => onGetStarted()} />
     </SafeAreaView>
   )
 }

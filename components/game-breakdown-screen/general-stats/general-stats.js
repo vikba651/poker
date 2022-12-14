@@ -18,13 +18,16 @@ export default function GeneralStats({ deals }) {
   const { user } = useContext(AppContext)
 
   useEffect(() => {
-    let myCards = deals.map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
+    let myCards = deals
+      .map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
+      .filter((cardPairs) => !!cardPairs)
+    console.log('myCards', myCards)
     const newCardDistributions = { ...cardDistributions }
     for (const cards of myCards) {
       for (const card of cards) {
         if (card.value) {
           const index = cardDistributions.labels.indexOf(card.value)
-          newData.datasets[0].data[index] += 1
+          newCardDistributions.datasets[0].data[index] += 1
         }
       }
     }

@@ -1,11 +1,9 @@
 import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
-import AppContext from '../../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 import { UserGroupIcon } from 'react-native-heroicons/outline'
-import PrimaryButton from '../../custom-components/primary-button/primary-button'
-import SecondaryButton from '../../custom-components/secondary-button/secondary-button'
-import { ArrowRightIcon } from 'react-native-heroicons/solid'
+import MainButton from '../main-button/main-button'
 
 // HTTP
 
@@ -21,10 +19,6 @@ export default function CreateGameScreen({ navigation, route }) {
   function onCreateSession() {
     // socket.emit('createSession', { name: user.name, location })
     setSessionCreated(true)
-  }
-
-  function onDisbandParty() {
-    setSessionCreated(false)
   }
 
   function onJoinSession(code) {
@@ -101,11 +95,10 @@ export default function CreateGameScreen({ navigation, route }) {
           {!sessionCreated && (
             <View className={styles.noSessionView}>
               <Text>Are you playing with friends?</Text>
-              <SecondaryButton
-                title="Create Party"
-                onPress={() => onCreateSession()}
-                icon={<UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />}
-              />
+              <TouchableOpacity className={styles.createSessionButton} onPress={() => onCreateSession()}>
+                <Text className={styles.createPartyText}>Create party</Text>
+                <UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />
+              </TouchableOpacity>
               {closeEnough && (
                 <TouchableOpacity className={styles.createSessionButton} onPress={() => onJoinSession(nearbyGameCode)}>
                   <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
@@ -115,37 +108,39 @@ export default function CreateGameScreen({ navigation, route }) {
           )}
           {sessionCreated && (
             <>
-              <View style={styles.sessionView}>
+              <View style={{ alignItems: 'center' }}>
                 <Text>Party code:</Text>
                 <Text className={styles.sessionCode}>{session.code}</Text>
-                <View className={styles.sessionInfo}>
-                  <Text className={styles.partyMembersText}>Party Members</Text>
-                  <Text style={{ fontWeight: '800' }}>Players:</Text>
-                  {session.players.map((player, i) => (
-                    <Text key={i}>
-                      {player.name} {player.name === user.name && '(you)'}
-                    </Text>
-                  ))}
-                </View>
-                <SecondaryButton
-                  title="Disband Party"
-                  className={styles.disbandSessionButton}
-                  onPress={() => onDisbandParty()}
-                  icon={<UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />}
-                  color="#f44336"
-                />
+              </View>
+              <View className={styles.sessionInfo}>
+                <Text className={styles.partyMembersText}>Party Members</Text>
+                <Text style={{ fontWeight: '800' }}>Players:</Text>
+                {session.players.map((player, i) => (
+                  <Text key={i}>
+                    {player.name} {player.name === user.name && '(you)'}
+                  </Text>
+                ))}
               </View>
             </>
           )}
         </View>
       </View>
+      <View className={styles.boxShadow}>
+        <View className={styles.card}>
+          <Text className={styles.cardTitle}>Join party</Text>
+          <TextInput
+            autoCapitalize={'characters'}
+            placeholder="Enter party code"
+            onChangeText={setInputCode}
+            autoCorrect={false}
+          ></TextInput>
+
+          <Button title="Join party" onPress={() => onJoinSession(inputCode)}></Button>
+        </View>
+      </View>
       <View>
         {isCreator ? (
-          <PrimaryButton
-            title="Start tracking"
-            onPress={() => startTracking()}
-            icon={<ArrowRightIcon className={styles.arrowRightIcon} color="black" size={30} />}
-          />
+          <MainButton title="Start tracking" onPress={() => startTracking()} />
         ) : (
           <Text>Wait for party leader to start game</Text>
         )}
