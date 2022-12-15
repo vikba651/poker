@@ -1,69 +1,85 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
-import { Dimensions } from 'react-native'
-import { BarChart, LineChart } from 'react-native-chart-kit'
+import { LineChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
+
 import styles from './general-stats.scss'
 import AppContext from '../../../shared/AppContext'
+import { BarGraph } from '../../charts/bar-graph'
+import { StackedBarGraph } from '../../charts/stacked-bar-graph'
 
-export default function GeneralStats({ deals }) {
-  const [cardDistributions, setCardDistributions] = useState({
-    labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'],
-    datasets: [
-      {
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      },
-    ],
-  })
+export default function GeneralStats({ deals, roundSummary }) {
+  const [cardDistributions, setCardDistributions] = useState({ labels: [], data: [] })
+  const [handResult, setHandResult] = useState({ labels: [], data: [] })
 
   const { user } = useContext(AppContext)
+
+  const handTypeToString = {
+    straightFlushes: 'Straight flush',
+    quads: 'Quad',
+    fullHouses: 'Full house',
+    flushes: 'Flush',
+    straights: 'Straight',
+    triples: 'Triple',
+    twoPairs: 'Two pair',
+    pairs: 'Pair',
+    highCards: 'High card',
+  }
+
+  function createCardDistributions(cards) {
+    const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    const newCardDistributions = { labels: cardRanks, data: cardRanks.map((_) => 0) }
+    for (const cardPairs of cards) {
+      for (const card of cardPairs) {
+        if (card.rank) {
+          const index = newCardDistributions.labels.indexOf(card.rank)
+          newCardDistributions.data[index] += 1
+        }
+      }
+    }
+    setCardDistributions(newCardDistributions)
+  }
+
+  function createHandResultsData(name) {
+    const data = {}
+    for (const userSummary of roundSummary.userSummaries) {
+      data[userSummary.name] = userSummary.handSummary
+    }
+    setHandResult({ data: data })
+  }
 
   useEffect(() => {
     let myCards = deals
       .map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
       .filter((cardPairs) => !!cardPairs)
-    console.log('myCards', myCards)
-    const newCardDistributions = { ...cardDistributions }
-    for (const cards of myCards) {
-      for (const card of cards) {
-        if (card.rank) {
-          const index = cardDistributions.labels.indexOf(card.rank)
-          newCardDistributions.datasets[0].data[index] += 1
-        }
-      }
+    createCardDistributions(myCards)
+    if (roundSummary) {
+      createHandResultsData('Dudeson')
     }
-    setCardDistributions(newCardDistributions)
-  }, [deals])
+  }, [roundSummary])
+
   return (
-    <SafeAreaView>
-      <Text style={{ fontSize: 40, margin: 20 }}>This is general stats</Text>
-      <Text>Card distributions</Text>
-      <BarChart
-        data={cardDistributions}
-        width={Dimensions.get('window').width}
-        height={200}
-        fromZero={true}
-        chartConfig={{
-          decimalPlaces: 0,
-          backgroundGradientFrom: '#fff',
-          backgroundGradientTo: '#fff',
-          barPercentage: 0.2,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        }}
-      />
-      <Text>Card distributions</Text>
-      <LineChart
-        data={cardDistributions}
-        width={Dimensions.get('window').width}
-        height={200}
-        fromZero={true}
-        chartConfig={{
-          decimalPlaces: 0,
-          backgroundGradientFrom: '#fff',
-          backgroundGradientTo: '#fff',
-          barPercentage: 0.2,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        }}
-      />
+    <SafeAreaView className={styles.container}>
+      <Text style={{ fontSize: 32, marginTop: 20 }}>General stats</Text>
+
+      <View className={styles.boxShadow}>
+        <View className={styles.card}>
+          <Text className={styles.statsTitle}>Card distributions</Text>
+          <BarGraph data={cardDistributions.data} labels={cardDistributions.labels} />
+        </View>
+      </View>
+      <View className={styles.boxShadow}>
+        <View className={styles.card}>
+          <Text className={styles.statsTitle}>Summary of hands</Text>
+          <StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />
+        </View>
+      </View>
+
+      {/* <LineChart
+        style={{ height: 200, width: '100%' }}
+        data={cardDistributions.data.map((data) => data - 1)}
+        svg={{ stroke: 'rgb(134, 65, 244)', strokeWidth: 3 }}
+        contentInset={{ top: 20, bottom: 20 }}
+      ></LineChart> */}
     </SafeAreaView>
   )
 }
