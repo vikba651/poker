@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { StatusBar } from 'react-native'
+import { StatusBar, LogBox } from 'react-native'
 
 import { AppProvider } from './shared/AppContext'
 import StartScreen from './components/start-screen/start-screen'
@@ -14,6 +14,9 @@ import CreateGameScreen from './components/create-game-screen/create-game-screen
 import StatsScreen from './components/stats-screen/stats-screen'
 
 const Stack = createNativeStackNavigator()
+
+LogBox.ignoreLogs(['Warning: ...']) // Ignore log notification by message
+LogBox.ignoreAllLogs() //Ignore all log notifications
 
 export default function App() {
   return (

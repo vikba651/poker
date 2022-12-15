@@ -4,13 +4,26 @@ import { LineChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
 
 import styles from './general-stats.scss'
 import AppContext from '../../../shared/AppContext'
-import { BarGraph } from '../../charts/bar-chart/bar-chart'
+import { BarGraph } from '../../charts/bar-graph'
+import { StackedBarGraph } from '../../charts/stacked-bar-graph'
 
 export default function GeneralStats({ deals, roundSummary }) {
   const [cardDistributions, setCardDistributions] = useState({ labels: [], data: [] })
   const [handResult, setHandResult] = useState({ labels: [], data: [] })
 
   const { user } = useContext(AppContext)
+
+  const handTypeToString = {
+    straightFlushes: 'Straight flush',
+    quads: 'Quad',
+    fullHouses: 'Full house',
+    flushes: 'Flush',
+    straights: 'Straight',
+    triples: 'Triple',
+    twoPairs: 'Two pair',
+    pairs: 'Pair',
+    highCards: 'High card',
+  }
 
   function createCardDistributions(cards) {
     const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
@@ -27,27 +40,11 @@ export default function GeneralStats({ deals, roundSummary }) {
   }
 
   function createHandResultsData(name) {
-    const handTypeToString = {
-      straightFlushes: 'Straight flush',
-      quads: 'Quad',
-      fullHouses: 'Full house',
-      flushes: 'Flush',
-      straights: 'Straight',
-      triples: 'Triple',
-      twoPairs: 'Two pair',
-      pairs: 'Pair',
-      highCards: 'High card',
+    const data = {}
+    for (const userSummary of roundSummary.userSummaries) {
+      data[userSummary.name] = userSummary.handSummary
     }
-    console.log('roundSummary', roundSummary)
-    const userHandSummary = roundSummary.userSummaries.find((summary) => summary.name === name)?.handSummary
-    let data = []
-    let labels = []
-    for (const handType in userHandSummary) {
-      labels.push(handTypeToString[handType])
-      data.push(userHandSummary[handType])
-    }
-    setHandResult({ data, labels })
-    console.log({ data, labels })
+    setHandResult({ data: data })
   }
 
   useEffect(() => {
@@ -56,7 +53,7 @@ export default function GeneralStats({ deals, roundSummary }) {
       .filter((cardPairs) => !!cardPairs)
     createCardDistributions(myCards)
     if (roundSummary) {
-      createHandResultsData(user.name)
+      createHandResultsData('Dudeson')
     }
   }, [roundSummary])
 
@@ -73,7 +70,7 @@ export default function GeneralStats({ deals, roundSummary }) {
       <View className={styles.boxShadow}>
         <View className={styles.card}>
           <Text className={styles.statsTitle}>Summary of hands</Text>
-          <BarGraph data={handResult.data} labels={handResult.labels} bigLabel={true} />
+          <StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />
         </View>
       </View>
 

@@ -28,8 +28,6 @@ export default function GameBreakDownScreen({ navigation, route }) {
     const roundId = round._id
     const roundSummary = await getRoundSummary(roundId)
     setRoundSummary(roundSummary)
-    console.log(roundSummary)
-    console.log(roundSummary.userSummaries[0].handSummary)
   }
 
   useEffect(() => {

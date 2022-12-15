@@ -26,7 +26,7 @@ export function BarGraph({ data, labels, bigLabel }) {
         <BarChart
           style={{ width: '90%' }}
           data={data}
-          svg={{ fill: '#49E' }}
+          svg={{ fill: '#639AFF' }}
           contentInset={{ top: 30, bottom: 20 }}
           numberOfTicks={Math.max(...data)}
         >
