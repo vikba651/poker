@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
+import { View, SafeAreaView, Button, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
@@ -46,17 +46,32 @@ export default function TrackGameScreen({ navigation, route }) {
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
 
-  const { socket, session, cards, setCards } = useContext(AppContext)
-  const cardsRef = useRef([])
-  cardsRef.current = cards
+  const { socket, session, deals, setDeals } = useContext(AppContext)
+  const dealsRef = useRef([])
+  dealsRef.current = deals
 
-  const [currentDeal, setCurrentDeal] = useState(1)
-  const currentDealRef = useRef(1) // This kinda shit is needed to read state in ws event listeners
+  const [currentDeal, setCurrentDeal] = useState(0)
+  const currentDealRef = useRef(0) // This kinda shit is needed to read state in ws event listeners
   currentDealRef.current = currentDeal
 
-  const [allDeals, setAllDeals] = useState([]) // Used when playing solo
-  const allDealsRef = useRef([])
-  allDealsRef.current = allDeals
+  const swiper = useRef(null)
+
+  // const [allDeals, setAllDeals] = useState([]) // Used when playing solo
+  // const allDealsRef = useRef([])
+  // allDealsRef.current = allDeals
+
+  useEffect(() => {
+    if (deals.length == 0) {
+      setDeals([
+        initialCardsList.map((card) => {
+          return { ...card }
+        }),
+        initialCardsList.map((card) => {
+          return { ...card }
+        }),
+      ])
+    }
+  }, [])
 
   useEffect(() => {
     setSuitSelected(false)
@@ -80,31 +95,27 @@ export default function TrackGameScreen({ navigation, route }) {
     })
   }, [socket])
 
-  useEffect(() => {
-    if (!cards) {
-      setCards(
-        initialCardsList.map((card) => {
-          return { ...card }
-        })
-      )
-    }
-  }, [])
+  function changeDeal(cards, deal) {
+    let newDeals = [...deals]
+    newDeals[deal] = cards
+    setDeals(newDeals)
+  }
 
   function onSelectSuit(suit) {
-    let newCards = cards.map((card) => {
+    let newCards = deals[currentDeal].map((card) => {
       return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
     })
     newCards = setActiveCards(newCards)
-    setCards(newCards)
+    changeDeal(newCards, currentDeal)
     setSuitSelected(true)
 
-    if (cards[selectedCard].rank) {
+    if (newCards[selectedCard].rank) {
       if (
         selectedCard < 6 &&
         rankSelected &&
         newCards[selectedCard + 1].isActive &&
-        !cards[selectedCard + 1].suit &&
-        !cards[selectedCard + 1].rank
+        !newCards[selectedCard + 1].suit &&
+        !newCards[selectedCard + 1].rank
       ) {
         setSelectedCard(selectedCard + 1)
       }
@@ -122,20 +133,20 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onSelectRank(rank) {
-    let newCards = cards.map((card) => {
+    let newCards = deals[currentDeal].map((card) => {
       return card.id == selectedCard ? { ...card, rank } : card
     })
     newCards = setActiveCards(newCards)
-    setCards(newCards)
+    changeDeal(newCards, currentDeal)
     setRankSelected(true)
 
-    if (cards[selectedCard].suit) {
+    if (newCards[selectedCard].suit) {
       if (
         selectedCard < 6 &&
         suitSelected &&
         newCards[selectedCard + 1].isActive &&
-        !cards[selectedCard + 1].suit &&
-        !cards[selectedCard + 1].rank
+        !newCards[selectedCard + 1].suit &&
+        !newCards[selectedCard + 1].rank
       ) {
         setSelectedCard(selectedCard + 1)
       }
@@ -223,29 +234,35 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onNewDealPressed() {
     if (session) {
-      const cardData = cardsRef.current.slice(0, 2).map((card) => {
+      const cardData = deals[currentDeal].slice(0, 2).map((card) => {
         return { rank: card.rank, suit: card.suit }
       })
       socket.emit('newDeal', {
         sessionId: session.id,
         cards: cardData,
-        deal: currentDealRef.current,
+        deal: currentDeal,
       })
     }
-    newDeal()
+    swiper.current.scrollBy(1, true)
+  }
+
+  function onIndexChanged(index) {
+    setCurrentDeal(index)
+    if (index === deals.length - 1) {
+      newDeal()
+    }
   }
 
   function newDeal() {
     // Disabled check valid cards for now
     if (true /* isValidCards() */) {
-      setAllDeals([...allDeals, { deal: currentDeal, cards: cards }])
-      setCurrentDeal(currentDeal + 1)
-      setCards(
+      setSelectedCard(0)
+      setDeals((prevDeals) => [
+        ...prevDeals,
         initialCardsList.map((card) => {
           return { ...card }
-        })
-      )
-      setSelectedCard(0)
+        }),
+      ])
     }
   }
 
@@ -273,28 +290,23 @@ export default function TrackGameScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Swiper showsPagination={false} loop={false} onIndexChanged={(index) => console.log(index)}>
-        <Cards
-          cards={cards}
-          currentDeal={currentDeal}
-          selectedCard={selectedCard}
-          onSelectCard={onSelectCard}
-          statsActive={statsActive}
-        ></Cards>
-        <Cards
-          cards={cards}
-          currentDeal={currentDeal}
-          selectedCard={selectedCard}
-          onSelectCard={onSelectCard}
-          statsActive={statsActive}
-        ></Cards>
-        <Cards
-          cards={cards}
-          currentDeal={currentDeal}
-          selectedCard={selectedCard}
-          onSelectCard={onSelectCard}
-          statsActive={statsActive}
-        ></Cards>
+      <Swiper
+        // key={currentDeal}
+        ref={(s) => (swiper.current = s)}
+        showsPagination={false}
+        loop={false}
+        onIndexChanged={onIndexChanged}
+      >
+        {deals.map((cards, i) => (
+          <Cards
+            key={i}
+            cards={cards}
+            currentDeal={i}
+            selectedCard={selectedCard}
+            onSelectCard={onSelectCard}
+            statsActive={statsActive}
+          ></Cards>
+        ))}
       </Swiper>
       {statsActive && <InGameStatistics />}
       <EditSelection

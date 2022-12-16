@@ -1,5 +1,5 @@
 import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './track-game-screen.scss'
 import PlayingCard from '../playing-card/playing-card'
 
@@ -8,6 +8,8 @@ import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'r
 export default function Cards({ cards, currentDeal, selectedCard, onSelectCard, statsActive }) {
   const [hideCards, onHideCards] = useState(false)
 
+  useEffect(() => {}, [cards])
+
   return (
     <View className={styles.cardsView}>
       {/* <TouchableOpacity className={styles.restartButton} onPress={() => toggleStats()}>
@@ -15,7 +17,7 @@ export default function Cards({ cards, currentDeal, selectedCard, onSelectCard, 
           </TouchableOpacity> */}
 
       <View style={{ alignItems: 'center', marginBottom: statsActive ? 0 : 40 }}>
-        <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
+        <Text style={{ fontWeight: '800' }}>Deal #{currentDeal + 1}</Text>
       </View>
       <View className={styles.myCards}>
         <Text className={styles.titleFont}>My Cards</Text>
