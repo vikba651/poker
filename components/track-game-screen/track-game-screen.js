@@ -1,15 +1,15 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
+import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
 import AppContext from '../../shared/AppContext'
 import heart from '../../assets/heart.png'
 import spade from '../../assets/spade.png'
 import diamond from '../../assets/diamond.png'
 import club from '../../assets/club.png'
-import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
 import EditSelection from '../edit-selection/edit-selection'
 import InGameStatistics from '../in-game-statistics/in-game-statistics'
-import PlayingCard from '../playing-card/playing-card'
+import Cards from './cards'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
@@ -41,7 +41,6 @@ export default function TrackGameScreen({ navigation, route }) {
     },
   ]
   const [statsActive, setStatsActive] = useState(false)
-  const [hideCards, onHideCards] = useState(false)
 
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
   const [rankSelected, setRankSelected] = useState(false)
@@ -262,7 +261,6 @@ export default function TrackGameScreen({ navigation, route }) {
       const cardsData = cards.slice(0, 2).map((card) => {
         return { rank: card.rank, suit: card.suit }
       })
-      console.log('cards', cards)
       socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal }, (round) => {
         navigation.navigate('GameBreakdown', { round })
       })
@@ -273,68 +271,31 @@ export default function TrackGameScreen({ navigation, route }) {
     setStatsActive(!statsActive)
   }
 
-  function getCardStyles(cardId) {
-    let cardStyles = [styles.card, selectedCard === cardId ? styles.selectedCard : styles.notSelectedCard]
-    if (!statsActive) {
-      cardStyles.push(styles.bigCard)
-    }
-    return cardStyles
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <View className={styles.cardsView}>
-        {/* <TouchableOpacity className={styles.restartButton} onPress={() => toggleStats()}>
-            <Text className={styles.buttonFont}>Change Stats</Text>
-          </TouchableOpacity> */}
-
-        <View style={{ alignItems: 'center', marginBottom: statsActive ? 0 : 40 }}>
-          <Text style={{ fontWeight: '800' }}>Deal #{currentDeal}</Text>
-          {session.players.length > 1 && <Text>In party with {session.players.length} players</Text>}
-        </View>
-
-        <View className={styles.myCards}>
-          <Text className={styles.titleFont}>My Cards</Text>
-          <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
-            {cards &&
-              cards.slice(0, 2).map((card) => {
-                return (
-                  <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
-                    <PlayingCard
-                      rank={card.rank}
-                      suit={card.suit}
-                      isSelected={selectedCard === card.id}
-                      isActive={card.isActive}
-                      isBigCard={!statsActive}
-                    />
-                  </TouchableOpacity>
-                )
-              })}
-          </View>
-          <TouchableOpacity className={styles.hideButton} onPress={() => onHideCards(!hideCards)}>
-            {hideCards ? <EyeIcon color="black" /> : <EyeSlashIcon color="black" />}
-          </TouchableOpacity>
-        </View>
-        <View className={styles.tableCards}>
-          <Text className={styles.titleFont}>Cards on table</Text>
-          <View className={styles.tableCardsRow}>
-            {cards &&
-              cards.slice(2, 7).map((card, i) => {
-                return (
-                  <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)} disabled={!card.isActive}>
-                    <PlayingCard
-                      rank={card.rank}
-                      suit={card.suit}
-                      isSelected={selectedCard === card.id}
-                      isActive={card.isActive}
-                      isBigCard={false}
-                    />
-                  </TouchableOpacity>
-                )
-              })}
-          </View>
-        </View>
-      </View>
+      <Swiper showsPagination={false} loop={false} onIndexChanged={(index) => console.log(index)}>
+        <Cards
+          cards={cards}
+          currentDeal={currentDeal}
+          selectedCard={selectedCard}
+          onSelectCard={onSelectCard}
+          statsActive={statsActive}
+        ></Cards>
+        <Cards
+          cards={cards}
+          currentDeal={currentDeal}
+          selectedCard={selectedCard}
+          onSelectCard={onSelectCard}
+          statsActive={statsActive}
+        ></Cards>
+        <Cards
+          cards={cards}
+          currentDeal={currentDeal}
+          selectedCard={selectedCard}
+          onSelectCard={onSelectCard}
+          statsActive={statsActive}
+        ></Cards>
+      </Swiper>
       {statsActive && <InGameStatistics />}
       <EditSelection
         suits={suits}
