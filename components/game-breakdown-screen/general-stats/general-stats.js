@@ -4,12 +4,12 @@ import { LineChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
 
 import styles from './general-stats.scss'
 import AppContext from '../../../shared/AppContext'
-import { BarGraph } from '../../charts/bar-graph'
-import { StackedBarGraph } from '../../charts/stacked-bar-graph'
+import { BarGraph } from '../../graphs/bar-graph'
+import { StackedBarGraph } from '../../graphs/stacked-bar-graph'
 
 export default function GeneralStats({ deals, roundSummary }) {
   const [cardDistributions, setCardDistributions] = useState({ labels: [], data: [] })
-  const [handResult, setHandResult] = useState({ labels: [], data: [] })
+  const [handResult, setHandResult] = useState({ data: [] })
 
   const { user } = useContext(AppContext)
 
@@ -39,7 +39,7 @@ export default function GeneralStats({ deals, roundSummary }) {
     setCardDistributions(newCardDistributions)
   }
 
-  function createHandResultsData(name) {
+  function createHandResultsData() {
     const data = {}
     for (const userSummary of roundSummary.userSummaries) {
       data[userSummary.name] = userSummary.handSummary
@@ -53,7 +53,7 @@ export default function GeneralStats({ deals, roundSummary }) {
       .filter((cardPairs) => !!cardPairs)
     createCardDistributions(myCards)
     if (roundSummary) {
-      createHandResultsData('Dudeson')
+      createHandResultsData()
     }
   }, [roundSummary])
 
@@ -73,7 +73,6 @@ export default function GeneralStats({ deals, roundSummary }) {
           <StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />
         </View>
       </View>
-
       {/* <LineChart
         style={{ height: 200, width: '100%' }}
         data={cardDistributions.data.map((data) => data - 1)}

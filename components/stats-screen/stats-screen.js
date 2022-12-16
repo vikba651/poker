@@ -25,8 +25,17 @@ export default function StatsScreen({ navigation, route }) {
 
   function formatTime(dateTimeString) {
     const date = new Date(dateTimeString)
-    const localeString = date.toLocaleString()
-    return localeString.slice(0, localeString.length - 3)
+    const dateString =
+      date.getFullYear() +
+      '-' +
+      (date.getMonth() + 1) +
+      '-' +
+      date.getDate() +
+      ' ' +
+      date.getHours() +
+      ':' +
+      date.getMinutes()
+    return dateString
   }
 
   function onClickRound(round) {

@@ -8,7 +8,7 @@ import { TrashIcon } from 'react-native-heroicons/outline'
 
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
-
+  const [editingAll, setEditingAll] = useState(false)
   const { players, setPlayers, user, session } = useContext(AppContext)
 
   useEffect(() => {
@@ -61,24 +61,19 @@ export default function AddPlayersScreen({ navigation, route }) {
 
   function onChangeBuyIn(text, id) {
     let newPlayers = [...players]
-    newPlayers.find((player) => player.id == id).buyIn = text
-    setPlayers(newPlayers)
-  }
-
-  function onSetDefaultBuyIn() {
-    let newPlayers = [...players]
-    playerChangedBuyIn = newPlayers.filter((player) => player.buyIn !== 0)
-    text = playerChangedBuyIn.length ? playerChangedBuyIn[0].buyIn : 0
-
-    if (newPlayers.length - newPlayers.filter((player) => player.buyIn === 0).length === 1) {
+    console.log(newPlayers)
+    if (editingAll || newPlayers.filter((player) => player != id).every((player) => player.buyIn === 0)) {
+      setEditingAll(true)
       newPlayers = newPlayers.map((player) => {
         return {
           id: player.id,
           name: player.name,
           buyIn: text,
-          player: player.chipsLeft,
+          chipsLeft: player.chipsLeft,
         }
       })
+    } else {
+      newPlayers.find((player) => player.id == id).buyIn = text
     }
     setPlayers(newPlayers)
   }
@@ -109,48 +104,56 @@ export default function AddPlayersScreen({ navigation, route }) {
   return (
     <SafeAreaView className={styles.container}>
       {/* <Text className={styles.addPlayers}>Add players</Text> */}
-      <KeyboardAwareScrollView style={{ flex: 1, paddingTop: 50 }}>
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
         <View className={styles.scrollView}>
           {players.map((player, i) => {
             return (
               <View key={player.id} className={styles.boxShadow}>
                 <View className={styles.playerCard}>
                   <View className={styles.topRow}>
-                    <TextInput
-                      key={'name' + player.id}
-                      onChangeText={(text) => onChangeName(text, player.id)}
-                      value={player.name}
-                      placeholder="Player name"
-                      maxLength={25}
-                      className={styles.textInput}
-                      style={{ flexGrow: 2 }}
-                    />
+                    <View className={styles.nameInput}>
+                      <Text className={styles.inputLabel}>Name</Text>
+                      <TextInput
+                        key={'name' + player.id}
+                        onChangeText={(text) => onChangeName(text, player.id)}
+                        value={player.name}
+                        placeholder="Enter player name"
+                        maxLength={25}
+                        className={styles.textInput}
+                        style={{ flexGrow: 2 }}
+                      />
+                    </View>
                     <TouchableOpacity onPress={() => onDeletePlayer(player.id)}>
                       <TrashIcon className={styles.deleteButton} />
                     </TouchableOpacity>
                   </View>
                   <View className={styles.bottomRow}>
-                    <TextInput
-                      key={'buyIn' + player.id}
-                      keyboardType="numeric"
-                      onChangeText={(text) => onChangeBuyIn(text, player.id)}
-                      onEndEditing={onSetDefaultBuyIn}
-                      value={player.buyIn}
-                      placeholder="Buy in"
-                      maxLength={10}
-                      className={[styles.textInput, styles.bottomRowInput]}
-                      style={{ marginRight: 10 }}
-                      autoFocus={i === 0}
-                    />
-                    <TextInput
-                      key={'chipsLeft' + player.id}
-                      keyboardType="numeric"
-                      onChangeText={(text) => onChangeChipsLeft(text, player.id)}
-                      value={player.chipsLeft}
-                      placeholder="Chips left"
-                      maxLength={10}
-                      className={[styles.textInput, styles.bottomRowInput]}
-                    />
+                    <View className={styles.bottomRowInput}>
+                      <Text className={styles.inputLabel}>Buy in</Text>
+                      <TextInput
+                        key={'buyIn' + player.id}
+                        keyboardType="numeric"
+                        onChangeText={(text) => onChangeBuyIn(text, player.id)}
+                        onEndEditing={() => setEditingAll(false)}
+                        value={player.buyIn}
+                        placeholder="Enter buy in"
+                        maxLength={10}
+                        className={styles.textInput}
+                        autoFocus={i === 0}
+                      />
+                    </View>
+                    <View className={styles.bottomRowInput}>
+                      <Text className={styles.inputLabel}>Chips left</Text>
+                      <TextInput
+                        key={'chipsLeft' + player.id}
+                        keyboardType="numeric"
+                        onChangeText={(text) => onChangeChipsLeft(text, player.id)}
+                        value={player.chipsLeft}
+                        placeholder="Enter chips left"
+                        maxLength={10}
+                        className={styles.textInput}
+                      />
+                    </View>
                   </View>
                 </View>
               </View>

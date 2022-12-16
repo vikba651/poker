@@ -46,12 +46,8 @@ export default function TrackGameScreen({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
-  const [cards, setCards] = useState(
-    initialCardsList.map((card) => {
-      // Deep copy
-      return { ...card }
-    })
-  )
+
+  const { socket, session, cards, setCards } = useContext(AppContext)
   const cardsRef = useRef([])
   cardsRef.current = cards
 
@@ -62,8 +58,6 @@ export default function TrackGameScreen({ navigation, route }) {
   const [allDeals, setAllDeals] = useState([]) // Used when playing solo
   const allDealsRef = useRef([])
   allDealsRef.current = allDeals
-
-  const { socket, session } = useContext(AppContext)
 
   useEffect(() => {
     setSuitSelected(false)
@@ -86,6 +80,16 @@ export default function TrackGameScreen({ navigation, route }) {
       }
     })
   }, [socket])
+
+  useEffect(() => {
+    if (!cards) {
+      setCards(
+        initialCardsList.map((card) => {
+          return { ...card }
+        })
+      )
+    }
+  }, [])
 
   function onSelectSuit(suit) {
     let newCards = cards.map((card) => {
@@ -233,10 +237,10 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function newDeal() {
+    // Disabled check valid cards for now
     if (true /* isValidCards() */) {
-      // Disabled check valid cards for now
-      setAllDeals([...allDealsRef.current, { deal: currentDealRef.current, cards: cardsRef.current }])
-      setCurrentDeal(currentDealRef.current + 1)
+      setAllDeals([...allDeals, { deal: currentDeal, cards: cards }])
+      setCurrentDeal(currentDeal + 1)
       setCards(
         initialCardsList.map((card) => {
           return { ...card }
@@ -255,9 +259,10 @@ export default function TrackGameScreen({ navigation, route }) {
     if (isValidCards()) {
       const newAllDeals = [...allDeals, { deal: currentDeal, cards }]
       setAllDeals(newAllDeals)
-      const cardsData = cards.splice(0, 2).map((card) => {
+      const cardsData = cards.slice(0, 2).map((card) => {
         return { rank: card.rank, suit: card.suit }
       })
+      console.log('cards', cards)
       socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal }, (round) => {
         navigation.navigate('GameBreakdown', { round })
       })
@@ -291,19 +296,20 @@ export default function TrackGameScreen({ navigation, route }) {
         <View className={styles.myCards}>
           <Text className={styles.titleFont}>My Cards</Text>
           <View className={styles.myCardsRow} style={{ opacity: hideCards ? 0 : 1 }}>
-            {cards.slice(0, 2).map((card) => {
-              return (
-                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
-                  <PlayingCard
-                    rank={card.rank}
-                    suit={card.suit}
-                    isSelected={selectedCard === card.id}
-                    isActive={card.isActive}
-                    isBigCard={!statsActive}
-                  />
-                </TouchableOpacity>
-              )
-            })}
+            {cards &&
+              cards.slice(0, 2).map((card) => {
+                return (
+                  <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)}>
+                    <PlayingCard
+                      rank={card.rank}
+                      suit={card.suit}
+                      isSelected={selectedCard === card.id}
+                      isActive={card.isActive}
+                      isBigCard={!statsActive}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
           </View>
           <TouchableOpacity className={styles.hideButton} onPress={() => onHideCards(!hideCards)}>
             {hideCards ? <EyeIcon color="black" /> : <EyeSlashIcon color="black" />}
@@ -312,19 +318,20 @@ export default function TrackGameScreen({ navigation, route }) {
         <View className={styles.tableCards}>
           <Text className={styles.titleFont}>Cards on table</Text>
           <View className={styles.tableCardsRow}>
-            {cards.slice(2, 7).map((card, i) => {
-              return (
-                <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)} disabled={!card.isActive}>
-                  <PlayingCard
-                    rank={card.rank}
-                    suit={card.suit}
-                    isSelected={selectedCard === card.id}
-                    isActive={card.isActive}
-                    isBigCard={false}
-                  />
-                </TouchableOpacity>
-              )
-            })}
+            {cards &&
+              cards.slice(2, 7).map((card, i) => {
+                return (
+                  <TouchableOpacity key={card.id} onPress={() => onSelectCard(card.id)} disabled={!card.isActive}>
+                    <PlayingCard
+                      rank={card.rank}
+                      suit={card.suit}
+                      isSelected={selectedCard === card.id}
+                      isActive={card.isActive}
+                      isBigCard={false}
+                    />
+                  </TouchableOpacity>
+                )
+              })}
           </View>
         </View>
       </View>
