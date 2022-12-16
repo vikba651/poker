@@ -4,10 +4,8 @@ import { Grid, XAxis, StackedBarChart } from 'react-native-svg-charts'
 import * as scale from 'd3-scale'
 
 /**
- *
  * @param data format: { "userName1": {"label1": value1, "label2": value2}, "userName2": {"label1": value1, "label2": value2}}
  * @param labelToStringMap format: {"label1": "label1string", "label2": "label2string"}
- * @returns
  */
 export function StackedBarGraph({ data, labelToStringMap, bigLabels }) {
   const [formattedData, setFormattedData] = useState()
@@ -75,9 +73,9 @@ export function StackedBarGraph({ data, labelToStringMap, bigLabels }) {
               width: '10%',
               height: '100%',
               alignItems: 'center',
-              marginTop: '2%',
-              paddingBottom: '1%',
-              justifyContent: 'space-evenly',
+              marginTop: '8%',
+              paddingBottom: '13%',
+              justifyContent: 'space-between',
             }}
           >
             {renderYAxis()}
