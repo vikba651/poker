@@ -3,43 +3,21 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
 import AppContext from '../../shared/AppContext'
-import heart from '../../assets/heart.png'
-import spade from '../../assets/spade.png'
-import diamond from '../../assets/diamond.png'
-import club from '../../assets/club.png'
 import EditSelection from '../edit-selection/edit-selection'
 import InGameStatistics from '../in-game-statistics/in-game-statistics'
 import Cards from './cards'
 
 export default function TrackGameScreen({ navigation, route }) {
   const initialCardsList = [
-    { id: 0, suit: '', suitImage: null, rank: '', isActive: true },
-    { id: 1, suit: '', suitImage: null, rank: '', isActive: true },
-    { id: 2, suit: '', suitImage: null, rank: '', isActive: false },
-    { id: 3, suit: '', suitImage: null, rank: '', isActive: false },
-    { id: 4, suit: '', suitImage: null, rank: '', isActive: false },
-    { id: 5, suit: '', suitImage: null, rank: '', isActive: false },
-    { id: 6, suit: '', suitImage: null, rank: '', isActive: false },
+    { id: 0, suit: '', rank: '', isActive: true },
+    { id: 1, suit: '', rank: '', isActive: true },
+    { id: 2, suit: '', rank: '', isActive: false },
+    { id: 3, suit: '', rank: '', isActive: false },
+    { id: 4, suit: '', rank: '', isActive: false },
+    { id: 5, suit: '', rank: '', isActive: false },
+    { id: 6, suit: '', rank: '', isActive: false },
   ]
 
-  const suits = [
-    {
-      id: 'heart',
-      image: heart,
-    },
-    {
-      id: 'spade',
-      image: spade,
-    },
-    {
-      id: 'diamond',
-      image: diamond,
-    },
-    {
-      id: 'club',
-      image: club,
-    },
-  ]
   const [statsActive, setStatsActive] = useState(false)
 
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
@@ -55,10 +33,6 @@ export default function TrackGameScreen({ navigation, route }) {
   currentDealRef.current = currentDeal
 
   const swiper = useRef(null)
-
-  // const [allDeals, setAllDeals] = useState([]) // Used when playing solo
-  // const allDealsRef = useRef([])
-  // allDealsRef.current = allDeals
 
   useEffect(() => {
     if (deals.length == 0) {
@@ -79,34 +53,51 @@ export default function TrackGameScreen({ navigation, route }) {
   }, [selectedCard])
 
   useEffect(() => {
-    socket.on('tableCardsUpdated', (tableCardsData, deal) => {
-      if (deal === currentDealRef.current) {
-        let tableCards = [...cardsRef.current.slice(2)]
-        for (let i = 0; i < tableCardsData.length; i++) {
-          tableCards[i].rank = tableCardsData[i].rank
-          tableCards[i].suit = tableCardsData[i].suit
-          const suitImageIndex = suits.findIndex((suit) => suit.id === tableCardsData[i].suit)
-          tableCards[i].suitImage = suitImageIndex >= 0 ? suits[suitImageIndex].image : null
+    socket.on('tableCardsUpdated', (tableCardsData, dealNumber) => {
+      const newTableCards = tableCardsData.map((card, i) => {
+        return {
+          id: i + 2,
+          ...card,
         }
-        let newCards = [cardsRef.current[0], cardsRef.current[1], ...tableCards]
-        newCards = setActiveCards(newCards)
-        setCards(newCards)
+      })
+      let newDeals = [...dealsRef.current]
+      // console.log('newDeals', newDeals)
+      if (newDeals.length <= dealNumber) {
+        const dealsToCreate = dealNumber - newDeals.length + 2
+        console.log(dealsToCreate)
+        pushNewDeals(newDeals, dealsToCreate)
+        console.log('after push')
+        for (const deal of newDeals) {
+          console.log(deal)
+        }
       }
+      let newDeal = [...newDeals[dealNumber].slice(0, 2), ...newTableCards]
+      newDeal = setActiveCards(newDeal)
+      changeOneDeal(newDeal, dealNumber)
     })
   }, [socket])
 
-  function changeDeal(cards, deal) {
-    let newDeals = [...deals]
-    newDeals[deal] = cards
+  function pushNewDeals(deals, count) {
+    for (let i = 0; i < count; i++) {
+      deals.push([
+        ...initialCardsList.map((card) => {
+          return { ...card }
+        }),
+      ])
+    }
+  }
+
+  function changeOneDeal(cards, dealNumber) {
+    let newDeals = [...dealsRef.current]
+    newDeals[dealNumber] = cards
     setDeals(newDeals)
   }
 
   function onSelectSuit(suit) {
-    let newCards = deals[currentDeal].map((card) => {
-      return card.id == selectedCard ? { ...card, suit: suit.id, suitImage: suit.image } : card
-    })
+    let newCards = [...deals[currentDeal]]
+    newCards[selectedCard].suit = suit
     newCards = setActiveCards(newCards)
-    changeDeal(newCards, currentDeal)
+    changeOneDeal(newCards, currentDeal)
     setSuitSelected(true)
 
     if (newCards[selectedCard].rank) {
@@ -119,7 +110,7 @@ export default function TrackGameScreen({ navigation, route }) {
       ) {
         setSelectedCard(selectedCard + 1)
       }
-      if (session && selectedCard >= 2 && newCards !== cards) {
+      if (session && selectedCard >= 2 && newCards !== deals[currentDeal]) {
         const tableCards = newCards.slice(2).map((card) => {
           return { rank: card.rank, suit: card.suit }
         })
@@ -133,11 +124,10 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onSelectRank(rank) {
-    let newCards = deals[currentDeal].map((card) => {
-      return card.id == selectedCard ? { ...card, rank } : card
-    })
+    let newCards = [...deals[currentDeal]]
+    newCards[selectedCard].rank = rank
     newCards = setActiveCards(newCards)
-    changeDeal(newCards, currentDeal)
+    changeOneDeal(newCards, currentDeal)
     setRankSelected(true)
 
     if (newCards[selectedCard].suit) {
@@ -150,7 +140,7 @@ export default function TrackGameScreen({ navigation, route }) {
       ) {
         setSelectedCard(selectedCard + 1)
       }
-      if (session && selectedCard >= 2 && newCards !== cards) {
+      if (session && selectedCard >= 2 && newCards !== deals[currentDeal]) {
         const tableCards = newCards.slice(2).map((card) => {
           return { rank: card.rank, suit: card.suit }
         })
@@ -164,11 +154,11 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onClearCard() {
-    let newCards = cards.map((card) =>
-      card.id === selectedCard ? { ...card, rank: '', suit: '', suitImage: null } : card
-    )
+    let newCards = [...deals[currentDeal]]
+    newCards[selectedCard].rank = ''
+    newCards[selectedCard].suit = ''
     newCards = setActiveCards(newCards)
-    setCards(newCards)
+    changeOneDeal(newCards, currentDeal)
     if (selectedCard > 1) {
       socket.emit('updateTableCards', {
         cards: newCards.slice(2),
@@ -180,31 +170,30 @@ export default function TrackGameScreen({ navigation, route }) {
 
   // REFRACTOR
   function setActiveCards(cards) {
-    let newCards = []
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i]
-      if (i >= 2) {
-        cards[i].isActive = false
-      }
-      newCards.push(card)
-    }
+    let newCards = [
+      ...cards.slice(0, 2),
+      ...cards.slice(2).map((card) => {
+        return { ...card, isActive: false }
+      }),
+    ]
+
     if (
       cards.slice(2, 4).some((card) => card.rank && card.suit) ||
       cards.slice(0, 2).every((card) => card.rank && card.suit)
     ) {
       // 3 valid
-      newCards.find((card) => card.id == 2).isActive = true
-      newCards.find((card) => card.id == 3).isActive = true
-      newCards.find((card) => card.id == 4).isActive = true
+      newCards[2].isActive = true
+      newCards[3].isActive = true
+      newCards[4].isActive = true
     }
     if (cards.slice(2, 5).every((card) => card.rank && card.suit)) {
       // 4 valid
-      newCards.find((card) => card.id == 5).isActive = true
+      newCards[5].isActive = true
     }
 
     if (cards.slice(2, 6).every((card) => card.rank && card.suit)) {
       // 5 valid
-      newCards.find((card) => card.id == 6).isActive = true
+      newCards[6].isActive = true
     }
     return newCards
   }
@@ -232,17 +221,7 @@ export default function TrackGameScreen({ navigation, route }) {
     return false
   }
 
-  function onNewDealPressed() {
-    if (session) {
-      const cardData = deals[currentDeal].slice(0, 2).map((card) => {
-        return { rank: card.rank, suit: card.suit }
-      })
-      socket.emit('newDeal', {
-        sessionId: session.id,
-        cards: cardData,
-        deal: currentDeal,
-      })
-    }
+  function onNextDealPressed() {
     swiper.current.scrollBy(1, true)
   }
 
@@ -267,21 +246,27 @@ export default function TrackGameScreen({ navigation, route }) {
   }
 
   function onEndGame() {
-    if (cards.every((card) => !card.suit && !card.rank)) {
-      socket.emit('endGame', { sessionId: session.id, currentDeal }, (round) => {
-        navigation.navigate('GameBreakdown', { round })
+    // if (deal.every((card) => !card.suit && !card.rank)) {
+    //   socket.emit('endGame', { sessionId: session.id, currentDeal }, (round) => {
+    //     navigation.navigate('GameBreakdown', { round })
+    //   })
+    // }
+    // if (isValidCards()) {
+    //   socket.emit('endGame', { deals: deals, sessionId: session.id, currentDeal }, (round) => {
+    //     navigation.navigate('GameBreakdown', { round })
+    //   })
+    // }
+    const dealsData = deals.map((deal) =>
+      deal.map((card) => {
+        return {
+          rank: card.rank,
+          suit: card.suit,
+        }
       })
-    }
-    if (isValidCards()) {
-      const newAllDeals = [...allDeals, { deal: currentDeal, cards }]
-      setAllDeals(newAllDeals)
-      const cardsData = cards.slice(0, 2).map((card) => {
-        return { rank: card.rank, suit: card.suit }
-      })
-      socket.emit('endGame', { cards: cardsData, sessionId: session.id, currentDeal }, (round) => {
-        navigation.navigate('GameBreakdown', { round })
-      })
-    }
+    )
+    socket.emit('endGame', { deals: dealsData, sessionId: session.id, currentDeal: currentDeal }, (round) => {
+      navigation.navigate('GameBreakdown', { round })
+    })
   }
 
   function toggleStats() {
@@ -310,12 +295,11 @@ export default function TrackGameScreen({ navigation, route }) {
       </Swiper>
       {statsActive && <InGameStatistics />}
       <EditSelection
-        suits={suits}
         onSelectSuit={onSelectSuit}
         onSelectRank={onSelectRank}
         onEndGame={onEndGame}
         onClearCard={onClearCard}
-        onNewDealPressed={onNewDealPressed}
+        onNextDealPressed={onNextDealPressed}
       />
     </SafeAreaView>
   )
