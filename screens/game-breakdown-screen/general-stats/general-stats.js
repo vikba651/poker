@@ -2,10 +2,10 @@ import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'r
 import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './general-stats.scss'
-import AppContext from '../../../../shared/AppContext'
-import { BarGraph } from '../../../custom-components/graphs/bar-graph'
-import { StackedBarGraph } from '../../../custom-components/graphs/stacked-bar-graph'
-import ComponentCard from '../../../custom-components/component-card/component-card'
+import AppContext from '../../../shared/AppContext'
+import { BarGraph } from '../../../components/graphs/bar-graph'
+import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
+import ComponentCard from '../../../components/component-card/component-card'
 import { Grid, StackedBarChart } from 'react-native-svg-charts'
 import Deal from '../deal/deal'
 
@@ -52,6 +52,8 @@ export default function GeneralStats({ deals, roundSummary }) {
   }
 
   function getBestDeal() {
+    // This function currently returns the best hand of the game of all players
+    // It should return the best hand of the player holding the gittamn phone
     const data = {}
     for (const userSummary of roundSummary.userSummaries) {
       data[userSummary.name] = userSummary.bestDeal.dealtCards

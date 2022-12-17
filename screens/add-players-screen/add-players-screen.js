@@ -1,7 +1,7 @@
 import { Text, View, TextInput, Button, SafeAreaView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
-import AppContext from '../../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 
 import styles from './add-players-screen.scss'
 import { TrashIcon } from 'react-native-heroicons/outline'

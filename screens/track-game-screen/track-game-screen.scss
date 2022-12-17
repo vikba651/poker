@@ -1,0 +1,61 @@
+@import 'variables';
+
+.container {
+  align-items: center;
+  justify-content: space-between;
+  background-color: $background-color;
+  flex: 1;
+}
+
+.cardsView {
+  width: 100%;
+  flex: 1;
+  border-radius: 35px;
+  margin-top: 10px;
+  position: relative;
+  z-index: -1;
+  align-items: center;
+  justify-content: center;
+}
+
+.boxShadow {
+  @include cardBoxShadow;
+}
+
+.myCardsRow {
+  flex-direction: row;
+}
+
+.myCards {
+  align-items: center;
+}
+
+.hideButton {
+  position: absolute;
+  bottom: 0;
+  right: -35px;
+  background-color: #efefef;
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  // border: black;
+}
+
+.tableCards {
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.tableCardsRow {
+  flex-direction: row;
+  margin-top: 5px;
+}
+
+.titleFont {
+  font-size: 20px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}

@@ -1,9 +1,9 @@
 import { View, Image, Text } from 'react-native'
 import styles from './playing-card.scss'
-import heart from '../../../assets/heart.png'
-import spade from '../../../assets/spade.png'
-import diamond from '../../../assets/diamond.png'
-import club from '../../../assets/club.png'
+import heart from '../../assets/heart.png'
+import spade from '../../assets/spade.png'
+import diamond from '../../assets/diamond.png'
+import club from '../../assets/club.png'
 
 export default function PlayingCard({ rank, suit, isSelected, isActive, isBigCard }) {
   function getCardStyles() {

@@ -1,10 +1,10 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import styles from './start-screen.scss'
-import AppContext from '../../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 import * as Location from 'expo-location'
 import { PlusIcon, ChartBarIcon, UserPlusIcon, CurrencyDollarIcon } from 'react-native-heroicons/outline'
-import ComponentCard from '../../custom-components/component-card/component-card'
+import ComponentCard from '../../components/component-card/component-card'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
@@ -106,7 +106,7 @@ export default function StartScreen({ navigation, route }) {
             <Image
               className={styles.gradient}
               style={opacityStyle}
-              source={require('../../../assets/right-gradient.png')}
+              source={require('../../assets/right-gradient.png')}
             />
           </>
         }
@@ -120,7 +120,7 @@ export default function StartScreen({ navigation, route }) {
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
-                source={require('../../../assets/blue-marker.png')}
+                source={require('../../assets/blue-marker.png')}
               />
               <View className={styles.actionTextView}>
                 <PlusIcon color="white" />
@@ -131,7 +131,7 @@ export default function StartScreen({ navigation, route }) {
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
-                source={require('../../../assets/green-marker.png')}
+                source={require('../../assets/green-marker.png')}
               />
               <View className={styles.actionTextView}>
                 <UserPlusIcon color="white" />
@@ -142,7 +142,7 @@ export default function StartScreen({ navigation, route }) {
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
-                source={require('../../../assets/red-marker.png')}
+                source={require('../../assets/red-marker.png')}
               />
               <View className={styles.actionTextView}>
                 <CurrencyDollarIcon color="white" />
@@ -153,7 +153,7 @@ export default function StartScreen({ navigation, route }) {
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
-                source={require('../../../assets/black-marker.png')}
+                source={require('../../assets/black-marker.png')}
               />
               <View className={styles.actionTextView}>
                 <ChartBarIcon color="white" />

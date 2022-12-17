@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
 import styles from './create-game-screen.scss'
-import AppContext from '../../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 import { UserGroupIcon } from 'react-native-heroicons/outline'
-import PrimaryButton from '../../custom-components/primary-button/primary-button'
-import SecondaryButton from '../../custom-components/secondary-button/secondary-button'
+import PrimaryButton from '../../components/primary-button/primary-button'
+import SecondaryButton from '../../components/secondary-button/secondary-button'
 import { ArrowRightIcon } from 'react-native-heroicons/solid'
-import ComponentCard from '../../custom-components/component-card/component-card'
+import ComponentCard from '../../components/component-card/component-card'
 
 // HTTP
 

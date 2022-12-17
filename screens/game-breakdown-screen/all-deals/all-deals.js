@@ -1,7 +1,7 @@
 import { View, Image, Text, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import styles from './all-deals.scss'
-import AppContext from '../../../../shared/AppContext'
+import AppContext from '../../../shared/AppContext'
 import Deal from '../deal/deal'
 
 export default function AllDeals({ deals }) {

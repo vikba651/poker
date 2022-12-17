@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import styles from './deal.scss'
-import PlayingCard from '../../../custom-components/playing-card/playing-card'
-import ComponentCard from '../../../custom-components/component-card/component-card'
+import PlayingCard from '../../../components/playing-card/playing-card'
+import ComponentCard from '../../../components/component-card/component-card'
 
 export default function Deal({ playerCards, tableCards, title, hand }) {
   return (

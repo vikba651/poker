@@ -2,9 +2,9 @@ import { SafeAreaView, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState, useContext } from 'react'
 import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import AppContext from '../../../shared/AppContext'
-import { getPlayer, createPlayer } from '../../../shared/api'
-import PrimaryButton from '../../custom-components/primary-button/primary-button'
+import AppContext from '../../shared/AppContext'
+import { getPlayer, createPlayer } from '../../shared/api'
+import PrimaryButton from '../../components/primary-button/primary-button'
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 
 export default function NameScreen({ navigation }) {
