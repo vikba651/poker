@@ -4,7 +4,8 @@ import styles from './name-screen.scss'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import AppContext from '../../shared/AppContext'
 import { getPlayer, createPlayer } from '../../shared/api'
-import MainButton from '../main-button/main-button'
+import PrimaryButton from '../../components/primary-button/primary-button'
+import { ArrowRightIcon } from 'react-native-heroicons/outline'
 
 export default function NameScreen({ navigation }) {
   const [prompt, setPrompt] = useState('This will be displayed to your friends.')
@@ -33,6 +34,7 @@ export default function NameScreen({ navigation }) {
   }
 
   const saveUserName = async (name) => {
+    console.log('something')
     try {
       await AsyncStorage.setItem('userName', name)
       let player = await getPlayer(name)
@@ -74,7 +76,11 @@ export default function NameScreen({ navigation }) {
           autoCorrect={false}
         />
       </View>
-      <MainButton title="Here we go" onPress={() => onGetStarted()} />
+      <PrimaryButton
+        title="Here we go"
+        onPress={() => onGetStarted()}
+        icon={<ArrowRightIcon className={styles.icon} color="black" size={30} strokeWidth={2} />}
+      />
     </SafeAreaView>
   )
 }

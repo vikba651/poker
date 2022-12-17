@@ -68,30 +68,34 @@
   font-weight: 200;
 }
 
-.boxShadow {
-  @include cardBoxShadow; ///
+.cardView {
+  padding-left: 0;
+  padding-right: 0;
+  align-items: center;
 }
 
 .actionContainer {
-  @include card; //////////////////
-  // height: 150px;
   padding-bottom: -15px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.cardTitle {
+.actionTitle {
   @include cardTitle;
+  padding-left: 18px;
 }
 
 .actionButtons {
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  margin: 10px;
   flex-wrap: wrap;
 }
 
 .markerButton {
-  width: 150px;
-  height: 150px;
-  margin-bottom: 15px;
+  width: 42%;
+  aspect-ratio: 1 / 1;
+  margin: 4%;
 }
 
 .actionTextView {

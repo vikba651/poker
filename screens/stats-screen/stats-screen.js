@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react'
 import { SafeAreaView, Text, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native'
 import { getRounds } from '../../shared/api'
 import AppContext from '../../shared/AppContext'
+import Svg, { Circle } from 'react-native-svg'
+import { SparklesIcon } from 'react-native-heroicons/solid'
 
 import styles from './stats-screen.scss'
 

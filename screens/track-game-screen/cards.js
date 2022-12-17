@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline'
 import styles from './track-game-screen.scss'
-import PlayingCard from '../playing-card/playing-card'
+import PlayingCard from '../../components/playing-card/playing-card'
 
 export default function Cards({ cards, currentDeal, selectedCard, onSelectCard, statsActive }) {
   const [hideCards, onHideCards] = useState(false)

@@ -4,6 +4,7 @@ import styles from './start-screen.scss'
 import AppContext from '../../shared/AppContext'
 import * as Location from 'expo-location'
 import { PlusIcon, ChartBarIcon, UserPlusIcon, CurrencyDollarIcon } from 'react-native-heroicons/outline'
+import ComponentCard from '../../components/component-card/component-card'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
@@ -74,40 +75,46 @@ export default function StartScreen({ navigation, route }) {
         <Text className={styles.nameText}>{user.name}?</Text>
       </View>
 
-      <View className={styles.boxShadow}>
-        <View className={styles.yourGamesContainer}>
-          <Text className={styles.yourGamesText}>Your games</Text>
-          <ScrollView
-            horizontal
-            onScroll={({ nativeEvent }) => {
-              onScroll(nativeEvent)
-            }}
-            scrollEventThrottle={400}
-          >
-            <View className={styles.gamesRow}>
-              {games.map((game) => {
-                return (
-                  <TouchableOpacity key={game.id}>
-                    <View className={styles.game}>
-                      <Text className={styles.dateText}>{game.date}</Text>
-                      <Text className={game.plus ? styles.resultTextPlus : styles.resultTextMinus}>
-                        {(game.plus ? '+' : '-') + game.result}
-                      </Text>
-                      <Text className={styles.viewMoreText}>view more</Text>
-                    </View>
-                  </TouchableOpacity>
-                )
-              })}
-            </View>
-          </ScrollView>
+      <ComponentCard
+        title="Your games"
+        content={
+          <>
+            <ScrollView
+              horizontal
+              onScroll={({ nativeEvent }) => {
+                onScroll(nativeEvent)
+              }}
+              scrollEventThrottle={400}
+            >
+              <View className={styles.gamesRow}>
+                {games.map((game) => {
+                  return (
+                    <TouchableOpacity key={game.id}>
+                      <View className={styles.game}>
+                        <Text className={styles.dateText}>{game.date}</Text>
+                        <Text className={game.plus ? styles.resultTextPlus : styles.resultTextMinus}>
+                          {(game.plus ? '+' : '-') + game.result}
+                        </Text>
+                        <Text className={styles.viewMoreText}>view more</Text>
+                      </View>
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+            </ScrollView>
 
-          <Image className={styles.gradient} style={opacityStyle} source={require('../../assets/right-gradient.png')} />
-        </View>
-      </View>
+            <Image
+              className={styles.gradient}
+              style={opacityStyle}
+              source={require('../../assets/right-gradient.png')}
+            />
+          </>
+        }
+      ></ComponentCard>
 
-      <View className={styles.boxShadow}>
-        <View className={styles.actionContainer}>
-          <Text className={styles.cardTitle}>Actions</Text>
+      <ComponentCard
+        title="Actions"
+        content={
           <View className={styles.actionButtons}>
             <TouchableOpacity onPress={() => navigation.navigate('CreateGameScreen')} className={styles.markerButton}>
               <Image
@@ -120,7 +127,7 @@ export default function StartScreen({ navigation, route }) {
                 <Text className={styles.actionText}>NEW GAME</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('TestScreen')} className={styles.markerButton}>
+            <TouchableOpacity onPress={() => navigation.navigate('JoinGameScreen')} className={styles.markerButton}>
               <Image
                 className={styles.markerImage}
                 style={{ resizeMode: 'contain' }}
@@ -154,8 +161,8 @@ export default function StartScreen({ navigation, route }) {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        }
+      ></ComponentCard>
     </SafeAreaView>
   )
 }

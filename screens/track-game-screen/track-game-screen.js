@@ -3,8 +3,8 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
 import AppContext from '../../shared/AppContext'
-import EditSelection from '../edit-selection/edit-selection'
-import InGameStatistics from '../in-game-statistics/in-game-statistics'
+import EditSelection from '../../components/edit-selection/edit-selection'
+import InGameStatistics from '../../components/in-game-statistics/in-game-statistics'
 import Cards from './cards'
 
 export default function TrackGameScreen({ navigation, route }) {

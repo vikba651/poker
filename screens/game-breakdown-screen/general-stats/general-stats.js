@@ -1,15 +1,19 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
-import { LineChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
 
 import styles from './general-stats.scss'
 import AppContext from '../../../shared/AppContext'
-import { BarGraph } from '../../graphs/bar-graph'
-import { StackedBarGraph } from '../../graphs/stacked-bar-graph'
+import { BarGraph } from '../../../components/graphs/bar-graph'
+import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
+import ComponentCard from '../../../components/component-card/component-card'
+import { Grid, StackedBarChart } from 'react-native-svg-charts'
+import Deal from '../deal/deal'
 
 export default function GeneralStats({ deals, roundSummary }) {
   const [cardDistributions, setCardDistributions] = useState({ labels: [], data: [] })
   const [handResult, setHandResult] = useState({ data: [] })
+  const [bestDeal, setBestDeal] = useState([])
+  const [bestDealType, setBestDealType] = useState('')
 
   const { user } = useContext(AppContext)
 
@@ -47,6 +51,17 @@ export default function GeneralStats({ deals, roundSummary }) {
     setHandResult({ data: data })
   }
 
+  function getBestDeal() {
+    // This function currently returns the best hand of the game of all players
+    // It should return the best hand of the player holding the gittamn phone
+    const data = {}
+    for (const userSummary of roundSummary.userSummaries) {
+      data[userSummary.name] = userSummary.bestDeal.dealtCards
+      setBestDeal(userSummary.bestDeal.dealtCards)
+      setBestDealType(userSummary.bestDeal.hand)
+    }
+  }
+
   useEffect(() => {
     let myCards = deals
       .map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
@@ -54,31 +69,36 @@ export default function GeneralStats({ deals, roundSummary }) {
     createCardDistributions(myCards)
     if (roundSummary) {
       createHandResultsData()
+      getBestDeal()
     }
   }, [roundSummary])
 
   return (
-    <SafeAreaView className={styles.container}>
+    <ScrollView className={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
       <Text style={{ fontSize: 32, marginTop: 20 }}>General stats</Text>
 
-      <View className={styles.boxShadow}>
-        <View className={styles.card}>
-          <Text className={styles.statsTitle}>Card distributions</Text>
-          <BarGraph data={cardDistributions.data} labels={cardDistributions.labels} />
-        </View>
-      </View>
-      <View className={styles.boxShadow}>
-        <View className={styles.card}>
-          <Text className={styles.statsTitle}>Summary of hands</Text>
-          <StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />
-        </View>
-      </View>
+      <ComponentCard
+        title="Card Distributions"
+        content={<BarGraph data={cardDistributions.data} labels={cardDistributions.labels} />}
+      ></ComponentCard>
+      <ComponentCard
+        title="Summary of hands"
+        content={<StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />}
+      ></ComponentCard>
+
+      <Deal
+        title="Best hand"
+        hand={bestDealType}
+        playerCards={bestDeal.slice(0, 2)}
+        tableCards={bestDeal.slice(2, 7)}
+      />
+
       {/* <LineChart
         style={{ height: 200, width: '100%' }}
         data={cardDistributions.data.map((data) => data - 1)}
         svg={{ stroke: 'rgb(134, 65, 244)', strokeWidth: 3 }}
         contentInset={{ top: 20, bottom: 20 }}
       ></LineChart> */}
-    </SafeAreaView>
+    </ScrollView>
   )
 }

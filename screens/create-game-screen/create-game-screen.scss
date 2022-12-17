@@ -23,8 +23,7 @@
 
 .lobbyView {
     @include card;
-    height: 400px;
-
+    // height: 400px;
 }
 
 .createSessionButton {
@@ -48,12 +47,21 @@
     right: 15px;
 }
 
+.arrowRightIcon {
+    position: absolute;
+    right: 20px;
+}
+
 .noSessionView {
-    width: 100%;
-    height: 100%;
     justify-content: center;
     align-items: center;
 }
+
+.sessionView {
+    justify-content: center;
+    align-items: center;
+}
+
 
 .sessionCode {
     background-color: white;
