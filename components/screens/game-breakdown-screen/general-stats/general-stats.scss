@@ -1,0 +1,24 @@
+@import 'variables';
+
+.scrollView {
+  width: 95%;
+}
+
+.statsView {
+  @include card(0);
+  align-items: center;
+}
+
+.boxShadow {
+  @include cardBoxShadow;
+}
+
+.card {
+  @include card;
+  align-items: center;
+}
+
+.statsTitle {
+  @include cardTitle;
+  font-size: 16;
+}

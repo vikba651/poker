@@ -1,0 +1,21 @@
+@import "variables";
+
+.boxShadow {
+    @include cardBoxShadow;  
+}
+
+.cardView {
+    background-color: $card-background-color;
+    z-index: 1;
+    width: 90%;
+    border-radius: 35px;
+    margin: 7px 0px;
+    padding: 3% 2% 3% 2%;
+    overflow: hidden;
+    align-items: center;
+}
+
+.cardTitle{
+    @include cardTitle;
+    margin-left: 10%;
+}

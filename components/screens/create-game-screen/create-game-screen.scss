@@ -1,0 +1,95 @@
+@import "variables";
+
+
+.container {
+    // flex: 1;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    background-color: $background-color;
+}
+
+.boxShadow {
+    @include cardBoxShadow;
+}
+
+.card {
+    @include card;
+}
+
+.cardTitle {
+    @include cardTitle;
+}
+
+.lobbyView {
+    @include card;
+    // height: 400px;
+}
+
+.createSessionButton {
+    border-radius: 62px;
+    background-color: #22A72F;
+    height: 40px;
+    width: 200px;
+    margin-top: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.createPartyText {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.createPartyIcon {
+    position: absolute;
+    right: 15px;
+}
+
+.arrowRightIcon {
+    position: absolute;
+    right: 20px;
+}
+
+.noSessionView {
+    justify-content: center;
+    align-items: center;
+}
+
+.sessionView {
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sessionCode {
+    background-color: white;
+    padding: 10px;
+    font-size: 32px;
+    text-align: center;
+}
+
+.sessionInfo {
+    width: 100%;
+}
+
+.partyMembersText {
+    @include cardTitle;
+    margin-top: 30px;
+}
+
+.startTrackingButton {
+    border-radius: 62px;
+    background-color: white;
+    height: 40px;
+    width: 200px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.startTrackingText {
+    font-size: 20px;
+    font-weight: 600;
+}

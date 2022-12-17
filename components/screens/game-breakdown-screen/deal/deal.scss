@@ -1,0 +1,26 @@
+@import 'variables';
+
+.boxShadow {
+  @include cardBoxShadow;  
+}
+
+.cardsView {
+  @include card;
+  align-items: center;
+}
+
+.playerCardsRow {
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.tableCardsRow {
+  flex-direction: row;
+}
+
+.dealTitle {
+  font-size: $font-large;
+  font-weight: 600;
+    margin-bottom: 10px;
+  font-size: 16;
+}
