@@ -12,7 +12,7 @@ export const AppProvider = ({ children }) => {
   const [serverState, setServerState] = useState('Loading Websocket...')
   const [session, setSession] = useState(null)
   const [location, setLocation] = useState(null)
-  const [cards, setCards] = useState()
+  const [deals, setDeals] = useState([])
 
   const providers = {
     socket,
@@ -26,8 +26,8 @@ export const AppProvider = ({ children }) => {
     setSession,
     location,
     setLocation,
-    cards,
-    setCards,
+    deals,
+    setDeals,
   }
 
   useEffect(() => {

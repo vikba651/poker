@@ -1,7 +1,29 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
+import heart from '../../assets/heart.png'
+import spade from '../../assets/spade.png'
+import diamond from '../../assets/diamond.png'
+import club from '../../assets/club.png'
 import styles from './edit-selection.scss'
 
-export default function EditSelection({ suits, onSelectSuit, onSelectRank, onEndGame, onClearCard, onNewDealPressed }) {
+export default function EditSelection({ onSelectSuit, onSelectRank, onEndGame, onClearCard, onNextDealPressed }) {
+  const suits = [
+    {
+      id: 'heart',
+      image: heart,
+    },
+    {
+      id: 'spade',
+      image: spade,
+    },
+    {
+      id: 'diamond',
+      image: diamond,
+    },
+    {
+      id: 'club',
+      image: club,
+    },
+  ]
   const firstRowRanks = ['A', '2', '3', '4', '5', '6']
   const secondRowRanks = ['7', '8', '9', '10', 'J', 'Q', 'K']
   return (
@@ -10,7 +32,7 @@ export default function EditSelection({ suits, onSelectSuit, onSelectRank, onEnd
         <Text className={styles.titleFont}>Edit selection</Text>
         <View style={{ flexDirection: 'row' }}>
           {suits.map((suit) => (
-            <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => onSelectSuit(suit)}>
+            <TouchableOpacity key={suit.id} className={styles.selectionButton} onPress={() => onSelectSuit(suit.id)}>
               <View className={styles.selectionButtonView}>
                 <Image className={styles.suitImage} style={{ resizeMode: 'contain' }} source={suit.image}></Image>
               </View>
@@ -48,7 +70,7 @@ export default function EditSelection({ suits, onSelectSuit, onSelectRank, onEnd
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              onNewDealPressed()
+              onNextDealPressed()
             }}
             className={styles.footerButton}
           >

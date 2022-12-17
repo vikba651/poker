@@ -7,7 +7,7 @@ import AppContext from '../../shared/AppContext'
 import { getRoundSummary } from '../../shared/api'
 
 export default function GameBreakDownScreen({ navigation, route }) {
-  const round = route.params.round
+  const [round, setRound] = useState(route.params.round)
   const { socket, session } = useContext(AppContext)
   const [showAllDeals, setShowAllDeals] = useState(false)
   const [roundSummary, setRoundSummary] = useState()
@@ -24,14 +24,17 @@ export default function GameBreakDownScreen({ navigation, route }) {
     navigation.navigate('StartScreen')
   }
 
-  const fetchRoundSummary = async () => {
-    const roundId = round._id
-    const roundSummary = await getRoundSummary(roundId)
+  const fetchRoundSummary = async (id) => {
+    const roundSummary = await getRoundSummary(id)
     setRoundSummary(roundSummary)
   }
 
   useEffect(() => {
-    fetchRoundSummary()
+    socket.on('playerEndedGame', (round) => {
+      setRound(round)
+      fetchRoundSummary(round._id)
+    })
+    fetchRoundSummary(round._id)
   }, [])
 
   return (
