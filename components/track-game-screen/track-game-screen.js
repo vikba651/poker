@@ -61,15 +61,9 @@ export default function TrackGameScreen({ navigation, route }) {
         }
       })
       let newDeals = [...dealsRef.current]
-      // console.log('newDeals', newDeals)
       if (newDeals.length <= dealNumber) {
         const dealsToCreate = dealNumber - newDeals.length + 2
-        console.log(dealsToCreate)
         pushNewDeals(newDeals, dealsToCreate)
-        console.log('after push')
-        for (const deal of newDeals) {
-          console.log(deal)
-        }
       }
       let newDeal = [...newDeals[dealNumber].slice(0, 2), ...newTableCards]
       newDeal = setActiveCards(newDeal)
