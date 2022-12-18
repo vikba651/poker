@@ -21,7 +21,6 @@ export default function AllDeals({ deals }) {
       if (playerCards) {
         const dealComponents = []
         for (let i = 0; i < playerCards.length; i++) {
-          console.log('playercards', playerCards)
           dealComponents.push(<Deal key={i} playerCards={playerCards[i]} tableCards={deals[i].tableCards} />)
         }
         return dealComponents
