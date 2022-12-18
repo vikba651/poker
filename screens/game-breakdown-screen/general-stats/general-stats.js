@@ -56,9 +56,11 @@ export default function GeneralStats({ deals, roundSummary }) {
     // It should return the best hand of the player holding the gittamn phone
     const data = {}
     for (const userSummary of roundSummary.userSummaries) {
-      data[userSummary.name] = userSummary.bestDeal.dealtCards
-      setBestDeal(userSummary.bestDeal.dealtCards)
-      setBestDealType(userSummary.bestDeal.hand)
+      if (userSummary.name == user.name) {
+        data[userSummary.name] = userSummary.bestDeal.dealtCards
+        setBestDeal(userSummary.bestDeal.dealtCards)
+        setBestDealType(userSummary.bestDeal.hand)
+      }
     }
   }
 
