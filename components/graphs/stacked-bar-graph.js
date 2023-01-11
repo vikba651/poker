@@ -1,127 +1,86 @@
-import { View, Text } from 'react-native'
+import { ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { Grid, XAxis, StackedBarChart } from 'react-native-svg-charts'
-import * as scale from 'd3-scale'
+import { VictoryBar, VictoryChart, VictoryStack, VictoryAxis, VictoryLegend } from 'victory-native'
 
 /**
- * @param data format: { "userName1": {"label1": value1, "label2": value2}, "userName2": {"label1": value1, "label2": value2}}
- * @param labelToStringMap format: {"label1": "label1string", "label2": "label2string"}
+ *
+ * @param dataSets: [{name: "dude", data: [{x: label1, y: value1}, {x: label2,  y: value2}]}]
+ * @returns
  */
-export function StackedBarGraph({ data, labelToStringMap, bigLabels }) {
-  const [formattedData, setFormattedData] = useState()
-  const [names, setNames] = useState()
-  const [labels, setLabels] = useState()
-  const [maxValue, setMaxValue] = useState(0)
+export function StackedBarGraph({ dataSets, longLabels }) {
+  const COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853']
+  const MIN_WIDTH = 340
+
+  const [legend, setLegend] = useState([])
+  const [longestLabel, setLongestLabel] = useState(0)
+  const [width, setWidth] = useState(MIN_WIDTH)
 
   useEffect(() => {
-    const formattedData = []
-    let barHeightsPerLabel = {}
-    const labelsSet = new Set()
-    for (const name in data) {
-      for (const label in data[name]) {
-        labelsSet.add(label)
-        if (barHeightsPerLabel[label] == undefined) {
-          barHeightsPerLabel[label] = 0
-        }
-        barHeightsPerLabel[label] += data[name][label]
-        const entry = formattedData.find((elem) => elem.label === label)
-        if (entry) {
-          entry[name] = data[name][label]
-        } else {
-          formattedData.push({
-            label: label,
-            [name]: data[name][label],
-          })
-        }
-      }
-    }
-    let maxValue = 0
-    for (const label in barHeightsPerLabel) {
-      if (barHeightsPerLabel[label] > maxValue) maxValue = barHeightsPerLabel[label]
-    }
-    setMaxValue(maxValue)
-    setFormattedData(formattedData)
-    setLabels(Array.from(labelsSet))
-    setNames(Object.keys(data))
-  }, [data])
+    if (dataSets) {
+      setLegend(
+        dataSets.map((dataSet) => {
+          return {
+            name: dataSet.name,
+          }
+        })
+      )
+      setLongestLabel(findLongestLabel(dataSets))
 
-  function getAxisWidth() {
-    const relativeWidth = 100 / labels.length
-    return relativeWidth + '%'
+      let xCount = dataSets[0].data.length
+      setWidth(Math.max(MIN_WIDTH, xCount * 22))
+    }
+  }, [dataSets])
+
+  function findLongestLabel(dataSets) {
+    let longestLabel = 0
+    for (const data of dataSets[0].data) {
+      if (data.x.length > longestLabel) longestLabel = data.x.length
+    }
+    return longestLabel
   }
 
-  const colors = ['#639AFF', '#9B63FF', '#FF6666', '#FFf666', '#FF66FF', '#66FF6F']
-
-  function renderYAxis() {
-    const rows = []
-    for (let i = maxValue; i >= 0; i--) {
-      rows.push(
-        <Text key={i} style={{ fontSize: 10, color: 'gray' }}>
-          {i}
-        </Text>
-      )
+  function addSpacesToLabel(tick) {
+    if (longLabels && longestLabel) {
+      const spacesToAdd = longestLabel - tick.length
+      return tick + ' '.repeat(spacesToAdd)
     }
-    return rows
+    return tick
   }
 
   return (
-    formattedData && (
-      <View style={{ width: '100%', marginLeft: -10 }}>
-        <View style={{ height: 200, width: '100%', flexDirection: 'row' }}>
-          <View
+    <ScrollView horizontal scrollEnabled={width !== MIN_WIDTH}>
+      {dataSets && (
+        <VictoryChart
+          height={250}
+          width={width}
+          domainPadding={15}
+          padding={{ top: 40, left: 45, right: 20, bottom: longLabels ? 70 : 40 }}
+        >
+          <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
+          <VictoryStack colorScale={COLORS}>
+            {dataSets.map((dataset, i) => (
+              <VictoryBar key={i} data={dataset.data} x="x" y="y" barRatio={0.8} />
+            ))}
+          </VictoryStack>
+          <VictoryAxis
+            dependentAxis
+            tickFormat={(tick) => `${tick}`}
             style={{
-              width: '10%',
-              height: '100%',
-              alignItems: 'center',
-              marginTop: '8%',
-              paddingBottom: '13%',
-              justifyContent: 'space-between',
+              grid: {
+                fill: 'white',
+                stroke: 'gray',
+                pointerEvents: 'painted',
+                strokeWidth: 0.2,
+              },
             }}
-          >
-            {renderYAxis()}
-          </View>
-          <StackedBarChart
-            style={{ width: '90%' }}
-            data={formattedData}
-            keys={names}
-            colors={colors}
-            svg={{ fill: '#49E' }}
-            contentInset={{ top: 30, bottom: 20 }}
-            numberOfTicks={maxValue}
-          >
-            <Grid />
-          </StackedBarChart>
-        </View>
-        <View style={{ width: '90%', marginHorizontal: '10%' }}>
-          {!bigLabels && (
-            <XAxis
-              style={{ marginTop: -10 }}
-              data={formattedData}
-              formatLabel={(_, index) => labelToStringMap[labels[index]] ?? labels[index]}
-              contentInset={{ left: 15, right: 10 }}
-              svg={{ fontSize: 12, fill: 'black' }}
-            />
-          )}
-          <View style={{ flexDirection: 'row', width: '100%' }}>
-            {bigLabels &&
-              labels.map((label, id) => (
-                <View key={id} style={{ flexShrink: 1, width: getAxisWidth(), marginTop: -7, marginBottom: 30 }}>
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      fontSize: 10,
-                      position: 'absolute',
-                      width: 120,
-                      transform: [{ rotate: '45deg' }, { translateY: 30 }, { translateX: 20 }],
-                    }}
-                  >
-                    {labelToStringMap[label] ?? label}
-                  </Text>
-                </View>
-              ))}
-          </View>
-        </View>
-      </View>
-    )
+          />
+          <VictoryAxis
+            style={{ tickLabels: longLabels ? { angle: 45, transform: 'translate(17,5)' } : {} }}
+            tickFormat={addSpacesToLabel}
+            tickCount={dataSets[0].data.length}
+          />
+        </VictoryChart>
+      )}
+    </ScrollView>
   )
 }

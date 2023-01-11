@@ -33,6 +33,7 @@ export default function AllDeals({ deals }) {
       <ScrollView className={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
         <Text style={{ fontSize: 40, margin: 20 }}>You played {myCards ? myCards.length : 0} deals</Text>
         {renderDeals(user.name)}
+        <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
       </ScrollView>
     </View>
   )
