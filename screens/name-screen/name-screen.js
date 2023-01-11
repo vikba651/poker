@@ -34,7 +34,6 @@ export default function NameScreen({ navigation }) {
   }
 
   const saveUserName = async (name) => {
-    console.log('something')
     try {
       await AsyncStorage.setItem('userName', name)
       let player = await getPlayer(name)

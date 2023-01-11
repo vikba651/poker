@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { AppState } from 'react-native'
 import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
 
-export const SERVER_ADDR = 'http://192.168.0.15:8020'
+export const SERVER_ADDR = 'http://192.168.0.11:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
+  const appState = useRef(AppState.currentState)
+
   const [players, setPlayers] = useState([])
   const [user, setUser] = useState({ name: 'No connection boy' })
+  const userName = useRef('')
+  userName.current = user.name
   const [serverState, setServerState] = useState('Loading Websocket...')
   const [session, setSession] = useState(null)
+  const sessionRef = useRef(null)
+  sessionRef.current = session
+
   const [location, setLocation] = useState(null)
   const [deals, setDeals] = useState([])
 
@@ -33,6 +41,9 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     socket.on('connect', () => {
       setServerState('Connected to Websocket')
+      if (sessionRef.current) {
+        socket.emit('rejoinSession', { name: userName.current, sessionId: sessionRef.current.id })
+      }
     })
 
     socket.on('message', (message) => {

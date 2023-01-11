@@ -1,102 +1,22 @@
 @import 'variables';
 
 .container {
-  height: 100%;
-  display: flex;
+  flex: 1;
   align-items: center;
-  justify-content: space-between;
   background-color: $background-color;
 }
 
-.suit {
-  height: 100px;
-  width: 100px;
-  background-color: white;
-  margin: 10px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #797979;
-}
-
-.suitImage {
-  height: 50px;
-  width: 50px;
-}
-
-.breakdownView {
-  width: 95%;
-  margin: 0px 10px;
-  background-color: #e6e6e6;
-  border-radius: 35px;
-  margin-top: 20px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-  //box-shadow: 15px 15px 20px rgba(0, 0, 0, 1);
-  position: relative;
-  z-index: -1;
-  align-items: center;
-}
-
-.playerCard {
-  height: 68px;
-  width: 49px;
-  background-color: #efefef;
-  // margin: 3px 10px;
-  border-radius: 3px;
-  align-items: center;
-  border-radius: 8px;
-  border: black;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-  margin: 0px 5px;
-  justify-content: center;
-  margin-bottom: 3px;
-}
-
-.playerCardSuit {
-  width: 20px;
-}
-
-.cardsView {
-  width: 90%;
-  border-radius: 35px;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  position: relative;
-  z-index: -1;
-  align-items: center;
-}
-
-.cardsRow {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.cardTopRank {
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.cardBottomRank {
-  position: absolute;
-  bottom: 2px;
-  right: 5px;
-  font-size: 20px;
-  font-weight: 400;
-}
-
 .footerButtonsView {
+  position: absolute;
+  bottom: 20px;
   flex-direction: row;
   border-radius: 50px;
-  height: 50px;
+  height: 55px;
   background-color: white;
-  width: 90%;
+  width: 80%;
   justify-content: space-around;
   align-items: center;
+  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .buttonText {
@@ -106,8 +26,13 @@
 }
 
 .footerButton {
-  height: 80%;
-  width: 80px;
+  height: 100%;
+  flex: 1;
   justify-content: center;
   align-items: center;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
 }

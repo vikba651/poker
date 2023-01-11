@@ -3,15 +3,14 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './general-stats.scss'
 import AppContext from '../../../shared/AppContext'
-import { BarGraph } from '../../../components/graphs/bar-graph'
-import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 import ComponentCard from '../../../components/component-card/component-card'
-import { Grid, StackedBarChart } from 'react-native-svg-charts'
 import Deal from '../deal/deal'
+import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 
 export default function GeneralStats({ deals, roundSummary }) {
-  const [cardDistributions, setCardDistributions] = useState({ labels: [], data: [] })
-  const [handResult, setHandResult] = useState({ data: [] })
+  const [cardDistributions, setCardDistributions] = useState()
+  const [handResult, setHandResult] = useState()
+  const [myQualities, setMyQualities] = useState()
   const [bestDeal, setBestDeal] = useState([])
   const [bestDealType, setBestDealType] = useState('')
 
@@ -31,24 +30,56 @@ export default function GeneralStats({ deals, roundSummary }) {
 
   function createCardDistributions(cards) {
     const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    const newCardDistributions = { labels: cardRanks, data: cardRanks.map((_) => 0) }
+    const data = cardRanks.map((cardRank) => {
+      return {
+        x: cardRank,
+        y: 0,
+      }
+    })
     for (const cardPairs of cards) {
       for (const card of cardPairs) {
-        if (card.rank) {
-          const index = newCardDistributions.labels.indexOf(card.rank)
-          newCardDistributions.data[index] += 1
-        }
+        data.find((datum) => datum.x === card.rank).y += 1
       }
     }
-    setCardDistributions(newCardDistributions)
+    setCardDistributions([{ name: user.name, data: data }])
   }
 
   function createHandResultsData() {
-    const data = {}
+    const dataSets = []
     for (const userSummary of roundSummary.userSummaries) {
-      data[userSummary.name] = userSummary.handSummary
+      let data = []
+      for (const key in userSummary.handSummary) {
+        data.push({
+          x: handTypeToString[key],
+          y: userSummary.handSummary[key],
+        })
+      }
+      if (userSummary.name === user.name) {
+        // Make sure my hand results comes first
+        dataSets.unshift({
+          name: userSummary.name,
+          data: data,
+        })
+      } else {
+        dataSets.push({
+          name: userSummary.name,
+          data: data,
+        })
+      }
     }
-    setHandResult({ data: data })
+    setHandResult(dataSets)
+  }
+
+  function createMyQualities() {
+    const newMyQualities = roundSummary.userSummaries.find((summary) => summary.name === user.name)?.qualities
+    let data = []
+    for (let i = 0; i < newMyQualities.length; i++) {
+      data.push({
+        x: i + 1,
+        y: newMyQualities[i],
+      })
+    }
+    setMyQualities([{ name: user.name, data: data }])
   }
 
   function getBestDeal() {
@@ -71,36 +102,29 @@ export default function GeneralStats({ deals, roundSummary }) {
     createCardDistributions(myCards)
     if (roundSummary) {
       createHandResultsData()
+      createMyQualities()
       getBestDeal()
     }
   }, [roundSummary])
 
   return (
     <ScrollView className={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
-      <Text style={{ fontSize: 32, marginTop: 20 }}>General stats</Text>
-
-      <ComponentCard
-        title="Card Distributions"
-        content={<BarGraph data={cardDistributions.data} labels={cardDistributions.labels} />}
-      ></ComponentCard>
       <ComponentCard
         title="Summary of hands"
-        content={<StackedBarGraph data={handResult.data} labelToStringMap={handTypeToString} bigLabels={true} />}
+        content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
       ></ComponentCard>
-
+      <ComponentCard
+        title="Card Distributions"
+        content={<StackedBarGraph dataSets={cardDistributions} />}
+      ></ComponentCard>
+      <ComponentCard title="My Hand Qualities" content={<StackedBarGraph dataSets={myQualities} />}></ComponentCard>
       <Deal
         title="Best hand"
         hand={bestDealType}
         playerCards={bestDeal.slice(0, 2)}
         tableCards={bestDeal.slice(2, 7)}
       />
-
-      {/* <LineChart
-        style={{ height: 200, width: '100%' }}
-        data={cardDistributions.data.map((data) => data - 1)}
-        svg={{ stroke: 'rgb(134, 65, 244)', strokeWidth: 3 }}
-        contentInset={{ top: 20, bottom: 20 }}
-      ></LineChart> */}
+      <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
     </ScrollView>
   )
 }
