@@ -1,95 +1,97 @@
-@import "variables";
-
+@import 'variables';
 
 .container {
-    // flex: 1;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    background-color: $background-color;
+  //   flex: 1;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  background-color: $background-color;
 }
 
-.boxShadow {
-    @include cardBoxShadow;
-}
-
-.card {
-    @include card;
-}
-
-.cardTitle {
-    @include cardTitle;
-}
-
-.lobbyView {
-    @include card;
-    // height: 400px;
+.sessionCard {
+  height: 60%;
+  padding: 0 20px;
 }
 
 .createSessionButton {
-    border-radius: 62px;
-    background-color: #22A72F;
-    height: 40px;
-    width: 200px;
-    margin-top: 15px;
-    justify-content: center;
-    align-items: center;
+  border-radius: 62px;
+  background-color: #22a72f;
+  height: 40px;
+  width: 200px;
+  margin-top: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
-.createPartyText {
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
+.createSessionText {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.createPartyIcon {
-    position: absolute;
-    right: 15px;
-}
-
-.arrowRightIcon {
-    position: absolute;
-    right: 20px;
+.createSessionIcon {
+  position: absolute;
+  right: 15px;
 }
 
 .noSessionView {
-    justify-content: center;
-    align-items: center;
+  padding-top: 45%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
-.sessionView {
-    justify-content: center;
-    align-items: center;
+.sessionCodeTitle {
+  font-size: 16;
+  margin-bottom: 3%;
 }
 
+.sessionCodeBox {
+  background-color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
 
 .sessionCode {
-    background-color: white;
-    padding: 10px;
-    font-size: 32px;
-    text-align: center;
+  font-size: 32px;
+}
+
+.separator {
+  border-bottom-width: 1px;
+  border-bottom-color: rgb(189, 189, 189);
+  background-color: gray;
+  width: 100%;
+  margin: 5%;
 }
 
 .sessionInfo {
-    width: 100%;
+  //   background-color: red;
+  flex: 1;
 }
 
-.partyMembersText {
-    @include cardTitle;
-    margin-top: 30px;
+.sessionMembersText {
+  @include cardTitle;
 }
 
 .startTrackingButton {
-    border-radius: 62px;
-    background-color: white;
-    height: 40px;
-    width: 200px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
+  position: absolute;
+  bottom: 6%;
 }
 
-.startTrackingText {
-    font-size: 20px;
-    font-weight: 600;
+.settingsCard {
+  height: 28%;
+  padding: 0 20px;
+}
+
+.settingsRow {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3%;
+}
+
+.arrowRightIcon {
+  position: absolute;
+  right: 20px;
 }

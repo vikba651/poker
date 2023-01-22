@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Button, Switch } from 'react-native'
 import styles from './create-game-screen.scss'
 import AppContext from '../../shared/AppContext'
 import { UserGroupIcon } from 'react-native-heroicons/outline'
@@ -13,11 +13,15 @@ import ComponentCard from '../../components/component-card/component-card'
 export default function CreateGameScreen({ navigation, route }) {
   const { user, serverState, socket, session, setSession, location } = useContext(AppContext)
 
-  const [isCreator, setIsCreator] = useState(true)
   const [sessionCreated, setSessionCreated] = useState(false)
-  const [inputCode, setInputCode] = useState('')
   const [nearbyGameCode, setNearbyGameCode] = useState('')
   const [closeEnough, setCloseEnough] = useState(false)
+
+  const [settings, setSettings] = useState({
+    ingameStats: true,
+    spectatorMode: false,
+    otherSetting: false,
+  })
 
   function onCreateSession() {
     // socket.emit('createSession', { name: user.name, location })
@@ -43,7 +47,6 @@ export default function CreateGameScreen({ navigation, route }) {
 
     socket.on('sessionUpdated', (session) => {
       setSession(session)
-      setIsCreator(session.creator === user.name)
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
@@ -99,61 +102,97 @@ export default function CreateGameScreen({ navigation, route }) {
       <Text>{serverState}</Text>
       <ComponentCard
         content={
-          <>
+          <View className={styles.sessionCard}>
             {!sessionCreated && (
               <View className={styles.noSessionView}>
                 <Text>Are you playing with friends?</Text>
                 <SecondaryButton
                   title="Create Party"
                   onPress={() => onCreateSession()}
-                  icon={<UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />}
+                  icon={<UserGroupIcon className={styles.createSessionIcon} color="white" size={20} />}
                 />
                 {closeEnough && (
                   <TouchableOpacity
                     className={styles.createSessionButton}
                     onPress={() => onJoinSession(nearbyGameCode)}
                   >
-                    <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
+                    <Text className={styles.createSessionText}>Join nearby party with code {nearbyGameCode}</Text>
                   </TouchableOpacity>
                 )}
               </View>
             )}
             {sessionCreated && (
-              <>
-                <View style={styles.sessionView}>
-                  <Text className={styles.partyMembersText}>Party Code:</Text>
-                  <Text className={styles.sessionCode}>{session.code}</Text>
-                  <View className={styles.sessionInfo}>
-                    <Text className={styles.partyMembersText}>Party Members</Text>
-                    {session.players.map((player, i) => (
-                      <Text key={i}>
-                        {player.name} {player.name === user.name && '(you)'}
-                      </Text>
-                    ))}
+              <View style={{ height: '165%' }}>
+                {/* Thats some good styling ^ */}
+                <View style={{ alignItems: 'center' }}>
+                  <Text className={styles.sessionCodeTitle}>Party code:</Text>
+                  <View className={styles.sessionCodeBox}>
+                    <Text className={styles.sessionCode}>{session.code}</Text>
                   </View>
+                  <View className={styles.separator}></View>
+                </View>
+                <View className={styles.sessionInfo}>
+                  <Text className={styles.sessionMembersText}>Party Members</Text>
+                  {session.players.map((player, i) => (
+                    <Text key={i}>
+                      {player.name} {player.name === user.name && '(you)'}
+                    </Text>
+                  ))}
+                </View>
+                <View style={{ alignItems: 'center' }}>
                   <SecondaryButton
                     title="Disband Party"
                     className={styles.disbandSessionButton}
                     onPress={() => onDisbandParty()}
-                    icon={<UserGroupIcon className={styles.createPartyIcon} color="white" size={20} />}
-                    color="#f44336"
+                    icon={<UserGroupIcon className={styles.createSessionIcon} color="white" size={20} />}
+                    color="red"
                   />
                 </View>
-              </>
+              </View>
             )}
-          </>
+          </View>
         }
       ></ComponentCard>
-      <View>
-        {isCreator ? (
-          <PrimaryButton
-            title="Start tracking"
-            onPress={() => startTracking()}
-            icon={<ArrowRightIcon className={styles.arrowRightIcon} color="black" size={30} />}
-          />
-        ) : (
-          <Text>Wait for party leader to start game</Text>
-        )}
+      <ComponentCard
+        title={'Game settings'}
+        content={
+          <View className={styles.settingsCard}>
+            <View className={styles.settingsRow}>
+              <Text>Show ingame statistics</Text>
+              <Switch
+                trackColor={{ false: '#E9E9EA', true: '#65C466' }}
+                ios_backgroundColor="#E9E9EA"
+                onValueChange={() => setSettings({ ...settings, ingameStats: !settings.ingameStats })}
+                value={settings.ingameStats}
+              />
+            </View>
+            <View className={styles.settingsRow}>
+              <Text>Spectator mode enabled</Text>
+              <Switch
+                trackColor={{ false: '#E9E9EA', true: '#65C466' }}
+                ios_backgroundColor="#E9E9EA"
+                onValueChange={() => setSettings({ ...settings, spectatorMode: !settings.spectatorMode })}
+                value={settings.spectatorMode}
+              />
+            </View>
+            <View className={styles.settingsRow}>
+              <Text>Other setting? I like 3</Text>
+              <Switch
+                trackColor={{ false: '#E9E9EA', true: '#65C466' }}
+                ios_backgroundColor="#E9E9EA"
+                onValueChange={() => setSettings({ ...settings, otherSetting: !settings.otherSetting })}
+                value={settings.otherSetting}
+              />
+            </View>
+          </View>
+        }
+      ></ComponentCard>
+      <View className={styles.startTrackingButton}>
+        <PrimaryButton
+          title="Start tracking"
+          onPress={() => startTracking()}
+          icon={<ArrowRightIcon className={styles.arrowRightIcon} color="black" size={30} />}
+        />
       </View>
     </SafeAreaView>
   )
