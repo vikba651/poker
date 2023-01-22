@@ -39,7 +39,6 @@ export default function TestScreen({ navigation, route }) {
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
-      console.log('I AM HERE')
       if (!location || !serverLocation) {
         return
       }

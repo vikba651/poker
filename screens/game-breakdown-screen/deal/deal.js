@@ -8,7 +8,7 @@ export default function Deal({ playerCards, tableCards, title, hand }) {
     <ComponentCard
       title={title}
       content={
-        <>
+        <View style={{ alignItems: 'center' }}>
           {hand && <Text className={styles.dealTitle}>{hand}</Text>}
           <View className={styles.playerCardsRow}>
             {playerCards.map((card, i) => {
@@ -38,7 +38,7 @@ export default function Deal({ playerCards, tableCards, title, hand }) {
               )
             })}
           </View>
-        </>
+        </View>
       }
     ></ComponentCard>
   )
