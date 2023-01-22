@@ -77,20 +77,12 @@ export default function GeneralStats({ deals, roundSummary }) {
           y: userSummary.handSummary[key],
         })
       }
-      if (userSummary.name === user.name) {
-        // Make sure my hand results comes first
-        dataSets.unshift({
-          name: userSummary.name,
-          data: data,
-        })
-      } else {
-        dataSets.push({
-          name: userSummary.name,
-          data: data,
-        })
-      }
+      dataSets.push({
+        name: userSummary.name,
+        data: data,
+      })
     }
-    setHandResult(dataSets)
+    setHandResult(sortPlayers(dataSets))
   }
 
   function createMyQualities() {
