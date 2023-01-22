@@ -30,18 +30,41 @@ export default function GeneralStats({ deals, roundSummary }) {
 
   function createCardDistributions(cards) {
     const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    const data = cardRanks.map((cardRank) => {
-      return {
-        x: cardRank,
-        y: 0,
-      }
-    })
-    for (const cardPairs of cards) {
-      for (const card of cardPairs) {
-        data.find((datum) => datum.x === card.rank).y += 1
+
+    const dataSets = []
+    for (const deal of deals) {
+      for (const playerCards of deal.playerCards) {
+        // console.log(playerCards.name, playerCards.cards)
+        const index = dataSets.findIndex((dataSet) => dataSet.name === playerCards.name)
+        if (index === -1) {
+          // New name found
+          // Init cardRank map
+          const data = cardRanks.map((cardRank) => {
+            return {
+              x: cardRank,
+              y: 0,
+            }
+          })
+          // Increment rank value
+          for (const card of playerCards.cards) {
+            data.find((datum) => datum.x === card.rank).y += 1
+          }
+          dataSets.push({
+            name: playerCards.name,
+            data: data,
+          })
+        } else {
+          let data = dataSets.find((dataSet) => dataSet.name === playerCards.name).data
+
+          // Increment rank value
+          for (const card of playerCards.cards) {
+            data.find((datum) => datum.x === card.rank).y += 1
+          }
+        }
       }
     }
-    setCardDistributions([{ name: user.name, data: data }])
+
+    setCardDistributions(sortPlayers(dataSets))
   }
 
   function createHandResultsData() {
@@ -54,20 +77,12 @@ export default function GeneralStats({ deals, roundSummary }) {
           y: userSummary.handSummary[key],
         })
       }
-      if (userSummary.name === user.name) {
-        // Make sure my hand results comes first
-        dataSets.unshift({
-          name: userSummary.name,
-          data: data,
-        })
-      } else {
-        dataSets.push({
-          name: userSummary.name,
-          data: data,
-        })
-      }
+      dataSets.push({
+        name: userSummary.name,
+        data: data,
+      })
     }
-    setHandResult(dataSets)
+    setHandResult(sortPlayers(dataSets))
   }
 
   function createMyQualities() {
@@ -93,6 +108,25 @@ export default function GeneralStats({ deals, roundSummary }) {
         setBestDealType(userSummary.bestDeal.hand)
       }
     }
+  }
+
+  /**
+   * Current user first, then alphabetic order
+   */
+  function sortPlayers(dataSets) {
+    const userDatasetIndex = dataSets.findIndex((dataset) => dataset.name === user.name)
+    const userDataset = dataSets.splice(userDatasetIndex, 1)
+
+    dataSets.sort(function (a, b) {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+    return [...userDataset, ...dataSets]
   }
 
   useEffect(() => {
