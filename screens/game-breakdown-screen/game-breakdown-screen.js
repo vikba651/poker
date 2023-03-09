@@ -11,7 +11,7 @@ import { HomeIcon } from 'react-native-heroicons/outline'
 
 export default function GameBreakDownScreen({ navigation, route }) {
   const [round, setRound] = useState(route.params.round)
-  const { socket, session } = useContext(AppContext)
+  const { socket } = useContext(AppContext)
   const [showAllDeals, setShowAllDeals] = useState(false)
   const [roundSummary, setRoundSummary] = useState()
 

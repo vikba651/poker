@@ -6,11 +6,12 @@ import AppContext from '../../../shared/AppContext'
 import ComponentCard from '../../../components/component-card/component-card'
 import Deal from '../deal/deal'
 import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
+import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 
 export default function GeneralStats({ deals, roundSummary }) {
   const [cardDistributions, setCardDistributions] = useState()
   const [handResult, setHandResult] = useState()
-  const [myQualities, setMyQualities] = useState()
+  const [qualities, setQualities] = useState()
   const [bestDeal, setBestDeal] = useState([])
   const [bestDealType, setBestDealType] = useState('')
 
@@ -85,16 +86,22 @@ export default function GeneralStats({ deals, roundSummary }) {
     setHandResult(sortPlayers(dataSets))
   }
 
-  function createMyQualities() {
-    const newMyQualities = roundSummary.userSummaries.find((summary) => summary.name === user.name)?.qualities
-    let data = []
-    for (let i = 0; i < newMyQualities.length; i++) {
-      data.push({
-        x: i + 1,
-        y: newMyQualities[i],
+  function createQualities() {
+    const dataSets = []
+    for (const userSummary of roundSummary.userSummaries) {
+      const data = []
+      for (let i = 0; i < userSummary.qualities.length; i++) {
+        data.push({
+          x: i + 1,
+          y: userSummary.qualities[i],
+        })
+      }
+      dataSets.push({
+        name: userSummary.name,
+        data: data,
       })
     }
-    setMyQualities([{ name: user.name, data: data }])
+    setQualities(sortPlayers(dataSets))
   }
 
   function getBestDeal() {
@@ -136,7 +143,7 @@ export default function GeneralStats({ deals, roundSummary }) {
     createCardDistributions(myCards)
     if (roundSummary) {
       createHandResultsData()
-      createMyQualities()
+      createQualities()
       getBestDeal()
     }
   }, [roundSummary])
@@ -151,7 +158,7 @@ export default function GeneralStats({ deals, roundSummary }) {
         title="Card Distributions"
         content={<StackedBarGraph dataSets={cardDistributions} />}
       ></ComponentCard>
-      <ComponentCard title="My Hand Qualities" content={<StackedBarGraph dataSets={myQualities} />}></ComponentCard>
+      <ComponentCard title="Hand Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
       <Deal
         title="Best hand"
         hand={bestDealType}
