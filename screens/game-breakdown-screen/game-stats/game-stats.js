@@ -1,19 +1,23 @@
 import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 
-import styles from './general-stats.scss'
+import styles from './game-stats.scss'
 import AppContext from '../../../shared/AppContext'
 import ComponentCard from '../../../components/component-card/component-card'
 import Deal from '../deal/deal'
 import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
+import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
-export default function GeneralStats({ deals, roundSummary }) {
+export default function GameStats({ deals, roundSummary }) {
   const [cardDistributions, setCardDistributions] = useState()
   const [handResult, setHandResult] = useState()
   const [qualities, setQualities] = useState()
   const [bestDeal, setBestDeal] = useState([])
   const [bestDealType, setBestDealType] = useState('')
+  const [dealsPlayed, setDealsPlayed] = useState(0)
+  const [totalDealsCount, setTotalDealsCount] = useState(0)
+  const [bestHandPercentages, setBestHandPercentages] = useState([])
 
   const { user } = useContext(AppContext)
 
@@ -29,7 +33,7 @@ export default function GeneralStats({ deals, roundSummary }) {
     highCards: 'High card',
   }
 
-  function createCardDistributions(cards) {
+  function createCardDistributions() {
     const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
     const dataSets = []
@@ -100,6 +104,10 @@ export default function GeneralStats({ deals, roundSummary }) {
         name: userSummary.name,
         data: data,
       })
+      console.log(
+        userSummary.name,
+        data.map((datum) => datum.y)
+      )
     }
     setQualities(sortPlayers(dataSets))
   }
@@ -115,6 +123,49 @@ export default function GeneralStats({ deals, roundSummary }) {
         setBestDealType(userSummary.bestDeal.hand)
       }
     }
+  }
+
+  function createGeneralRoundStats() {
+    let dealsPlayed = 0
+    for (const deal of deals) {
+      if (deal.playerCards.find((playerCards) => playerCards.name === user.name)) {
+        dealsPlayed++
+      }
+    }
+    setDealsPlayed(dealsPlayed)
+    setTotalDealsCount(deals.length)
+  }
+
+  function createBestHandDistributions() {
+    const myDealsCount = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).qualities
+      .length
+    const bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
+      return {
+        name: userSummary.name,
+        count: 0,
+      }
+    })
+    for (let i = 0; i < myDealsCount; i++) {
+      let bestHand = {
+        name: '',
+        quality: 0,
+      }
+      for (const userSummary of roundSummary.userSummaries) {
+        const userQuality = userSummary.qualities.at(i)
+        if (userQuality && userQuality > bestHand.quality) {
+          bestHand = { name: userSummary.name, quality: userQuality }
+        }
+      }
+      bestHandCounts.find((obj) => obj.name === bestHand.name).count++
+    }
+    const dataSets = bestHandCounts.map((bestHandCount) => {
+      return {
+        name: bestHandCount.name,
+        data: (bestHandCount.count * 100) / myDealsCount,
+      }
+    })
+    console.log(dataSets)
+    setBestHandPercentages(sortPlayers(dataSets))
   }
 
   /**
@@ -140,25 +191,37 @@ export default function GeneralStats({ deals, roundSummary }) {
     let myCards = deals
       .map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
       .filter((cardPairs) => !!cardPairs)
-    createCardDistributions(myCards)
+    createCardDistributions()
     if (roundSummary) {
       createHandResultsData()
       createQualities()
       getBestDeal()
+      createGeneralRoundStats()
+      createBestHandDistributions()
     }
   }, [roundSummary])
 
   return (
     <ScrollView className={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
       <ComponentCard
+        title="General round statistics"
+        content={
+          <GeneralRoundStatistics
+            dealsPlayed={dealsPlayed}
+            totalDealsCount={totalDealsCount}
+            bestHandPercentages={bestHandPercentages}
+          />
+        }
+      ></ComponentCard>
+      <ComponentCard
         title="Summary of hands"
         content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
       ></ComponentCard>
+      <ComponentCard title="Hand Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
       <ComponentCard
         title="Card Distributions"
         content={<StackedBarGraph dataSets={cardDistributions} />}
       ></ComponentCard>
-      <ComponentCard title="Hand Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
       <Deal
         title="Best hand"
         hand={bestDealType}

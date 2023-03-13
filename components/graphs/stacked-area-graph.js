@@ -29,8 +29,6 @@ export function StackedAreaGraph({ dataSets }) {
           }
         })
       )
-      // setLongestLabel(findLongestLabel(dataSets))
-
       let xCount = dataSets[0].data.length
       setWidth(Math.max(MIN_WIDTH, xCount * 22))
     }
@@ -39,12 +37,7 @@ export function StackedAreaGraph({ dataSets }) {
   return (
     <ScrollView horizontal scrollEnabled={width !== MIN_WIDTH}>
       {dataSets && (
-        <VictoryChart
-          height={250}
-          width={width}
-          // domainPadding={15}
-          padding={{ top: 40, left: 45, right: 20, bottom: 40 }}
-        >
+        <VictoryChart height={250} width={width} padding={{ top: 40, left: 45, right: 20, bottom: 40 }}>
           <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
           <VictoryStack colorScale={COLORS}>
             {dataSets.map((dataset, i) => (
@@ -63,7 +56,7 @@ export function StackedAreaGraph({ dataSets }) {
               },
             }}
           />
-          <VictoryAxis tickCount={maxX} />
+          <VictoryAxis tickCount={maxX} tickFormat={(tick) => `${tick}`} />
         </VictoryChart>
       )}
     </ScrollView>
