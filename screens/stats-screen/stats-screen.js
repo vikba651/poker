@@ -41,19 +41,21 @@ export default function StatsScreen({ navigation, route }) {
   }
 
   return (
-    <ScrollView className={styles.container} contentContainerStyle={{ alignItems: 'center' }}>
-      {isLoading && <ActivityIndicator />}
-      {!isLoading && rounds.length === 0 && <Text>You have no rounds.</Text>}
-      {!isLoading &&
-        rounds.length > 0 &&
-        rounds.map((round, i) => (
-          <View key={i}>
-            <TouchableOpacity className={styles.roundButton} onPress={() => onClickRound(round)}>
-              <Text>{formatTime(round.startTime)}</Text>
-              <Text>{round.deals.length + ' deals'}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-    </ScrollView>
+    <View className={styles.container}>
+      {isLoading && <ActivityIndicator style={{ flex: 1 }} />}
+      <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+        {!isLoading && rounds.length === 0 && <Text>You have no rounds.</Text>}
+        {!isLoading &&
+          rounds.length > 0 &&
+          rounds.map((round, i) => (
+            <View key={i}>
+              <TouchableOpacity className={styles.roundButton} onPress={() => onClickRound(round)}>
+                <Text>{formatTime(round.startTime)}</Text>
+                <Text>{round.deals.length + ' deals'}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+      </ScrollView>
+    </View>
   )
 }
