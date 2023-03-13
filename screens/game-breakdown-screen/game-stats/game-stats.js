@@ -39,7 +39,6 @@ export default function GameStats({ deals, roundSummary }) {
     const dataSets = []
     for (const deal of deals) {
       for (const playerCards of deal.playerCards) {
-        // console.log(playerCards.name, playerCards.cards)
         const index = dataSets.findIndex((dataSet) => dataSet.name === playerCards.name)
         if (index === -1) {
           // New name found
@@ -104,10 +103,6 @@ export default function GameStats({ deals, roundSummary }) {
         name: userSummary.name,
         data: data,
       })
-      console.log(
-        userSummary.name,
-        data.map((datum) => datum.y)
-      )
     }
     setQualities(sortPlayers(dataSets))
   }
@@ -137,6 +132,7 @@ export default function GameStats({ deals, roundSummary }) {
   }
 
   function createBestHandDistributions() {
+    // In this case best hand means highest quality. In the future we may want hand to mean full house, pair etc.
     const myDealsCount = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).qualities
       .length
     const bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
@@ -145,6 +141,7 @@ export default function GameStats({ deals, roundSummary }) {
         count: 0,
       }
     })
+    console.log(roundSummary.userSummaries)
     for (let i = 0; i < myDealsCount; i++) {
       let bestHand = {
         name: '',
@@ -164,7 +161,6 @@ export default function GameStats({ deals, roundSummary }) {
         data: (bestHandCount.count * 100) / myDealsCount,
       }
     })
-    console.log(dataSets)
     setBestHandPercentages(sortPlayers(dataSets))
   }
 
