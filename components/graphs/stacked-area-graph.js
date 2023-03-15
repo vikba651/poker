@@ -13,7 +13,7 @@ export function StackedAreaGraph({ dataSets }) {
 
   const [legend, setLegend] = useState([])
   const [width, setWidth] = useState(MIN_WIDTH)
-  const [maxX, setMaxX] = useState(1)
+  const [labels, setLabels] = useState([])
 
   useEffect(() => {
     if (dataSets) {
@@ -21,7 +21,7 @@ export function StackedAreaGraph({ dataSets }) {
       for (const dataSet of dataSets) {
         if (dataSet.data.length > maxX) maxX = dataSet.data.length
       }
-      setMaxX(maxX)
+      setLabels(Array.from({ length: maxX }, (_, i) => i + 1))
       setLegend(
         dataSets.map((dataSet) => {
           return {
@@ -56,7 +56,7 @@ export function StackedAreaGraph({ dataSets }) {
               },
             }}
           />
-          <VictoryAxis tickCount={maxX} tickFormat={(tick) => `${tick}`} />
+          <VictoryAxis tickValues={labels} tickFormat={(tick) => `${tick}`} />
         </VictoryChart>
       )}
     </ScrollView>
