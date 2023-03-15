@@ -1,48 +1,48 @@
 .card {
-    height: 75px;
-    width: 55px;
-    background-color: #EFEFEF;
-    align-items: center;
-    border-radius: 8px;
-    margin: 0px 7px;
-    justify-content: center;
-    border: transparent;
-    border-width: 3px;
+  height: 75px;
+  width: 55px;
+  background-color: #efefef;
+  align-items: center;
+  border-radius: 8px;
+  margin: 0px 7px;
+  justify-content: center;
+  border: transparent;
+  border-width: 3px;
 }
 
 .bigCard {
-    height: 102px;
-    width: 74px;
+  height: 102px;
+  width: 74px;
 }
 
 .cardSuit {
-    width: 15px;
+  width: 15px;
 }
 
 .bigCardSuit {
-    width: 25px;
+  width: 25px;
 }
 
 .cardTopRank {
-    position: absolute;
-    top: 2px;
-    left: 5px;
-    font-size: 20px;
-    font-weight: 400;
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .cardBottomRank {
-    position: absolute;
-    bottom: 2px;
-    right: 5px;
-    font-size: 20px;
-    font-weight: 400;
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .selectedCard {
-    border-color: black;
+  border-color: black;
 }
 
 .disabledCard {
-    background-color: #818181;
+  background-color: #818181;
 }

@@ -18,16 +18,21 @@ export default function PlayingCard({ rank, suit, isSelected, isActive, isBigCar
 
   return (
     <View className={getCardStyles()}>
-      <Image
-        key={suitImages[suit]}
-        className={isBigCard ? styles.bigCardSuit : styles.cardSuit}
-        style={{ resizeMode: 'contain' }}
-        source={suitImages[suit]}
-      />
-
-      <Text className={styles.cardTopRank}>{rank}</Text>
-      <Text className={styles.cardBottomRank}>{rank}</Text>
-      {!isActive && <View className={[styles.card, styles.disabledCard]}></View>}
+      {isActive ? (
+        <>
+          <Image
+            key={suitImages[suit]}
+            className={isBigCard ? styles.bigCardSuit : styles.cardSuit}
+            style={{ resizeMode: 'contain' }}
+            source={suitImages[suit]}
+          />
+          <Text className={styles.cardTopRank}>{rank}</Text>
+          <Text className={styles.cardBottomRank}>{rank}</Text>
+        </>
+      ) : (
+        <View className={[styles.card, styles.disabledCard]}></View>
+      )}
+      {/* {!isActive && <View className={[styles.card, styles.disabledCard]}></View>} */}
     </View>
   )
 }

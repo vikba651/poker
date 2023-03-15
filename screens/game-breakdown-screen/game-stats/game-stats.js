@@ -141,7 +141,6 @@ export default function GameStats({ deals, roundSummary }) {
         count: 0,
       }
     })
-    console.log(roundSummary.userSummaries)
     for (let i = 0; i < myDealsCount; i++) {
       let bestHand = {
         name: '',
