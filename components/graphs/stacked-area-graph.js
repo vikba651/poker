@@ -1,22 +1,27 @@
-import { ScrollView, Dimensions } from 'react-native'
+import { ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { VictoryBar, VictoryChart, VictoryStack, VictoryAxis, VictoryLegend } from 'victory-native'
+import { VictoryArea, VictoryChart, VictoryStack, VictoryAxis, VictoryLegend } from 'victory-native'
 
 /**
  *
  * @param dataSets: [{name: "dude", data: [{x: label1, y: value1}, {x: label2,  y: value2}]}]
  * @returns
  */
-export function StackedBarGraph({ dataSets, longLabels }) {
+export function StackedAreaGraph({ dataSets }) {
   const COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853']
-  const MIN_WIDTH = Dimensions.get('window').width * 0.85
+  const MIN_WIDTH = 340
 
   const [legend, setLegend] = useState([])
-  const [longestLabel, setLongestLabel] = useState(0)
   const [width, setWidth] = useState(MIN_WIDTH)
+  const [labels, setLabels] = useState([])
 
   useEffect(() => {
     if (dataSets) {
+      let maxX = 0
+      for (const dataSet of dataSets) {
+        if (dataSet.data.length > maxX) maxX = dataSet.data.length
+      }
+      setLabels(Array.from({ length: maxX }, (_, i) => i + 1))
       setLegend(
         dataSets.map((dataSet) => {
           return {
@@ -24,42 +29,19 @@ export function StackedBarGraph({ dataSets, longLabels }) {
           }
         })
       )
-      setLongestLabel(findLongestLabel(dataSets))
-
       let xCount = dataSets[0].data.length
       setWidth(Math.max(MIN_WIDTH, xCount * 22))
     }
   }, [dataSets])
 
-  function findLongestLabel(dataSets) {
-    let longestLabel = 0
-    for (const data of dataSets[0].data) {
-      if (data.x.length > longestLabel) longestLabel = data.x.length
-    }
-    return longestLabel
-  }
-
-  function addSpacesToLabel(tick) {
-    if (longLabels && longestLabel) {
-      const spacesToAdd = longestLabel - tick.length
-      return tick + ' '.repeat(spacesToAdd)
-    }
-    return tick
-  }
-
   return (
     <ScrollView horizontal scrollEnabled={width !== MIN_WIDTH}>
       {dataSets && (
-        <VictoryChart
-          height={250}
-          width={width}
-          domainPadding={15}
-          padding={{ top: 40, left: 45, right: 20, bottom: longLabels ? 70 : 40 }}
-        >
+        <VictoryChart height={250} width={width} padding={{ top: 40, left: 45, right: 20, bottom: 40 }}>
           <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
           <VictoryStack colorScale={COLORS}>
             {dataSets.map((dataset, i) => (
-              <VictoryBar key={i} data={dataset.data} x="x" y="y" barRatio={0.8} />
+              <VictoryArea key={i} data={dataset.data} />
             ))}
           </VictoryStack>
           <VictoryAxis
@@ -74,11 +56,7 @@ export function StackedBarGraph({ dataSets, longLabels }) {
               },
             }}
           />
-          <VictoryAxis
-            style={{ tickLabels: longLabels ? { angle: 45, transform: 'translate(17,5)' } : {} }}
-            tickFormat={addSpacesToLabel}
-            tickCount={dataSets[0].data.length}
-          />
+          <VictoryAxis tickValues={labels} tickFormat={(tick) => `${tick}`} />
         </VictoryChart>
       )}
     </ScrollView>

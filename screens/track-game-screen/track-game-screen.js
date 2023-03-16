@@ -234,7 +234,6 @@ export default function TrackGameScreen({ navigation, route }) {
     }
   }
 
-  // REFRACTOR
   function setActiveCards(cards) {
     let newCards = [
       ...cards.slice(0, 2),
@@ -293,6 +292,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function onIndexChanged(index) {
     setCurrentDeal(index)
+    setSelectedToFirstNonFilled(index)
     if (index === deals.length - 1) {
       newDeal()
     }
@@ -309,6 +309,17 @@ export default function TrackGameScreen({ navigation, route }) {
         }),
       ])
     }
+  }
+
+  function setSelectedToFirstNonFilled(index) {
+    let newSelected // Set to last card if all cards are filled in
+    for (let i = 0; i < 7; i++) {
+      newSelected = i
+      if (!deals[index][newSelected].rank || !deals[index][newSelected].suit) {
+        break
+      }
+    }
+    setSelectedCard(newSelected)
   }
 
   function onEndGame() {

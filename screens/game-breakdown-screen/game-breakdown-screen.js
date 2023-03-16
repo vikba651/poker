@@ -2,7 +2,7 @@ import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'r
 import React, { useContext, useEffect, useState } from 'react'
 import styles from './game-breakdown-screen.scss'
 import AllDeals from './all-deals/all-deals'
-import GeneralStats from './general-stats/general-stats'
+import GameStats from './game-stats/game-stats'
 import AppContext from '../../shared/AppContext'
 import { getRoundSummary } from '../../shared/api'
 import ViewDeals from '../../assets/view-deals.png'
@@ -11,7 +11,7 @@ import { HomeIcon } from 'react-native-heroicons/outline'
 
 export default function GameBreakDownScreen({ navigation, route }) {
   const [round, setRound] = useState(route.params.round)
-  const { socket, session } = useContext(AppContext)
+  const { socket } = useContext(AppContext)
   const [showAllDeals, setShowAllDeals] = useState(false)
   const [roundSummary, setRoundSummary] = useState()
 
@@ -42,7 +42,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      {!showAllDeals && <GeneralStats deals={round.deals} roundSummary={roundSummary}></GeneralStats>}
+      {!showAllDeals && <GameStats deals={round.deals} roundSummary={roundSummary}></GameStats>}
       {showAllDeals && <AllDeals deals={round.deals}></AllDeals>}
 
       <View className={styles.footerButtonsView}>
