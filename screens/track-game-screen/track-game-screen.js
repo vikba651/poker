@@ -24,7 +24,7 @@ export default function TrackGameScreen({ navigation, route }) {
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
 
-  const { socket, session, deals, setDeals } = useContext(AppContext)
+  const { socket, session, sessionRef, deals, setDeals } = useContext(AppContext)
   const dealsRef = useRef([])
   dealsRef.current = deals
 
@@ -63,13 +63,84 @@ export default function TrackGameScreen({ navigation, route }) {
       let newDeals = [...dealsRef.current]
       if (newDeals.length <= dealNumber) {
         const dealsToCreate = dealNumber - newDeals.length + 2
-        pushNewDeals(newDeals, dealsToCreate)
+        newDeals = pushNewDeals(newDeals, dealsToCreate)
       }
       let newDeal = [...newDeals[dealNumber].slice(0, 2), ...newTableCards]
       newDeal = setActiveCards(newDeal)
-      changeOneDeal(newDeal, dealNumber)
+      newDeals[dealNumber] = newDeal
+      setDeals(newDeals)
     })
   }, [socket])
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      if (!sessionRef.current) {
+        // First connection, not reconnection
+        return
+      }
+      socket.emit('updateTableCardsOnRejoin', { sessionId: session.id }, (dealsTableCards) => {
+        const newDealsTableCards = dealsTableCards.map((deal) => {
+          return deal.map((card, i) => {
+            return {
+              id: i + 2,
+              ...card,
+            }
+          })
+        })
+        let newDeals = [...dealsRef.current]
+        const dealsToCreate = Math.max(newDealsTableCards.length - newDeals.length, 0)
+        if (dealsToCreate) {
+          newDeals = pushNewDeals(newDeals, dealsToCreate)
+        }
+        newDeals = newDeals.map((deal, i) => {
+          let newDeal = [...deal]
+          if (newDealsTableCards[i]) {
+            newDeal = [...deal.slice(0, 2), ...newDealsTableCards[i]]
+          }
+          newDeal = setActiveCards(newDeal)
+          return newDeal
+        })
+        setDeals(newDeals)
+      })
+    })
+  }, [socket])
+
+  // useEffect(() => {
+  //   socket.on('tableCardsUpdatedOnRejoin', (dealsTableCards) => {
+  //     console.log('tableCardsUpdatedOnRejoin')
+  //     console.log('1')
+  //     const newDealsTableCards = dealsTableCards.map((deal) => {
+  //       return deal.map((card, i) => {
+  //         return {
+  //           id: i + 2,
+  //           ...card,
+  //         }
+  //       })
+  //     })
+  //     console.log('2')
+  //     let newDeals = [...dealsRef.current]
+  //     console.log('3')
+  //     const dealsToCreate = Math.max(newDealsTableCards.length - newDeals.length, 0)
+  //     console.log('4')
+  //     if (dealsToCreate) {
+  //       newDeals = pushNewDeals(newDeals, dealsToCreate)
+  //     }
+  //     console.log('5')
+  //     console.log(JSON.stringify(newDealsTableCards))
+  //     console.log(JSON.stringify(newDeals))
+  //     newDeals = newDeals.map((deal, i) => {
+  //       let newDeal = [...deal]
+  //       if (newDealsTableCards[i]) {
+  //         newDeal = [...deal.slice(0, 2), ...newDealsTableCards[i]]
+  //       }
+  //       newDeal = setActiveCards(newDeal)
+  //       return newDeal
+  //     })
+  //     console.log('6')
+  //     console.log(JSON.stringify(newDeals))
+  //     setDeals(newDeals)
+  //   })
+  // }, [socket])
 
   function pushNewDeals(deals, count) {
     for (let i = 0; i < count; i++) {
@@ -79,6 +150,7 @@ export default function TrackGameScreen({ navigation, route }) {
         }),
       ])
     }
+    return [...deals]
   }
 
   function changeOneDeal(cards, dealNumber) {
