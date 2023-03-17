@@ -49,6 +49,14 @@ export const getRounds = (name) => {
   return postRequest(`${SERVER_ADDR}/players/rounds/`, { name })
 }
 
+export const getPlayerEarnings = (name) => {
+  return postRequest(`${SERVER_ADDR}/players/earnings/`, { name })
+}
+
+export const getRound = (roundId) => {
+  return getRequest(`${SERVER_ADDR}/rounds/${roundId}`)
+}
+
 export const getRoundSummary = (roundId) => {
   return getRequest(`${SERVER_ADDR}/rounds/roundSummary/${roundId}`)
 }

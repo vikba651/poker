@@ -66,7 +66,8 @@ export default function SettleUpScreen({ navigation, route }) {
   settleDebts()
 
   function onBackToStart() {
-    navigation.navigate('StartScreen')
+    // Send ping to trigger update of StartScreen
+    navigation.navigate('StartScreen', { ping: route.params.ping ? route.params.ping + 1 : 0 })
   }
 
   function getName(id) {
