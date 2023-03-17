@@ -16,7 +16,7 @@
     "babel-plugin-react-native-classname-to-style": "^1.2.2",
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
     "core-js": "^3.26.0",
-    "expo": "^48.0.6",
+    "expo": "^48.0.7",
     "expo-location": "~15.1.1",
     "expo-status-bar": "~1.4.4",
     "prop-types": "^15.8.1",
