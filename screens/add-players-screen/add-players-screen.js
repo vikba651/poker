@@ -2,6 +2,7 @@ import { Text, View, TextInput, Button, SafeAreaView, TouchableOpacity } from 'r
 import React, { useEffect, useState, useContext } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import AppContext from '../../shared/AppContext'
+import { postRoundEarnings } from '../../shared/api'
 
 import styles from './add-players-screen.scss'
 import { TrashIcon } from 'react-native-heroicons/outline'
@@ -9,6 +10,7 @@ import { TrashIcon } from 'react-native-heroicons/outline'
 export default function AddPlayersScreen({ navigation, route }) {
   const [playerCount, setPlayerCount] = useState(3) // Add players here
   const [editingAll, setEditingAll] = useState(false)
+  const [round, setRound] = useState(route.params.round)
   const { players, setPlayers, user, session } = useContext(AppContext)
 
   useEffect(() => {
@@ -94,6 +96,16 @@ export default function AddPlayersScreen({ navigation, route }) {
       } else if (potTotal !== chipsLeftTotal) {
         alert(`Total pot (${potTotal}) is not equal to total chips left (${chipsLeftTotal})`)
       } else {
+        if (round && round._id) {
+          const earnings = players.map((player) => {
+            const newEarning = {
+              name: player.name,
+              earning: player.chipsLeft - player.buyIn,
+            }
+            return newEarning
+          })
+          postRoundEarnings(round._id, earnings)
+        }
         navigation.navigate('SettleUpScreen', {
           players,
         })

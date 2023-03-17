@@ -52,3 +52,7 @@ export const getRounds = (name) => {
 export const getRoundSummary = (roundId) => {
   return getRequest(`${SERVER_ADDR}/rounds/roundSummary/${roundId}`)
 }
+
+export const postRoundEarnings = (roundId, earnings) => {
+  return postRequest(`${SERVER_ADDR}/rounds/roundEarnings/${roundId}`, { earnings })
+}

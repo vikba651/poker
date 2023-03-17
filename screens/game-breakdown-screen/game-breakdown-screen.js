@@ -20,7 +20,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
   }
 
   function onSettleUp() {
-    navigation.navigate('AddPlayersScreen')
+    navigation.navigate('AddPlayersScreen', { round })
   }
 
   function onHome() {
