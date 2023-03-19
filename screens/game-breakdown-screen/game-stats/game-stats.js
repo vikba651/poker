@@ -10,7 +10,7 @@ import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
 export default function GameStats({ deals, roundSummary }) {
-  const [cardDistributions, setCardDistributions] = useState()
+  const [rankDistributions, setRankDistributions] = useState()
   const [handResult, setHandResult] = useState()
   const [qualities, setQualities] = useState()
   const [bestDeal, setBestDeal] = useState([])
@@ -33,7 +33,7 @@ export default function GameStats({ deals, roundSummary }) {
     highCards: 'High card',
   }
 
-  function createCardDistributions() {
+  function createRankDistributions() {
     const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
     const dataSets = []
@@ -68,7 +68,7 @@ export default function GameStats({ deals, roundSummary }) {
       }
     }
 
-    setCardDistributions(sortPlayers(dataSets))
+    setRankDistributions(dataSets)
   }
 
   function createHandResultsData() {
@@ -186,7 +186,7 @@ export default function GameStats({ deals, roundSummary }) {
     let myCards = deals
       .map((deal) => deal.playerCards.find((cards) => cards.name === user.name)?.cards)
       .filter((cardPairs) => !!cardPairs)
-    createCardDistributions()
+    createRankDistributions()
     if (roundSummary) {
       createHandResultsData()
       createQualities()
@@ -212,10 +212,10 @@ export default function GameStats({ deals, roundSummary }) {
         title="Summary of hands"
         content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
       ></ComponentCard>
-      <ComponentCard title="Hand Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
+      <ComponentCard title="Player Card Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
       <ComponentCard
-        title="Card Distributions"
-        content={<StackedBarGraph dataSets={cardDistributions} />}
+        title="Rank Distributions"
+        content={<StackedBarGraph dataSets={rankDistributions} />}
       ></ComponentCard>
       <Deal
         title="Best hand"
