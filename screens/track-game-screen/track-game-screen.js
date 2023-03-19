@@ -78,32 +78,40 @@ export default function TrackGameScreen({ navigation, route }) {
         // First connection, not reconnection
         return
       }
-      socket.emit('updateTableCardsOnRejoin', { sessionId: session.id }, (dealsTableCards) => {
-        const newDealsTableCards = dealsTableCards.map((deal) => {
-          return deal.map((card, i) => {
-            return {
-              id: i + 2,
-              ...card,
-            }
-          })
-        })
-        let newDeals = [...dealsRef.current]
-        const dealsToCreate = Math.max(newDealsTableCards.length - newDeals.length, 0)
-        if (dealsToCreate) {
-          newDeals = pushNewDeals(newDeals, dealsToCreate)
-        }
-        newDeals = newDeals.map((deal, i) => {
-          let newDeal = [...deal]
-          if (newDealsTableCards[i]) {
-            newDeal = [...deal.slice(0, 2), ...newDealsTableCards[i]]
-          }
-          newDeal = setActiveCards(newDeal)
-          return newDeal
-        })
-        setDeals(newDeals)
-      })
+      rejoinAndUpdateTableCards()
     })
   }, [socket])
+
+  useEffect(() => {
+    rejoinAndUpdateTableCards()
+  }, [])
+
+  function rejoinAndUpdateTableCards() {
+    socket.emit('updateTableCardsOnRejoin', { sessionId: session.id }, (dealsTableCards) => {
+      const newDealsTableCards = dealsTableCards.map((deal) => {
+        return deal.map((card, i) => {
+          return {
+            id: i + 2,
+            ...card,
+          }
+        })
+      })
+      let newDeals = [...dealsRef.current]
+      const dealsToCreate = Math.max(newDealsTableCards.length - newDeals.length, 0)
+      if (dealsToCreate) {
+        newDeals = pushNewDeals(newDeals, dealsToCreate)
+      }
+      newDeals = newDeals.map((deal, i) => {
+        let newDeal = [...deal]
+        if (newDealsTableCards[i]) {
+          newDeal = [...deal.slice(0, 2), ...newDealsTableCards[i]]
+        }
+        newDeal = setActiveCards(newDeal)
+        return newDeal
+      })
+      setDeals(newDeals)
+    })
+  }
 
   function pushNewDeals(deals, count) {
     for (let i = 0; i < count; i++) {
