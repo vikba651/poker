@@ -4,6 +4,7 @@ import styles from './join-game-screen.scss'
 import { io } from 'socket.io-client'
 import AppContext, { SERVER_ADDR } from '../../shared/AppContext'
 import SecondaryButton from '../../components/secondary-button/secondary-button'
+import TrackGameScreen from '../track-game-screen/track-game-screen'
 
 // HTTP
 
@@ -35,7 +36,9 @@ export default function TestScreen({ navigation, route }) {
       setSession(session)
     })
     socket.on('trackingStarted', () => {
-      navigation.navigate('TrackGameScreen')
+      if (navigation.getState().routes[navigation.getState().index].name === 'JoinGameScreen') {
+        navigation.navigate('TrackGameScreen')
+      }
     })
 
     socket.on('sendLocation', (serverLocation, code) => {
@@ -94,21 +97,25 @@ export default function TestScreen({ navigation, route }) {
           )}
         </View>
       </View>
-      {session && (
-        <View className={styles.boxShadow}>
-          <View className={styles.card}>
-            <>
-              <Text className={styles.cardTitle}>Session Info</Text>
-              <Text style={{ fontWeight: '800' }}>Creator:</Text>
-              <Text>{session.creator}</Text>
-              <Text style={{ fontWeight: '800', marginTop: 20 }}>Players:</Text>
-              {session.players.map((player, i) => (
-                <Text key={i}>{player.name}</Text>
-              ))}
-            </>
+      {
+        // TODO: Viktor Barr should refractor the card component
+        session && (
+          <View className={styles.boxShadow}>
+            <View className={styles.card}>
+              <>
+                <Text className={styles.cardTitle}>Session Info</Text>
+                <Text style={{ fontWeight: '800' }}>Creator:</Text>
+                <Text>{session.creator}</Text>
+                <Text style={{ fontWeight: '800', marginTop: 20 }}>Players:</Text>
+                {session.players.map((player, i) => (
+                  <Text key={i}>{player.name}</Text>
+                ))}
+                <SecondaryButton title="Play" onPress={() => navigation.navigate('TrackGameScreen')} />
+              </>
+            </View>
           </View>
-        </View>
-      )}
+        )
+      }
     </SafeAreaView>
   )
 }
