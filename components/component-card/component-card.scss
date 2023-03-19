@@ -1,20 +1,16 @@
 @import 'variables';
 
 .boxShadow {
-  @include cardBoxShadow;
-}
-
-.cardView {
+  // flex-direction: row;
   background-color: $card-background-color;
-  z-index: 1;
   width: 90%;
   border-radius: 20px;
   margin: 7px 0px;
   padding: 3% 0%;
-  overflow: hidden;
 }
 
 .cardTitle {
-  @include cardTitle;
-  margin-left: 20px;
+  font-size: $font-large;
+  font-weight: 600;
+  margin-bottom: 10px;
 }

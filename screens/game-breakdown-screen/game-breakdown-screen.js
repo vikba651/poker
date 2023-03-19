@@ -43,7 +43,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       {!showAllDeals && <GameStats deals={round.deals} roundSummary={roundSummary}></GameStats>}
-      {showAllDeals && <AllDeals deals={round.deals}></AllDeals>}
+      {showAllDeals && <AllDeals roundSummary={roundSummary}></AllDeals>}
 
       <View className={styles.footerButtonsView}>
         <TouchableOpacity onPress={() => onToggleViewAll()} className={styles.footerButton}>

@@ -1,7 +1,8 @@
-import { View, Text } from 'react-native'
+import { View, Text, Button, TouchableOpacity } from 'react-native'
 import styles from './deal.scss'
 import PlayingCard from '../../../components/playing-card/playing-card'
 import ComponentCard from '../../../components/component-card/component-card'
+import { ArrowRightCircleIcon } from 'react-native-heroicons/outline'
 
 export default function Deal({ playerCards, tableCards, title, hand }) {
   return (
@@ -38,6 +39,10 @@ export default function Deal({ playerCards, tableCards, title, hand }) {
               )
             })}
           </View>
+          <TouchableOpacity className={styles.goToDealView}>
+            <Text className={styles.goToDealText}>Go to deal</Text>
+            <ArrowRightCircleIcon stroke="black" strokeWidth={1.5} />
+          </TouchableOpacity>
         </View>
       }
     ></ComponentCard>

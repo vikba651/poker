@@ -1,13 +1,25 @@
 import { View, Text } from 'react-native'
+import DropShadow from 'react-native-drop-shadow'
 import styles from './component-card.scss'
 
-export default function ComponentCard({ title, content }) {
+export default function ComponentCard({ title, content, centerTitle }) {
   return (
-    <View className={styles.boxShadow}>
-      <View className={styles.cardView}>
+    <DropShadow
+      className={styles.boxShadow}
+      style={{
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 1,
+          height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+      }}
+    >
+      <View style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}>
         {title && <Text className={styles.cardTitle}>{title}</Text>}
-        {content}
       </View>
-    </View>
+      {content}
+    </DropShadow>
   )
 }
