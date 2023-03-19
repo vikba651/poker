@@ -68,7 +68,7 @@ export default function GameStats({ deals, roundSummary }) {
       }
     }
 
-    setRankDistributions(dataSets)
+    setRankDistributions(sortPlayers(dataSets))
   }
 
   function createHandResultsData() {
