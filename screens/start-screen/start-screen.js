@@ -146,11 +146,11 @@ export default function StartScreen({ navigation, route }) {
               </View>
             </ScrollView>
 
-            <Image
+            {/* <Image
               className={styles.gradient}
               style={opacityStyle}
               source={require('../../assets/right-gradient.png')}
-            />
+            /> */}
           </>
         }
       ></ComponentCard>
