@@ -54,6 +54,9 @@ export default function StartScreen({ navigation, route }) {
 
   const fetchGames = async (name) => {
     const playerEarnings = await getPlayerEarnings(name)
+    if (!playerEarnings) {
+      return
+    }
     const newGames = playerEarnings.map((playerEarning, i) => {
       const newGame = {
         id: i,
