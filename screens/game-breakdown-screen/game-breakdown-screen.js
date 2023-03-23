@@ -1,7 +1,6 @@
-import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
+import { View, Image, TouchableOpacity, Text } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import styles from './game-breakdown-screen.scss'
-import AllDeals from './all-deals/all-deals'
 import GameStats from './game-stats/game-stats'
 import AppContext from '../../shared/AppContext'
 import { getRoundSummary } from '../../shared/api'
@@ -12,11 +11,10 @@ import { HomeIcon } from 'react-native-heroicons/outline'
 export default function GameBreakDownScreen({ navigation, route }) {
   const [round, setRound] = useState(route.params.round)
   const { socket } = useContext(AppContext)
-  const [showAllDeals, setShowAllDeals] = useState(false)
   const [roundSummary, setRoundSummary] = useState()
 
-  function onToggleViewAll() {
-    setShowAllDeals(!showAllDeals)
+  function onViewDeals() {
+    navigation.navigate('AllDeals', { roundSummary })
   }
 
   function onSettleUp() {
@@ -42,14 +40,12 @@ export default function GameBreakDownScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      {!showAllDeals && <GameStats deals={round.deals} roundSummary={roundSummary}></GameStats>}
-      {showAllDeals && <AllDeals roundSummary={roundSummary}></AllDeals>}
+      <GameStats navigation={navigation} deals={round.deals} roundSummary={roundSummary}></GameStats>
 
       <View className={styles.footerButtonsView}>
-        <TouchableOpacity onPress={() => onToggleViewAll()} className={styles.footerButton}>
+        <TouchableOpacity onPress={() => onViewDeals()} className={styles.footerButton}>
           <Image className={styles.icon} source={ViewDeals} />
-          {showAllDeals && <Text className={styles.buttonText}>View Stats</Text>}
-          {!showAllDeals && <Text className={styles.buttonText}>View Deals</Text>}
+          <Text className={styles.buttonText}>View Deals</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onSettleUp()} className={styles.footerButton}>
           <Image className={styles.icon} source={SettleUp} />

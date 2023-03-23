@@ -12,6 +12,8 @@ import GameBreakDownScreen from './screens/game-breakdown-screen/game-breakdown-
 import JoinGameScreen from './screens/join-game-screen/join-game-screen'
 import CreateGameScreen from './screens/create-game-screen/create-game-screen'
 import StatsScreen from './screens/stats-screen/stats-screen'
+import DealBreakdown from './screens/game-breakdown-screen/deal-breakdown/deal-breakdown'
+import AllDeals from './screens/game-breakdown-screen/all-deals/all-deals'
 
 const Stack = createNativeStackNavigator()
 
@@ -33,6 +35,8 @@ export default function App() {
           <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{ title: 'Create Game' }} />
           <Stack.Screen name="StatsScreen" component={StatsScreen} options={{ title: 'Statistics' }} />
           <Stack.Screen name="JoinGameScreen" component={JoinGameScreen} options={{ title: 'Join Game' }} />
+          <Stack.Screen name="AllDeals" component={AllDeals} options={{ title: 'All Deals' }} />
+          <Stack.Screen name="DealBreakdown" component={DealBreakdown} options={{ title: 'Deal Breakdown' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>

@@ -9,12 +9,11 @@ import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
-export default function GameStats({ deals, roundSummary }) {
+export default function GameStats({ navigation, deals, roundSummary }) {
   const [rankDistributions, setRankDistributions] = useState()
   const [handResult, setHandResult] = useState()
   const [qualities, setQualities] = useState()
-  const [bestDeal, setBestDeal] = useState([])
-  const [bestDealType, setBestDealType] = useState('')
+  const [bestDealIndex, setBestDealIndex] = useState(-1)
   const [dealsPlayed, setDealsPlayed] = useState(0)
   const [totalDealsCount, setTotalDealsCount] = useState(0)
   const [bestHandPercentages, setBestHandPercentages] = useState([])
@@ -108,16 +107,8 @@ export default function GameStats({ deals, roundSummary }) {
   }
 
   function getBestDeal() {
-    // This function currently returns the best hand of the game of all players
-    // It should return the best hand of the player holding the gittamn phone
-    const data = {}
-    for (const userSummary of roundSummary.userSummaries) {
-      if (userSummary.name == user.name) {
-        data[userSummary.name] = userSummary.bestDeal.dealtCards
-        setBestDeal(userSummary.bestDeal.dealtCards)
-        setBestDealType(userSummary.bestDeal.hand)
-      }
-    }
+    const bestDealIndex = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).bestDealIndex
+    setBestDealIndex(bestDealIndex)
   }
 
   function createGeneralRoundStats() {
@@ -217,12 +208,13 @@ export default function GameStats({ deals, roundSummary }) {
         title="Rank Distributions"
         content={<StackedBarGraph dataSets={rankDistributions} />}
       ></ComponentCard>
-      <Deal
-        title="Best hand"
-        hand={bestDealType}
-        playerCards={bestDeal.slice(0, 2)}
-        tableCards={bestDeal.slice(2, 7)}
-      />
+      {bestDealIndex > -1 && (
+        <Deal
+          navigation={navigation}
+          title={`Best hand - Deal ${bestDealIndex + 1}`}
+          dealSummary={roundSummary.deals[bestDealIndex]}
+        />
+      )}
       <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
     </ScrollView>
   )

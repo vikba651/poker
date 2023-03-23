@@ -1,8 +1,23 @@
 @import 'variables';
 
+.container {
+  padding-left: 13px;
+}
+
 .playerCardsRow {
   flex-direction: row;
   margin-bottom: 20px;
+}
+
+.summaryView {
+  margin-left: 20px;
+  margin-top: 5px;
+  height: 60px;
+  justify-content: space-around;
+}
+
+.handText {
+  font-weight: 700;
 }
 
 .tableCardsRow {
