@@ -75,7 +75,9 @@ export default function StartScreen({ navigation, route }) {
   }
 
   useEffect(() => {
-    fetchGames(user.name)
+    if (user.name && user.name != 'No connection boy') {
+      fetchGames(user.name)
+    }
   }, [user, route])
 
   const onClickRound = async (roundId) => {
