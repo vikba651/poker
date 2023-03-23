@@ -20,7 +20,7 @@ export default function TestScreen({ navigation, route }) {
   }
 
   function leaveSession(code) {
-    // TODO: Add functionality to be able to leave session
+    socket.emit('leaveSession', { name: user.name, code })
   }
 
   useEffect(() => {
@@ -33,13 +33,27 @@ export default function TestScreen({ navigation, route }) {
     })
 
     socket.on('sessionUpdated', (session) => {
-      setSession(session)
+      updateSession(session)
     })
-    socket.on('trackingStarted', () => {
+
+    socket.on('trackingStarted', (session) => {
       if (navigation.getState().routes[navigation.getState().index].name === 'JoinGameScreen') {
         navigation.navigate('TrackGameScreen')
       }
+      updateSession(session)
     })
+
+    function updateSession(session) {
+      if (
+        session.players.find((player) => {
+          return user.name == player.name
+        })
+      ) {
+        setSession(session)
+      } else {
+        setSession(null)
+      }
+    }
 
     socket.on('sendLocation', (serverLocation, code) => {
       if (!location || !serverLocation) {
@@ -80,15 +94,24 @@ export default function TestScreen({ navigation, route }) {
       <View className={styles.boxShadow}>
         <View className={styles.card}>
           <Text className={styles.cardTitle}>Join session</Text>
-          <TextInput
-            autoCapitalize={'characters'}
-            placeholder="Enter session code"
-            onChangeText={setInputCode}
-            autoCorrect={false}
-          ></TextInput>
-
-          {!session && <SecondaryButton title="Join session" onPress={() => joinSession(inputCode)} />}
-          {session && <SecondaryButton title="Leave session" onPress={() => leaveSession(inputCode)} color="red" />}
+          {!session && (
+            <>
+              <TextInput
+                value={inputCode}
+                autoCapitalize={'characters'}
+                placeholder="Enter session code"
+                onChangeText={setInputCode}
+                autoCorrect={false}
+              ></TextInput>
+              <SecondaryButton title="Join session" onPress={() => joinSession(inputCode)} />
+            </>
+          )}
+          {session && (
+            <>
+              <Text>{session.code}</Text>
+              <SecondaryButton title="Leave session" onPress={() => leaveSession(session.code)} color="red" />
+            </>
+          )}
           {closeEnough && (
             <SecondaryButton title="Join nearby party" onPress={() => joinSession(nearbyGameCode)}></SecondaryButton>
             // <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
@@ -110,7 +133,9 @@ export default function TestScreen({ navigation, route }) {
                 {session.players.map((player, i) => (
                   <Text key={i}>{player.name}</Text>
                 ))}
-                <SecondaryButton title="Play" onPress={() => navigation.navigate('TrackGameScreen')} />
+                {session.startTracking && (
+                  <SecondaryButton title="Play" onPress={() => navigation.navigate('TrackGameScreen')} />
+                )}
               </>
             </View>
           </View>
