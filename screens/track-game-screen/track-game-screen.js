@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Button, TouchableOpacity, Text, ScrollView } from 'react-native'
+import { SafeAreaView, ActivityIndicator } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
@@ -19,11 +19,12 @@ export default function TrackGameScreen({ navigation, route }) {
   ]
 
   const [statsActive, setStatsActive] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [swiperInitialIndex, setSwiperInitialIndex] = useState(0)
 
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
-  const [swiperInitialIndex, setSwiperInitialIndex] = useState(0)
 
   const { socket, session, sessionRef, deals, setDeals } = useContext(AppContext)
   const dealsRef = useRef([])
@@ -71,15 +72,17 @@ export default function TrackGameScreen({ navigation, route }) {
       newDeals[dealNumber] = newDeal
       setDeals(newDeals)
     })
-  }, [socket])
 
-  useEffect(() => {
     socket.on('connect', () => {
       if (!sessionRef.current) {
         // First connection, not reconnection
         return
       }
       rejoinAndUpdateTableCards()
+    })
+
+    socket.on('disconnect', () => {
+      setIsLoading(true)
     })
   }, [socket])
 
@@ -112,6 +115,7 @@ export default function TrackGameScreen({ navigation, route }) {
       })
       setDeals(newDeals)
       setOngoingDeal(newDeals)
+      setIsLoading(false)
     })
   }
 
@@ -364,16 +368,20 @@ export default function TrackGameScreen({ navigation, route }) {
         loop={false}
         onIndexChanged={onIndexChanged}
       >
-        {deals.map((cards, i) => (
-          <Cards
-            key={i}
-            cards={cards}
-            currentDeal={i}
-            selectedCard={selectedCard}
-            onSelectCard={onSelectCard}
-            statsActive={statsActive}
-          ></Cards>
-        ))}
+        {isLoading ? (
+          <ActivityIndicator style={{ flex: 1, marginTop: '10%' }} />
+        ) : (
+          deals.map((cards, i) => (
+            <Cards
+              key={i}
+              cards={cards}
+              currentDeal={i}
+              selectedCard={selectedCard}
+              onSelectCard={onSelectCard}
+              statsActive={statsActive}
+            ></Cards>
+          ))
+        )}
       </Swiper>
       {statsActive && <InGameStatistics />}
       <EditSelection
