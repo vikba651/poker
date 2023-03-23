@@ -23,6 +23,7 @@ export default function TrackGameScreen({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
+  const [swiperInitialIndex, setSwiperInitialIndex] = useState(0)
 
   const { socket, session, sessionRef, deals, setDeals } = useContext(AppContext)
   const dealsRef = useRef([])
@@ -110,6 +111,7 @@ export default function TrackGameScreen({ navigation, route }) {
         return newDeal
       })
       setDeals(newDeals)
+      setOngoingDeal(newDeals)
     })
   }
 
@@ -128,6 +130,37 @@ export default function TrackGameScreen({ navigation, route }) {
     let newDeals = [...dealsRef.current]
     newDeals[dealNumber] = cards
     setDeals(newDeals)
+  }
+
+  function consoleLogDeals(newDeals) {
+    newDeals.forEach((deal, i) => {
+      let logRow = i + ''
+      deal.forEach((card) => {
+        logRow = logRow + card.rank + card.suit + ' '
+      })
+      console.log(logRow)
+    })
+  }
+
+  function setOngoingDeal(newDeals) {
+    for (let index = newDeals.length - 1; index >= 0; index = index - 1) {
+      if (!isDealEmpty(newDeals[index])) {
+        setCurrentDeal(index)
+        setSwiperInitialIndex(index)
+        return
+      }
+    }
+    return
+  }
+
+  function isDealEmpty(deal) {
+    if (!deal) {
+      return true
+    }
+    const foundCard = deal.find((card) => {
+      return card.suit != '' && card.rank != ''
+    })
+    return !foundCard
   }
 
   function onSelectSuit(suit) {
@@ -325,6 +358,7 @@ export default function TrackGameScreen({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Swiper
         // key={currentDeal}
+        index={swiperInitialIndex}
         ref={(s) => (swiper.current = s)}
         showsPagination={false}
         loop={false}
