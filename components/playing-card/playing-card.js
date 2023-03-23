@@ -26,8 +26,8 @@ export default function PlayingCard({ rank, suit, isSelected, isActive, isBigCar
             style={{ resizeMode: 'contain' }}
             source={suitImages[suit]}
           />
-          <Text className={styles.cardTopRank}>{rank}</Text>
-          <Text className={styles.cardBottomRank}>{rank}</Text>
+          <Text className={isBigCard ? styles.bigCardTopRank : styles.cardTopRank}>{rank}</Text>
+          <Text className={isBigCard ? styles.bigCardBottomRank : styles.cardBottomRank}>{rank}</Text>
         </>
       ) : (
         <View className={[styles.card, styles.disabledCard]}></View>

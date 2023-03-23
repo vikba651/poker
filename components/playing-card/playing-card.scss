@@ -4,7 +4,7 @@
   background-color: #efefef;
   align-items: center;
   border-radius: 8px;
-  margin: 0px 7px;
+  margin: 0px 5px;
   justify-content: center;
   border: transparent;
   border-width: 3px;
@@ -23,7 +23,7 @@
   width: 25px;
 }
 
-.cardTopRank {
+.bigCardTopRank {
   position: absolute;
   top: 2px;
   left: 5px;
@@ -31,10 +31,26 @@
   font-weight: 400;
 }
 
-.cardBottomRank {
+.bigCardBottomRank {
   position: absolute;
   bottom: 2px;
   right: 5px;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.cardTopRank {
+  position: absolute;
+  top: 0px;
+  left: 2px;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.cardBottomRank {
+  position: absolute;
+  bottom: 0px;
+  right: 2px;
   font-size: 20px;
   font-weight: 400;
 }

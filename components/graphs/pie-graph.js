@@ -7,8 +7,8 @@ export function PieGraph({ data }) {
 
   return (
     <VictoryPie
-      padding={{ top: 30, bottom: 35, right: 0, left: 0 }}
-      height={150}
+      padding={{ top: 40, bottom: 40, right: 0, left: 0 }}
+      height={170}
       innerRadius={25}
       colorScale={COLORS}
       data={data}

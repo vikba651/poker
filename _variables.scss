@@ -3,51 +3,53 @@
 
 $primary-color: #d3d3d3;
 $secondary-color: #d3d3d3;
-$background-color: #E0E0E0;
+$background-color: #e0e0e0;
 
-$card-background-color: #E6E6E6;
-$player-card-color: #29475F;
+$card-background-color: #e6e6e6;
+$player-card-color: #29475f;
 
 $font-large: 20px;
 $font-medium: 16px;
 $font-small: 12px;
 
-$primary-text-color: #E04D67;
+$primary-text-color: #e04d67;
 
 @mixin cardBoxShadow {
-    box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
-    z-index: -1;
-    flex-direction: row;
+  box-shadow: 15px 15px 96px rgb(0, 0, 0);
+  shadow-opacity: 0.16;
+  z-index: -1;
+  background-color: transparent;
+  flex-direction: row;
 }
 
 @mixin card($horizontal-padding: 20px) {
-    background-color: $card-background-color;
-    z-index: 1;
-    width: 90%;
-    border-radius: 35px;
-    margin: 7px 0px;
-    padding: 10px $horizontal-padding 20px $horizontal-padding;
-    overflow: hidden;
+  background-color: $card-background-color;
+  z-index: 1;
+  width: 90%;
+  border-radius: 35px;
+  margin: 7px 0px;
+  padding: 10px $horizontal-padding 20px $horizontal-padding;
+  overflow: hidden;
 }
 
 @mixin cardTitle {
-    font-size: $font-large;
-    font-weight: 600;
-    margin-bottom: 10px;
-    width: 100%;
+  font-size: $font-large;
+  font-weight: 600;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 @mixin cardScrollView {
-    flex-direction: row;
-    padding-left: 15px;
-    padding-right: 5px;
-    overflow: hidden;
+  flex-direction: row;
+  padding-left: 15px;
+  padding-right: 5px;
+  overflow: hidden;
 }
 
 @mixin subCard {
-    background-color: #F5F5F5;
-    height: 99px;
-    width: 89px;
-    border-radius: 13px;
-    margin-right: 10px;
+  background-color: #f5f5f5;
+  height: 99px;
+  width: 89px;
+  border-radius: 13px;
+  margin-right: 10px;
 }
