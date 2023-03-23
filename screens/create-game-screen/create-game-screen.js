@@ -11,9 +11,9 @@ import ComponentCard from '../../components/component-card/component-card'
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
-  const { user, serverState, socket, session, setSession, location } = useContext(AppContext)
+  const { user, serverState, socket, session, setSession, location, sessionCreatedByUser, setSessionCreatedByUser } =
+    useContext(AppContext)
 
-  const [sessionCreated, setSessionCreated] = useState(false)
   const [nearbyGameCode, setNearbyGameCode] = useState('')
   const [closeEnough, setCloseEnough] = useState(false)
 
@@ -25,11 +25,11 @@ export default function CreateGameScreen({ navigation, route }) {
 
   function onCreateSession() {
     // socket.emit('createSession', { name: user.name, location })
-    setSessionCreated(true)
+    setSessionCreatedByUser(true)
   }
 
   function onDisbandParty() {
-    setSessionCreated(false)
+    setSessionCreatedByUser(false)
   }
 
   function onJoinSession(code) {
@@ -71,7 +71,9 @@ export default function CreateGameScreen({ navigation, route }) {
 
     // Always create session, even if using the app alone
     // maybe we should just do a post request to save a round instead
-    socket.emit('createSession', { name: user.name, location })
+    if (!session) {
+      socket.emit('createSession', { name: user.name, location })
+    }
   }, [])
 
   function startTracking() {
@@ -103,7 +105,7 @@ export default function CreateGameScreen({ navigation, route }) {
       <ComponentCard
         content={
           <View className={styles.sessionCard}>
-            {!sessionCreated && (
+            {!sessionCreatedByUser && (
               <View className={styles.noSessionView}>
                 <Text>Are you playing with friends?</Text>
                 <SecondaryButton
@@ -121,7 +123,7 @@ export default function CreateGameScreen({ navigation, route }) {
                 )}
               </View>
             )}
-            {sessionCreated && (
+            {sessionCreatedByUser && (
               <View style={{ height: '165%' }}>
                 {/* Thats some good styling ^ */}
                 <View style={{ alignItems: 'center' }}>

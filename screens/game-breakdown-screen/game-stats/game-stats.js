@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView } from 'react-native'
+import { View, SafeAreaView, Image, TouchableOpacity, Text, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 
 import styles from './game-stats.scss'
@@ -10,6 +10,7 @@ import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
 export default function GameStats({ navigation, deals, roundSummary }) {
+  const [isLoading, setIsLoading] = useState(true)
   const [rankDistributions, setRankDistributions] = useState()
   const [handResult, setHandResult] = useState()
   const [qualities, setQualities] = useState()
@@ -184,38 +185,48 @@ export default function GameStats({ navigation, deals, roundSummary }) {
       getBestDeal()
       createGeneralRoundStats()
       createBestHandDistributions()
+      setIsLoading(false)
     }
   }, [roundSummary])
 
   return (
     <ScrollView className={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
-      <ComponentCard
-        title="General round statistics"
-        content={
-          <GeneralRoundStatistics
-            dealsPlayed={dealsPlayed}
-            totalDealsCount={totalDealsCount}
-            bestHandPercentages={bestHandPercentages}
-          />
-        }
-      ></ComponentCard>
-      <ComponentCard
-        title="Summary of hands"
-        content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
-      ></ComponentCard>
-      <ComponentCard title="Player Card Qualities" content={<StackedAreaGraph dataSets={qualities} />}></ComponentCard>
-      <ComponentCard
-        title="Rank Distributions"
-        content={<StackedBarGraph dataSets={rankDistributions} />}
-      ></ComponentCard>
-      {bestDealIndex > -1 && (
-        <Deal
-          navigation={navigation}
-          title={`Best hand - Deal ${bestDealIndex + 1}`}
-          dealSummary={roundSummary.deals[bestDealIndex]}
-        />
+      {isLoading ? (
+        <ActivityIndicator style={{ flex: 1, marginTop: '50%' }} />
+      ) : (
+        <>
+          <ComponentCard
+            title="General round statistics"
+            content={
+              <GeneralRoundStatistics
+                dealsPlayed={dealsPlayed}
+                totalDealsCount={totalDealsCount}
+                bestHandPercentages={bestHandPercentages}
+              />
+            }
+          ></ComponentCard>
+          <ComponentCard
+            title="Summary of hands"
+            content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
+          ></ComponentCard>
+          <ComponentCard
+            title="Player Card Qualities"
+            content={<StackedAreaGraph dataSets={qualities} />}
+          ></ComponentCard>
+          <ComponentCard
+            title="Rank Distributions"
+            content={<StackedBarGraph dataSets={rankDistributions} />}
+          ></ComponentCard>
+          {bestDealIndex > -1 && (
+            <Deal
+              navigation={navigation}
+              title={`Best hand - Deal ${bestDealIndex + 1}`}
+              dealSummary={roundSummary.deals[bestDealIndex]}
+            />
+          )}
+          <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
+        </>
       )}
-      <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
     </ScrollView>
   )
 }

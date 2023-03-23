@@ -15,6 +15,7 @@ export const AppProvider = ({ children }) => {
   const userName = useRef('')
   userName.current = user.name
   const [serverState, setServerState] = useState('Loading Websocket...')
+  const [sessionCreatedByUser, setSessionCreatedByUser] = useState(false)
   const [session, setSession] = useState(null)
   const sessionRef = useRef(null)
   sessionRef.current = session
@@ -37,6 +38,8 @@ export const AppProvider = ({ children }) => {
     setLocation,
     deals,
     setDeals,
+    sessionCreatedByUser,
+    setSessionCreatedByUser,
   }
 
   useEffect(() => {

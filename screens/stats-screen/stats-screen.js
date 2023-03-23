@@ -42,7 +42,7 @@ export default function StatsScreen({ navigation, route }) {
 
   return (
     <View className={styles.container}>
-      {isLoading && <ActivityIndicator style={{ flex: 1 }} />}
+      {isLoading && <ActivityIndicator style={{ marginTop: '50%' }} />}
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
         {!isLoading && rounds.length === 0 && <Text>You have no rounds.</Text>}
         {!isLoading &&
