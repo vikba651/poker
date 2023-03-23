@@ -1,4 +1,4 @@
-import { SafeAreaView, ActivityIndicator } from 'react-native'
+import { SafeAreaView, ActivityIndicator, Text } from 'react-native'
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
@@ -19,8 +19,6 @@ export default function TrackGameScreen({ navigation, route }) {
   ]
 
   const [statsActive, setStatsActive] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [swiperInitialIndex, setSwiperInitialIndex] = useState(0)
 
   const [selectedCard, setSelectedCard] = useState(0) // 0-6
   const [rankSelected, setRankSelected] = useState(false)
@@ -30,6 +28,8 @@ export default function TrackGameScreen({ navigation, route }) {
   const dealsRef = useRef([])
   dealsRef.current = deals
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [swiperRejoinIndex, setswiperRejoinIndex] = useState(0)
   const [currentDeal, setCurrentDeal] = useState(0)
   const currentDealRef = useRef(0) // This kinda shit is needed to read state in ws event listeners
   currentDealRef.current = currentDeal
@@ -46,6 +46,10 @@ export default function TrackGameScreen({ navigation, route }) {
           return { ...card }
         }),
       ])
+      setIsLoading(false)
+    } else {
+      setIsLoading(true)
+      rejoinAndUpdateTableCards()
     }
   }, [])
 
@@ -78,6 +82,7 @@ export default function TrackGameScreen({ navigation, route }) {
         // First connection, not reconnection
         return
       }
+      setIsLoading(true)
       rejoinAndUpdateTableCards()
     })
 
@@ -85,10 +90,6 @@ export default function TrackGameScreen({ navigation, route }) {
       setIsLoading(true)
     })
   }, [socket])
-
-  useEffect(() => {
-    rejoinAndUpdateTableCards()
-  }, [])
 
   function rejoinAndUpdateTableCards() {
     socket.emit('updateTableCardsOnRejoin', { sessionId: session.id }, (dealsTableCards) => {
@@ -113,11 +114,17 @@ export default function TrackGameScreen({ navigation, route }) {
         newDeal = setActiveCards(newDeal)
         return newDeal
       })
-      setDeals(newDeals)
       setOngoingDeal(newDeals)
+      setDeals(newDeals)
       setIsLoading(false)
     })
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      swiper.current.scrollTo(swiperRejoinIndex, true)
+    }, 200)
+  }, [swiperRejoinIndex])
 
   function pushNewDeals(deals, count) {
     for (let i = 0; i < count; i++) {
@@ -149,8 +156,9 @@ export default function TrackGameScreen({ navigation, route }) {
   function setOngoingDeal(newDeals) {
     for (let index = newDeals.length - 1; index >= 0; index = index - 1) {
       if (!isDealEmpty(newDeals[index])) {
+        console.log(index)
         setCurrentDeal(index)
-        setSwiperInitialIndex(index)
+        setswiperRejoinIndex(index)
         return
       }
     }
@@ -362,7 +370,7 @@ export default function TrackGameScreen({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Swiper
         // key={currentDeal}
-        index={swiperInitialIndex}
+        index={0}
         ref={(s) => (swiper.current = s)}
         showsPagination={false}
         loop={false}
@@ -383,6 +391,9 @@ export default function TrackGameScreen({ navigation, route }) {
           ))
         )}
       </Swiper>
+      <Text>
+        {swiperRejoinIndex}, {currentDeal}
+      </Text>
       {statsActive && <InGameStatistics />}
       <EditSelection
         onSelectSuit={onSelectSuit}
