@@ -391,9 +391,6 @@ export default function TrackGameScreen({ navigation, route }) {
           ))
         )}
       </Swiper>
-      <Text>
-        {swiperRejoinIndex}, {currentDeal}
-      </Text>
       {statsActive && <InGameStatistics />}
       <EditSelection
         onSelectSuit={onSelectSuit}
