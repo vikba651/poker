@@ -1,5 +1,5 @@
-import { View, SafeAreaView, Button, TouchableOpacity, Text, ScrollView } from 'react-native'
-import React, { useContext, useState, useEffect, useRef } from 'react'
+import { SafeAreaView } from 'react-native'
+import React, { useContext, useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Swiper from 'react-native-swiper'
 import styles from './track-game-screen.scss'
 import AppContext from '../../shared/AppContext'
@@ -8,6 +8,13 @@ import InGameStatistics from '../../components/in-game-statistics/in-game-statis
 import Cards from './cards'
 
 export default function TrackGameScreen({ navigation, route }) {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackVisible: false,
+      gestureEnabled: false,
+    })
+  }, [navigation])
+
   const initialCardsList = [
     { id: 0, suit: '', rank: '', isActive: true },
     { id: 1, suit: '', rank: '', isActive: true },

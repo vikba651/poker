@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { AppState } from 'react-native'
 import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
 
-export const SERVER_ADDR = 'http://192.168.86.22:8020'
+export const SERVER_ADDR = 'http://192.168.0.11:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
-  const appState = useRef(AppState.currentState)
-
   const [players, setPlayers] = useState([])
   const [user, setUser] = useState({ name: 'No connection boy' })
   const userName = useRef('')
   userName.current = user.name
   const [serverState, setServerState] = useState('Loading Websocket...')
-  const [sessionCreatedByUser, setSessionCreatedByUser] = useState(false)
+  const [createdSession, setCreatedSession] = useState(false)
+  const [joinedSession, setJoinedSession] = useState(false)
+  const joinedSessionRef = useRef(null)
+  joinedSessionRef.current = joinedSession
   const [session, setSession] = useState(null)
   const sessionRef = useRef(null)
   sessionRef.current = session
@@ -38,8 +38,11 @@ export const AppProvider = ({ children }) => {
     setLocation,
     deals,
     setDeals,
-    sessionCreatedByUser,
-    setSessionCreatedByUser,
+    createdSession,
+    setCreatedSession,
+    joinedSession,
+    joinedSessionRef,
+    setJoinedSession,
   }
 
   useEffect(() => {
@@ -54,11 +57,16 @@ export const AppProvider = ({ children }) => {
       console.log('Websocket message: ', message)
     })
 
+    socket.on('sessionUpdated', (session) => {
+      setSession(session)
+    })
+
     socket.on('disconnect', () => {
       setServerState('Disconnected from Websocket')
     })
 
     return () => {
+      console.log('unmount')
       socket.disconnect()
     }
   }, [socket])

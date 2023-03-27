@@ -1,22 +1,89 @@
-@import "variables";
-
+@import 'variables';
 
 .container {
-    // flex: 1;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-    background-color: $background-color;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  background-color: $background-color;
 }
 
-.boxShadow {
-    @include cardBoxShadow;
+.noPartyView {
+  width: 100%;
+  align-items: center;
+  margin-top: 50%;
 }
 
-.card {
-    @include card;
+.partyView {
+  min-height: 400px;
+  padding: 0 5%;
+  align-items: center;
 }
 
-.cardTitle {
-    @include cardTitle;
+.partyCodeTitle {
+  font-size: $font-large;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.inputBox {
+  width: 90%;
+  height: 76px;
+  background: #e6e6e6;
+  box-shadow: 15px 15px 96px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+}
+
+.inputField {
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: 23px;
+  margin-left: 5%;
+}
+
+.joinSessionIcon {
+  position: absolute;
+  right: 15px;
+}
+
+.errorMessage {
+  margin-top: 20px;
+}
+
+.sessionCodeTitle {
+  font-size: 16;
+  margin-bottom: 3%;
+}
+
+.sessionCodeBox {
+  background-color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.sessionCode {
+  font-size: 32px;
+}
+
+.separator {
+  border-bottom-width: 1px;
+  border-bottom-color: rgb(189, 189, 189);
+  width: 100%;
+  margin: 5%;
+}
+
+.sessionMembersView {
+  width: 100%;
+}
+
+.sessionMembersText {
+  @include cardTitle;
+}
+
+.leaveSessionButton {
+  align-items: center;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
