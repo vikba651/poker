@@ -14,7 +14,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
   const [roundSummary, setRoundSummary] = useState()
 
   function onViewDeals() {
-    navigation.navigate('AllDeals', { roundSummary })
+    navigation.navigate('AllDeals', { roundSummary, roundId: round._id })
   }
 
   function onSettleUp() {

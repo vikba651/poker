@@ -62,7 +62,7 @@ export default function StartScreen({ navigation, route }) {
       const newGame = {
         id: i,
         date: formatTime(playerEarning.startTime),
-        result: Math.abs(playerEarning.earning),
+        result: Math.abs(playerEarning.earning).toString() + 'sek',
         plus: playerEarning.earning > 0,
         roundId: playerEarning.roundId,
       }
