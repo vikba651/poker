@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Button, Switch } from 'react-native'
 import styles from './create-game-screen.scss'
 import AppContext from '../../shared/AppContext'
-import { UserGroupIcon } from 'react-native-heroicons/outline'
+import { UserGroupIcon, UserMinusIcon } from 'react-native-heroicons/outline'
 import PrimaryButton from '../../components/primary-button/primary-button'
 import SecondaryButton from '../../components/secondary-button/secondary-button'
 import { ArrowRightIcon } from 'react-native-heroicons/solid'
@@ -11,11 +11,18 @@ import ComponentCard from '../../components/component-card/component-card'
 // HTTP
 
 export default function CreateGameScreen({ navigation, route }) {
-  const { user, serverState, socket, session, setSession, location, sessionCreatedByUser, setSessionCreatedByUser } =
-    useContext(AppContext)
-
-  const [nearbyGameCode, setNearbyGameCode] = useState('')
-  const [closeEnough, setCloseEnough] = useState(false)
+  const {
+    user,
+    serverState,
+    socket,
+    session,
+    setSession,
+    location,
+    createdSession,
+    setCreatedSession,
+    joinedSession,
+    setJoinedSession,
+  } = useContext(AppContext)
 
   const [settings, setSettings] = useState({
     ingameStats: true,
@@ -23,64 +30,52 @@ export default function CreateGameScreen({ navigation, route }) {
     otherSetting: false,
   })
 
-  function onCreateSession() {
-    // socket.emit('createSession', { name: user.name, location })
-    setSessionCreatedByUser(true)
-  }
-
-  function onDisbandParty() {
-    setSessionCreatedByUser(false)
-  }
-
-  function onJoinSession(code) {
-    socket.emit('joinSession', { name: user.name, code })
-  }
-
   useEffect(() => {
-    socket.on('message', (message) => {
-      console.log('Websocket message: ', message)
-    })
-
-    socket.on('sessionCreated', (session) => {
-      setSession(session)
-    })
-
-    socket.on('sessionUpdated', (session) => {
-      setSession(session)
-    })
-
-    socket.on('sendLocation', (serverLocation, code) => {
-      if (!location || !serverLocation) {
-        return
-      }
-      let lat1 = serverLocation.coords.latitude
-      let lon1 = serverLocation.coords.longitude
-      let lat2 = location.coords.latitude
-      let lon2 = location.coords.longitude
-
-      let distance = getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2)
-      if (distance < 3) {
-        setCloseEnough(true)
-        setNearbyGameCode(code)
-      }
-    })
-
-    socket.on('trackingStarted', () => {
-      navigation.navigate('TrackGameScreen')
-    })
-
     // Always create session, even if using the app alone
     // maybe we should just do a post request to save a round instead
     if (!session) {
-      socket.emit('createSession', { name: user.name, location })
+      socket.emit('createSession', { name: user.name, location }, (session) => {
+        setSession(session)
+      })
     }
-  }, [])
+  }, [socket])
+
+  function onCreateSession() {
+    if (joinedSession && session) {
+      socket.emit('leaveSession', { name: user.name, code: session.code }, () => {
+        socket.emit('createSession', { name: user.name, location }, (session) => {
+          setSession(session)
+          setCreatedSession(true)
+        })
+      })
+    } else {
+      setCreatedSession(true)
+    }
+    setJoinedSession(false)
+  }
+
+  function onDisbandParty() {
+    socket.emit('disbandSession', { code: session.code })
+    setCreatedSession(false)
+    socket.emit('createSession', { name: user.name, location }, (session) => {
+      setSession(session)
+    })
+  }
 
   function startTracking() {
     if (session) {
-      socket.emit('startTracking', { sessionId: session.id })
+      if (joinedSession) {
+        // Leave joined session and create a solo session
+        socket.emit('leaveSession', { name: user.name, code: session.code })
+        socket.emit('createSession', { name: user.name, location }, (session) => {
+          setSession(session)
+          navigation.navigate('TrackGameScreen')
+        })
+      } else {
+        socket.emit('startTracking', { sessionId: session.id })
+        navigation.navigate('TrackGameScreen')
+      }
     }
-    navigation.navigate('TrackGameScreen')
   }
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -105,7 +100,7 @@ export default function CreateGameScreen({ navigation, route }) {
       <ComponentCard
         content={
           <View className={styles.sessionCard}>
-            {!sessionCreatedByUser && (
+            {!createdSession && (
               <View className={styles.noSessionView}>
                 <Text>Are you playing with friends?</Text>
                 <SecondaryButton
@@ -113,17 +108,9 @@ export default function CreateGameScreen({ navigation, route }) {
                   onPress={() => onCreateSession()}
                   icon={<UserGroupIcon className={styles.createSessionIcon} color="white" size={20} />}
                 />
-                {closeEnough && (
-                  <TouchableOpacity
-                    className={styles.createSessionButton}
-                    onPress={() => onJoinSession(nearbyGameCode)}
-                  >
-                    <Text className={styles.createSessionText}>Join nearby party with code {nearbyGameCode}</Text>
-                  </TouchableOpacity>
-                )}
               </View>
             )}
-            {sessionCreatedByUser && (
+            {createdSession && (
               <View style={{ height: '165%' }}>
                 {/* Thats some good styling ^ */}
                 <View style={{ alignItems: 'center' }}>
@@ -146,7 +133,7 @@ export default function CreateGameScreen({ navigation, route }) {
                     title="Disband Party"
                     className={styles.disbandSessionButton}
                     onPress={() => onDisbandParty()}
-                    icon={<UserGroupIcon className={styles.createSessionIcon} color="white" size={20} />}
+                    icon={<UserMinusIcon className={styles.createSessionIcon} color="white" size={20} />}
                     color="red"
                   />
                 </View>
