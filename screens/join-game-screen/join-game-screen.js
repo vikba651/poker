@@ -47,7 +47,7 @@ export default function JoinGameScreen({ navigation, route }) {
 
     socket.on('trackingStarted', (session) => {
       if (navigation.getState().routes[navigation.getState().index].name === 'JoinGameScreen') {
-        navigation.navigate('TrackGameScreen')
+        navigation.navigate('TrackGameScreen', { loading: true })
       }
       updateSession(session)
     })
