@@ -1,0 +1,46 @@
+@import 'variables';
+
+.centeredView {
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  margin-right: 10px;
+}
+
+.centeredModalView {
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.modalContainer {
+  height: 100%;
+}
+
+.modalView {
+  position: fixed;
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  align-items: center;
+}
+
+.button {
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.buttonClose {
+  background-color: #2196F3;
+}
+
+.textStyle {
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.modalText {
+  margin-bottom: 15;
+  text-align: center;
+}
