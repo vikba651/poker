@@ -204,6 +204,8 @@ export default function GameStats({ navigation, deals, roundSummary }) {
                 bestHandPercentages={bestHandPercentages}
               />
             }
+            showInfoModal={true}
+            infoModalContent="This is a general breakdown of the game!"
           ></ComponentCard>
           <ComponentCard
             title="Summary of hands"
