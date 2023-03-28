@@ -10,7 +10,7 @@ import { getRound, getPlayerEarnings } from '../../shared/api'
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
 
-  const { user, session, location, setLocation } = useContext(AppContext)
+  const { user, location, setLocation, socket, setSession } = useContext(AppContext)
 
   const placeholderGames = [
     {
@@ -91,7 +91,6 @@ export default function StartScreen({ navigation, route }) {
     ;(async () => {
       let { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied')
         return
       }
 

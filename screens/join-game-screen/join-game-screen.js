@@ -1,39 +1,48 @@
-import { useEffect, useState, useRef, useContext } from 'react'
-import { View, Text, SafeAreaView, TouchableOpacity, Button, TextInput } from 'react-native'
+import { useEffect, useState, useContext } from 'react'
+import { View, Text, SafeAreaView, TextInput } from 'react-native'
 import styles from './join-game-screen.scss'
-import { io } from 'socket.io-client'
-import AppContext, { SERVER_ADDR } from '../../shared/AppContext'
+import AppContext from '../../shared/AppContext'
 import SecondaryButton from '../../components/secondary-button/secondary-button'
-import TrackGameScreen from '../track-game-screen/track-game-screen'
+import ComponentCard from '../../components/component-card/component-card'
+import { UserGroupIcon, UserMinusIcon } from 'react-native-heroicons/outline'
 
-// HTTP
-
-export default function TestScreen({ navigation, route }) {
-  const { user, socket, location, serverState, session, setSession } = useContext(AppContext)
+export default function JoinGameScreen({ navigation, route }) {
+  const {
+    user,
+    socket,
+    location,
+    serverState,
+    session,
+    setSession,
+    setCreatedSession,
+    joinedSessionRef,
+    setJoinedSession,
+  } = useContext(AppContext)
 
   const [inputCode, setInputCode] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [closeEnough, setCloseEnough] = useState(false)
   const [nearbyGameCode, setNearbyGameCode] = useState('')
 
   function joinSession(code) {
-    socket.emit('joinSession', { name: user.name, code })
+    socket.emit('joinSession', { name: user.name, code }, (session) => {
+      setSession(session)
+      setCreatedSession(false)
+      setJoinedSession(true)
+    })
   }
 
   function leaveSession(code) {
-    socket.emit('leaveSession', { name: user.name, code })
+    socket.emit('leaveSession', { name: user.name, code }, () => {
+      setJoinedSession(false)
+      setSession(null)
+      setErrorMessage('Left party')
+    })
   }
 
   useEffect(() => {
     socket.on('message', (message) => {
-      console.log('Websocket server', message)
-    })
-
-    socket.on('sessionCreated', (session) => {
-      setSession(session)
-    })
-
-    socket.on('sessionUpdated', (session) => {
-      updateSession(session)
+      setErrorMessage(message)
     })
 
     socket.on('trackingStarted', (session) => {
@@ -45,6 +54,7 @@ export default function TestScreen({ navigation, route }) {
 
     function updateSession(session) {
       if (
+        session &&
         session.players.find((player) => {
           return user.name == player.name
         })
@@ -52,6 +62,8 @@ export default function TestScreen({ navigation, route }) {
         setSession(session)
       } else {
         setSession(null)
+        setErrorMessage('Party was disbanded')
+        setJoinedSession(false)
       }
     }
 
@@ -70,6 +82,11 @@ export default function TestScreen({ navigation, route }) {
         setNearbyGameCode(code)
       }
     })
+
+    return () => {
+      socket.removeAllListeners('sendLocation')
+      socket.removeAllListeners('message')
+    }
   }, [socket])
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -91,56 +108,63 @@ export default function TestScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text>{serverState}</Text>
-      <View className={styles.boxShadow}>
-        <View className={styles.card}>
-          <Text className={styles.cardTitle}>Join session</Text>
-          {!session && (
-            <>
-              <TextInput
-                value={inputCode}
-                autoCapitalize={'characters'}
-                placeholder="Enter session code"
-                onChangeText={setInputCode}
-                autoCorrect={false}
-              ></TextInput>
-              <SecondaryButton title="Join session" onPress={() => joinSession(inputCode)} />
-            </>
-          )}
-          {session && (
-            <>
-              <Text>{session.code}</Text>
-              <SecondaryButton title="Leave session" onPress={() => leaveSession(session.code)} color="red" />
-            </>
-          )}
-          {closeEnough && (
-            <SecondaryButton title="Join nearby party" onPress={() => joinSession(nearbyGameCode)}></SecondaryButton>
-            // <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
-            //   <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
-            // </TouchableOpacity>
-          )}
-        </View>
-      </View>
-      {
-        // TODO: Viktor Barr should refractor the card component
-        session && (
-          <View className={styles.boxShadow}>
-            <View className={styles.card}>
-              <>
-                <Text className={styles.cardTitle}>Session Info</Text>
-                <Text style={{ fontWeight: '800' }}>Creator:</Text>
-                <Text>{session.creator}</Text>
-                <Text style={{ fontWeight: '800', marginTop: 20 }}>Players:</Text>
-                {session.players.map((player, i) => (
-                  <Text key={i}>{player.name}</Text>
-                ))}
-                {session.startTracking && (
-                  <SecondaryButton title="Play" onPress={() => navigation.navigate('TrackGameScreen')} />
-                )}
-              </>
-            </View>
+      {!session || !joinedSessionRef.current ? (
+        <View className={styles.noPartyView}>
+          <Text className={styles.partyCodeTitle}>Party code</Text>
+          <View className={styles.inputBox}>
+            <TextInput
+              className={styles.inputField}
+              value={inputCode}
+              autoCapitalize={'characters'}
+              placeholder="Enter code here"
+              onChangeText={setInputCode}
+              autoCorrect={false}
+            />
           </View>
-        )
-      }
+          <SecondaryButton
+            title="Join Party"
+            onPress={() => joinSession(inputCode)}
+            icon={<UserGroupIcon className={styles.joinSessionIcon} color="white" size={20} />}
+          />
+          <Text className={styles.errorMessage}>{errorMessage}</Text>
+          {/* {closeEnough && (
+            <SecondaryButton title="Join nearby party" onPress={() => joinSession(nearbyGameCode)}></SecondaryButton>
+            <TouchableOpacity className={styles.createSessionButton} onPress={() => joinSession(nearbyGameCode)}>
+              <Text className={styles.createPartyText}>Join nearby party with code {nearbyGameCode}</Text>
+            </TouchableOpacity>
+          )} */}
+        </View>
+      ) : (
+        <ComponentCard
+          content={
+            <View style={styles.partyView}>
+              <View style={{ alignItems: 'center', width: '100%' }}>
+                <Text className={styles.sessionCodeTitle}>Party code:</Text>
+                <View className={styles.sessionCodeBox}>
+                  <Text className={styles.sessionCode}>{session.code}</Text>
+                </View>
+                <View className={styles.separator} />
+              </View>
+              <View className={styles.sessionMembersView}>
+                <Text className={styles.sessionMembersText}>Party Members</Text>
+                {session.players.map((player, i) => (
+                  <Text key={i}>
+                    {player.name} {player.name === user.name && '(you)'}
+                  </Text>
+                ))}
+              </View>
+              <View className={styles.leaveSessionButton}>
+                <SecondaryButton
+                  title="Leave Party"
+                  onPress={() => leaveSession(session.code)}
+                  icon={<UserMinusIcon className={styles.createSessionIcon} color="white" size={20} />}
+                  color="red"
+                />
+              </View>
+            </View>
+          }
+        />
+      )}
     </SafeAreaView>
   )
 }

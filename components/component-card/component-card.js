@@ -1,8 +1,9 @@
 import { View, Text } from 'react-native'
 import DropShadow from 'react-native-drop-shadow'
 import styles from './component-card.scss'
+import ModalComponent from '../modal/modal'
 
-export default function ComponentCard({ title, content, centerTitle }) {
+export default function ComponentCard({ title, content, centerTitle, showInfoModal, infoModalContent }) {
   return (
     <DropShadow
       className={styles.boxShadow}
@@ -16,8 +17,12 @@ export default function ComponentCard({ title, content, centerTitle }) {
         shadowRadius: 2,
       }}
     >
-      <View style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}>
+      <View
+        style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}
+        className={styles.titleRow}
+      >
         {title && <Text className={styles.cardTitle}>{title}</Text>}
+        {showInfoModal && <ModalComponent content={infoModalContent}></ModalComponent>}
       </View>
       {content}
     </DropShadow>

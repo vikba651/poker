@@ -10,7 +10,7 @@ import { HomeIcon } from 'react-native-heroicons/outline'
 
 export default function GameBreakDownScreen({ navigation, route }) {
   const [round, setRound] = useState(route.params.round)
-  const { socket } = useContext(AppContext)
+  const { socket, user, session, setSession, setDeals, setJoinedSession, setCreatedSession } = useContext(AppContext)
   const [roundSummary, setRoundSummary] = useState()
 
   function onViewDeals() {
@@ -22,6 +22,12 @@ export default function GameBreakDownScreen({ navigation, route }) {
   }
 
   function onHome() {
+    socket.emit('leaveSession', { name: user.name, code: session.code }, () => {
+      setCreatedSession(false)
+      setJoinedSession(false)
+      setSession(null)
+    })
+    setDeals([])
     navigation.navigate('StartScreen')
   }
 
