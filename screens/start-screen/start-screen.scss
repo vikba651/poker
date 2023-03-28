@@ -8,23 +8,27 @@
 }
 
 .welcomeMessage {
-  width: 82%;
-  flex-grow: 1; //
+  width: 100%;
+  flex-grow: 1;
   justify-content: center;
 }
 
+.rejoinView {
+  width: 100%;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
 .whatDoText {
+  padding-left: 10%;
   font-size: 20;
 }
 
 .nameText {
+  padding-left: 10%;
   font-size: 20;
   font-weight: 600;
-}
-
-.yourGamesText {
-  @include cardTitle;
-  margin-left: 15px; ///////
 }
 
 .yourGamesContainer {

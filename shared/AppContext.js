@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
@@ -7,6 +8,7 @@ export const SERVER_ADDR = 'http://192.168.0.11:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
+  const navigation = useNavigation()
   const [players, setPlayers] = useState([])
   const [user, setUser] = useState({ name: 'No connection boy' })
   const userName = useRef('')
@@ -19,6 +21,7 @@ export const AppProvider = ({ children }) => {
   const [session, setSession] = useState(null)
   const sessionRef = useRef(null)
   sessionRef.current = session
+  const [activeSessionId, setActiveSessionId] = useState(null)
 
   const [location, setLocation] = useState(null)
   const [deals, setDeals] = useState([])
@@ -43,6 +46,14 @@ export const AppProvider = ({ children }) => {
     joinedSession,
     joinedSessionRef,
     setJoinedSession,
+    activeSessionId,
+    getMyActiveSessions,
+  }
+
+  function getMyActiveSessions() {
+    socket.emit('findMyActiveSessions', { name: userName.current }, (sessionId) => {
+      setActiveSessionId(sessionId)
+    })
   }
 
   useEffect(() => {
@@ -50,6 +61,8 @@ export const AppProvider = ({ children }) => {
       setServerState('Connected to Websocket')
       if (sessionRef.current) {
         socket.emit('rejoinSession', { name: userName.current, sessionId: sessionRef.current.id })
+      } else {
+        getMyActiveSessions()
       }
     })
 
@@ -61,12 +74,19 @@ export const AppProvider = ({ children }) => {
       setSession(session)
     })
 
+    socket.on('trackingStarted', (session) => {
+      if (session) {
+        // We get a session => this was a rejoin
+        setSession(session)
+      }
+      navigation.navigate('TrackGameScreen', { loading: true })
+    })
+
     socket.on('disconnect', () => {
       setServerState('Disconnected from Websocket')
     })
 
     return () => {
-      console.log('unmount')
       socket.disconnect()
     }
   }, [socket])

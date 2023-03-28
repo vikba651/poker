@@ -220,7 +220,7 @@ export default function GameStats({ navigation, deals, roundSummary }) {
           {bestDealIndex > -1 && (
             <Deal
               navigation={navigation}
-              title={`Best hand - Deal ${bestDealIndex + 1}`}
+              title={`Your best hand - Deal ${bestDealIndex + 1}`}
               dealSummary={roundSummary.deals[bestDealIndex]}
             />
           )}

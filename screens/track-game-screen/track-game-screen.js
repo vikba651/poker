@@ -31,7 +31,7 @@ export default function TrackGameScreen({ navigation, route }) {
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
 
-  const { socket, session, sessionRef, deals, setDeals } = useContext(AppContext)
+  const { socket, session, sessionRef, user, deals, setDeals } = useContext(AppContext)
   const dealsRef = useRef([])
   dealsRef.current = deals
 
@@ -56,8 +56,8 @@ export default function TrackGameScreen({ navigation, route }) {
       setIsLoading(false)
     } else {
       setIsLoading(true)
-      rejoinAndUpdateTableCards()
     }
+    fetchSessionCards()
   }, [])
 
   useEffect(() => {
@@ -66,19 +66,14 @@ export default function TrackGameScreen({ navigation, route }) {
   }, [selectedCard])
 
   useEffect(() => {
-    socket.on('tableCardsUpdated', (tableCardsData, dealNumber) => {
-      const newTableCards = tableCardsData.map((card, i) => {
-        return {
-          id: i + 2,
-          ...card,
-        }
-      })
+    socket.on('tableCardUpdated', (dealNumber, cardIndex, card) => {
       let newDeals = [...dealsRef.current]
       if (newDeals.length <= dealNumber) {
         const dealsToCreate = dealNumber - newDeals.length + 2
         newDeals = pushNewDeals(newDeals, dealsToCreate)
       }
-      let newDeal = [...newDeals[dealNumber].slice(0, 2), ...newTableCards]
+      let newDeal = [...newDeals[dealNumber]]
+      newDeal[cardIndex] = { id: cardIndex, ...card }
       newDeal = setActiveCards(newDeal)
       newDeals[dealNumber] = newDeal
       setDeals(newDeals)
@@ -90,7 +85,7 @@ export default function TrackGameScreen({ navigation, route }) {
         return
       }
       setIsLoading(true)
-      rejoinAndUpdateTableCards()
+      fetchSessionCards()
     })
 
     socket.on('disconnect', () => {
@@ -98,29 +93,21 @@ export default function TrackGameScreen({ navigation, route }) {
     })
   }, [socket])
 
-  function rejoinAndUpdateTableCards() {
-    socket.emit('updateTableCardsOnRejoin', { sessionId: session.id }, (dealsTableCards) => {
-      const newDealsTableCards = dealsTableCards.map((deal) => {
-        return deal.map((card, i) => {
-          return {
-            id: i + 2,
-            ...card,
-          }
-        })
-      })
-      let newDeals = [...dealsRef.current]
-      const dealsToCreate = Math.max(newDealsTableCards.length - newDeals.length, 0)
-      if (dealsToCreate) {
-        newDeals = pushNewDeals(newDeals, dealsToCreate)
+  function fetchSessionCards() {
+    socket.emit('fetchSessionCards', { sessionId: session.id, name: user.name }, (deals) => {
+      if (!deals) {
+        return
       }
-      newDeals = newDeals.map((deal, i) => {
-        let newDeal = [...deal]
-        if (newDealsTableCards[i]) {
-          newDeal = [...deal.slice(0, 2), ...newDealsTableCards[i]]
-        }
-        newDeal = setActiveCards(newDeal)
-        return newDeal
-      })
+      let newDeals = deals.map((deal) =>
+        setActiveCards(
+          deal.map((card, i) => {
+            return {
+              id: i,
+              ...card,
+            }
+          })
+        )
+      )
       setOngoingDeal(newDeals)
       setDeals(newDeals)
       setIsLoading(false)
@@ -163,13 +150,11 @@ export default function TrackGameScreen({ navigation, route }) {
   function setOngoingDeal(newDeals) {
     for (let index = newDeals.length - 1; index >= 0; index = index - 1) {
       if (!isDealEmpty(newDeals[index])) {
-        console.log(index)
         setCurrentDeal(index)
         setswiperRejoinIndex(index)
         return
       }
     }
-    return
   }
 
   function isDealEmpty(deal) {
@@ -190,6 +175,15 @@ export default function TrackGameScreen({ navigation, route }) {
     setSuitSelected(true)
 
     if (newCards[selectedCard].rank) {
+      if (session && newCards !== deals[currentDeal]) {
+        socket.emit('updateCard', {
+          name: user.name,
+          cardIndex: selectedCard,
+          card: { suit: newCards[selectedCard].suit, rank: newCards[selectedCard].rank },
+          sessionId: session.id,
+          deal: currentDealRef.current,
+        })
+      }
       if (
         selectedCard < 6 &&
         rankSelected &&
@@ -198,16 +192,6 @@ export default function TrackGameScreen({ navigation, route }) {
         !newCards[selectedCard + 1].rank
       ) {
         setSelectedCard(selectedCard + 1)
-      }
-      if (session && selectedCard >= 2 && newCards !== deals[currentDeal]) {
-        const tableCards = newCards.slice(2).map((card) => {
-          return { rank: card.rank, suit: card.suit }
-        })
-        socket.emit('updateTableCards', {
-          cards: tableCards,
-          sessionId: session.id,
-          deal: currentDealRef.current,
-        })
       }
     }
   }
@@ -220,6 +204,15 @@ export default function TrackGameScreen({ navigation, route }) {
     setRankSelected(true)
 
     if (newCards[selectedCard].suit) {
+      if (session && newCards !== deals[currentDeal]) {
+        socket.emit('updateCard', {
+          name: user.name,
+          cardIndex: selectedCard,
+          card: { suit: newCards[selectedCard].suit, rank: newCards[selectedCard].rank },
+          sessionId: session.id,
+          deal: currentDealRef.current,
+        })
+      }
       if (
         selectedCard < 6 &&
         suitSelected &&
@@ -228,16 +221,6 @@ export default function TrackGameScreen({ navigation, route }) {
         !newCards[selectedCard + 1].rank
       ) {
         setSelectedCard(selectedCard + 1)
-      }
-      if (session && selectedCard >= 2 && newCards !== deals[currentDeal]) {
-        const tableCards = newCards.slice(2).map((card) => {
-          return { rank: card.rank, suit: card.suit }
-        })
-        socket.emit('updateTableCards', {
-          cards: tableCards,
-          sessionId: session.id,
-          deal: currentDealRef.current,
-        })
       }
     }
   }
@@ -249,8 +232,10 @@ export default function TrackGameScreen({ navigation, route }) {
     newCards = setActiveCards(newCards)
     changeOneDeal(newCards, currentDeal)
     if (selectedCard > 1) {
-      socket.emit('updateTableCards', {
-        cards: newCards.slice(2),
+      socket.emit('updateCard', {
+        name: user.name,
+        cardIndex: selectedCard,
+        card: { suit: newCards[selectedCard].suit, rank: newCards[selectedCard].rank },
         sessionId: session.id,
         deal: currentDeal,
       })
@@ -259,7 +244,9 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function setActiveCards(cards) {
     let newCards = [
-      ...cards.slice(0, 2),
+      ...cards.slice(0, 2).map((card) => {
+        return { ...card, isActive: true }
+      }),
       ...cards.slice(2).map((card) => {
         return { ...card, isActive: false }
       }),
@@ -336,7 +323,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function setSelectedToFirstNonFilled(index) {
     let newSelected // Set to last card if all cards are filled in
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 7 && deals[index]; i++) {
       newSelected = i
       if (!deals[index][newSelected].rank || !deals[index][newSelected].suit) {
         break

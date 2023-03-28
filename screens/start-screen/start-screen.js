@@ -1,16 +1,20 @@
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
-import styles from './start-screen.scss'
-import AppContext from '../../shared/AppContext'
-import * as Location from 'expo-location'
+import { useIsFocused } from '@react-navigation/native'
 import { PlusIcon, ChartBarIcon, UserPlusIcon, CurrencyDollarIcon } from 'react-native-heroicons/outline'
+import * as Location from 'expo-location'
+import styles from './start-screen.scss'
+
+import AppContext from '../../shared/AppContext'
 import ComponentCard from '../../components/component-card/component-card'
 import { getRound, getPlayerEarnings } from '../../shared/api'
+import SecondaryButton from '../../components/secondary-button/secondary-button'
 
 export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
+  const isFocused = useIsFocused()
 
-  const { user, location, setLocation, socket, setSession } = useContext(AppContext)
+  const { user, location, setLocation, socket, activeSessionId, getMyActiveSessions } = useContext(AppContext)
 
   const placeholderGames = [
     {
@@ -80,6 +84,12 @@ export default function StartScreen({ navigation, route }) {
     }
   }, [user, route])
 
+  useEffect(() => {
+    if (isFocused) {
+      getMyActiveSessions()
+    }
+  }, [isFocused])
+
   const onClickRound = async (roundId) => {
     if (roundId) {
       const round = await getRound(roundId)
@@ -105,6 +115,10 @@ export default function StartScreen({ navigation, route }) {
     setIsGradientActivated(!isCloseToEnd)
   }
 
+  function rejoinActiveGame() {
+    socket.emit('rejoinSession', { name: user.name, sessionId: activeSessionId })
+  }
+
   const opacityStyle = {
     opacity: !DISABLE_GRADIENT && isGradientActivated ? 1 : 0,
     transition: 'all 1s ease-in',
@@ -116,8 +130,16 @@ export default function StartScreen({ navigation, route }) {
   return (
     <SafeAreaView className={styles.container}>
       <View className={styles.welcomeMessage}>
-        <Text className={styles.whatDoText}>What do you want to do,</Text>
-        <Text className={styles.nameText}>{user.name}?</Text>
+        {activeSessionId ? (
+          <View className={styles.rejoinView}>
+            <SecondaryButton title="Rejoin active game" onPress={rejoinActiveGame} />
+          </View>
+        ) : (
+          <>
+            <Text className={styles.whatDoText}>What do you want to do,</Text>
+            <Text className={styles.nameText}>{user.name}?</Text>
+          </>
+        )}
       </View>
 
       <ComponentCard
