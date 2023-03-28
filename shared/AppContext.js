@@ -4,7 +4,7 @@ import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
 
-export const SERVER_ADDR = 'http://192.168.0.17:8020'
+export const SERVER_ADDR = 'http://192.168.86.22:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {

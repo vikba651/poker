@@ -28,7 +28,7 @@ export default function DealBreakdown({ route }) {
   function getStringPosition(n) {
     if (n == 0) return '1st'
     if (n == 1) return '2nd'
-    if (n == 3) return '3rd'
+    if (n == 2) return '3rd'
     //Can't be more than 20 players so 21st is impossible ;)
     return `${n + 1}th`
   }
@@ -54,10 +54,16 @@ export default function DealBreakdown({ route }) {
       const data = [{ x: 'Pre-Flop', y: winProbabilities.probabilities[0] * 100 }]
       const phases = ['Flop', 'Turn', 'River']
       phases.forEach((phase, i) => {
-        data.push({
-          x: phase,
-          y: winProbabilities.probabilities.length > i + 1 ? winProbabilities.probabilities[i + 1] * 100 : data[i].y,
-        })
+        // data.push({
+        //   x: phase,
+        //   y: winProbabilities.probabilities.length > i + 1 ? winProbabilities.probabilities[i + 1] * 100 : data[i].y,
+        // })
+        if (winProbabilities.probabilities.length > i + 1) {
+          data.push({
+            x: phase,
+            y: winProbabilities.probabilities[i + 1] * 100,
+          })
+        }
       })
       return { name, data }
     })
@@ -68,67 +74,87 @@ export default function DealBreakdown({ route }) {
     fetchDealWinProbabilities(roundId, dealNumber)
   }, [])
 
+  function sortPlayers(dataSets) {
+    if (!dataSets) return dataSets
+    const sortedDataSet = [...dataSets]
+    const userDatasetIndex = sortedDataSet.findIndex((dataset) => dataset.name === user.name)
+    const userDataset = sortedDataSet.splice(userDatasetIndex, 1)
+
+    sortedDataSet.sort(function (a, b) {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+    return [...userDataset, ...sortedDataSet]
+  }
+
   return (
     <View className={styles.container}>
-      <ScrollView className={styles.playersView}>
-        <Text className={styles.title}>{title}</Text>
-        <ComponentCard
-          title="Win Chances"
-          content={<StackedAreaGraph dataSets={dealWinProbabilities} />}
-        ></ComponentCard>
-        <ComponentCard
-          content={
-            <>
-              <Text className={styles.cardTitle}>Cards on Table</Text>
-              <View className={styles.cardRow}>
-                {tableCards.map((tableCard, i) => (
-                  <PlayingCard
-                    rank={tableCard.rank}
-                    suit={tableCard.suit}
-                    isActive={true}
-                    key={i}
-                    isSelected={isMarked(tableCard.suit, tableCard.rank)}
-                  />
-                ))}
-              </View>
-              {playerSummaries.map((playerSummary, i) => (
-                <View
-                  className={
-                    (styles.playerView, markedPlayerSummary.name == playerSummary.name ? styles.markedPlayerView : null)
-                  }
-                  key={i}
-                >
-                  <View className={styles.playerCardsView}>
-                    <Text className={styles.playerPosition}>{playerSummary.position}</Text>
-                    <Text className={styles.playerName}> - {playerSummary.name}</Text>
-                  </View>
-                  <TouchableOpacity
-                    className={styles.cardRow}
-                    onPress={() => {
-                      setMarkedPlayerSummary(playerSummary)
-                    }}
-                  >
-                    {playerSummary.cards.map((playerCard, j) => (
-                      <PlayingCard
-                        rank={playerCard.rank}
-                        suit={playerCard.suit}
-                        isActive={true}
-                        key={j}
-                        isSelected={isMarked(playerCard.suit, playerCard.rank)}
-                      />
-                    ))}
-                    <View className={styles.summaryView}>
-                      <Text className={styles.handText}>{playerSummary.hand}</Text>
-                      <Text>{(playerSummary.winRate * 100).toFixed(0)}% win rate</Text>
-                      <Text>Top {playerSummary.percentile}% of hands</Text>
-                    </View>
-                  </TouchableOpacity>
+      <ScrollView className={styles.scrollView}>
+        <View className={styles.playersView}>
+          <Text className={styles.title}>{title}</Text>
+          <ComponentCard
+            title="Win Chances"
+            content={<StackedAreaGraph dataSets={sortPlayers(dealWinProbabilities)} />}
+          ></ComponentCard>
+          <ComponentCard
+            content={
+              <>
+                <Text className={styles.cardTitle}>Cards on Table</Text>
+                <View className={styles.cardRow}>
+                  {tableCards.map((tableCard, i) => (
+                    <PlayingCard
+                      rank={tableCard.rank}
+                      suit={tableCard.suit}
+                      isActive={true}
+                      key={i}
+                      isSelected={isMarked(tableCard.suit, tableCard.rank)}
+                    />
+                  ))}
                 </View>
-              ))}
-              <View style={{ height: 40 }}></View>
-            </>
-          }
-        ></ComponentCard>
+                {playerSummaries.map((playerSummary, i) => (
+                  <View
+                    className={
+                      markedPlayerSummary.name == playerSummary.name ? styles.markedPlayerView : styles.playerView
+                    }
+                    key={i}
+                  >
+                    <View className={styles.playerCardsView}>
+                      <Text className={styles.playerPosition}>{playerSummary.position}</Text>
+                      <Text className={styles.playerName}> - {playerSummary.name}</Text>
+                    </View>
+                    <TouchableOpacity
+                      className={styles.cardRow}
+                      onPress={() => {
+                        setMarkedPlayerSummary(playerSummary)
+                      }}
+                    >
+                      {playerSummary.cards.map((playerCard, j) => (
+                        <PlayingCard
+                          rank={playerCard.rank}
+                          suit={playerCard.suit}
+                          isActive={true}
+                          key={j}
+                          isSelected={isMarked(playerCard.suit, playerCard.rank)}
+                        />
+                      ))}
+                      <View className={styles.summaryView}>
+                        <Text className={styles.handText}>{playerSummary.hand}</Text>
+                        <Text>{(playerSummary.winRate * 100).toFixed(0)}% win rate</Text>
+                        <Text>Top {playerSummary.percentile}% of hands</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                <View style={{ height: 40 }}></View>
+              </>
+            }
+          ></ComponentCard>
+        </View>
       </ScrollView>
     </View>
   )
