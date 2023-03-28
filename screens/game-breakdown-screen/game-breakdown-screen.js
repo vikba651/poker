@@ -46,10 +46,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <GameStats navigation={navigation} deals={round.deals} roundSummary={roundSummary} roundId={round._id}>
-        {' '}
-      </GameStats>
-
+      <GameStats navigation={navigation} deals={round.deals} roundSummary={roundSummary} roundId={round._id} />
       <View className={styles.footerButtonsView}>
         <TouchableOpacity onPress={() => onViewDeals()} className={styles.footerButton}>
           <Image className={styles.icon} source={ViewDeals} />
