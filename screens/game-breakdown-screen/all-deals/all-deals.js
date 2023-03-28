@@ -7,10 +7,18 @@ import Deal from '../deal/deal'
 export default function AllDeals({ navigation, route }) {
   const { user } = useContext(AppContext)
   const roundSummary = route.params.roundSummary
+  const roundId = route.params.roundId
 
   function renderDeals() {
     return roundSummary.deals.map((dealSummary, i) => (
-      <Deal navigation={navigation} key={i} title={`Deal ${i + 1}`} dealSummary={dealSummary} />
+      <Deal
+        navigation={navigation}
+        key={i}
+        title={`Deal ${i + 1}`}
+        dealSummary={dealSummary}
+        roundId={roundId}
+        dealNumber={i}
+      />
     ))
   }
 

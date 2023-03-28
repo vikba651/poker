@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import DropShadow from 'react-native-drop-shadow'
 import styles from './component-card.scss'
-import ModalComponent from '../modal/modal'
+import ModalComponent from '../modal-component/modal-component'
 
 export default function ComponentCard({ title, content, centerTitle, showInfoModal, infoModalContent }) {
   return (

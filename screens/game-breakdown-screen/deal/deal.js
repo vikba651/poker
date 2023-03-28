@@ -6,7 +6,7 @@ import ComponentCard from '../../../components/component-card/component-card'
 import { ArrowRightCircleIcon } from 'react-native-heroicons/outline'
 import AppContext from '../../../shared/AppContext'
 
-export default function Deal({ navigation, title, dealSummary }) {
+export default function Deal({ navigation, title, dealSummary, roundId, dealNumber }) {
   const { user } = useContext(AppContext)
   const [tableCards, setTableCards] = useState([])
   const [playerSummary, setPlayerSummary] = useState()
@@ -64,7 +64,7 @@ export default function Deal({ navigation, title, dealSummary }) {
           {navigation && (
             <TouchableOpacity
               className={styles.goToDealView}
-              onPress={() => navigation.navigate('DealBreakdown', { dealSummary, title })}
+              onPress={() => navigation.navigate('DealBreakdown', { dealSummary, title, roundId, dealNumber })}
             >
               <Text className={styles.goToDealText}>Go to deal</Text>
               <ArrowRightCircleIcon stroke="black" strokeWidth={1.5} />

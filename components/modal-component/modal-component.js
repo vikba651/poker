@@ -1,6 +1,6 @@
 import { View, Text, Modal, Alert, Pressable, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import React, { useState } from 'react'
-import styles from './modal.scss'
+import styles from './modal-component.scss'
 import { QuestionMarkCircleIcon } from 'react-native-heroicons/outline'
 import DropShadow from 'react-native-drop-shadow'
 
