@@ -24,6 +24,14 @@
   margin: 7px;
 }
 
+.graphPlaceholderView {
+  height: 250px;
+}
+
+.graphPlaceholder {
+  margin: auto;
+}
+
 .markedPlayerView {
   background-color: rgb(178, 178, 178);
   border-radius: 14px;
@@ -47,7 +55,7 @@
   font-size: $font-large;
   font-weight: 600;
   margin-bottom: 10px;
-  margin-left: 8px;
+  margin-left: 13px;
 }
 
 .cardRow {

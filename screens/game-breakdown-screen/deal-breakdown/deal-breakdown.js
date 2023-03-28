@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import PlayingCard from '../../../components/playing-card/playing-card'
 import AppContext from '../../../shared/AppContext'
 import { getDealWinProbabilities } from '../../../shared/api'
@@ -99,7 +99,15 @@ export default function DealBreakdown({ route }) {
           <Text className={styles.title}>{title}</Text>
           <ComponentCard
             title="Win Chances"
-            content={<StackedAreaGraph dataSets={sortPlayers(dealWinProbabilities)} />}
+            content={
+              dealWinProbabilities ? (
+                <StackedAreaGraph dataSets={sortPlayers(dealWinProbabilities)} />
+              ) : (
+                <View className={styles.graphPlaceholderView}>
+                  <ActivityIndicator className={styles.graphPlaceholder} />
+                </View>
+              )
+            }
           ></ComponentCard>
           <ComponentCard
             content={
