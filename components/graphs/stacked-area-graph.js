@@ -39,7 +39,7 @@ export function StackedAreaGraph({ dataSets }) {
       {dataSets && (
         <VictoryChart height={250} width={width} padding={{ top: 40, left: 45, right: 20, bottom: 40 }}>
           <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
-          <VictoryStack colorScale={COLORS}>
+          <VictoryStack colorScale={COLORS} animate={{ duration: 2000, onLoad: { duration: 10 } }}>
             {dataSets.map((dataset, i) => (
               <VictoryArea key={i} data={dataset.data} />
             ))}

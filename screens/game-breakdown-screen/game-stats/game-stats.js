@@ -18,7 +18,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
   const [yourBestDealIndex, setYourBestDealIndex] = useState(-1)
   const [roundBestDeal, setRoundBestDeal] = useState(false)
   const [dealsPlayed, setDealsPlayed] = useState(0)
-  const [totalDealsCount, setTotalDealsCount] = useState(0)
+  const [totalDealsCount, setTotalDealsCount] = useState(1)
   const [bestHandPercentages, setBestHandPercentages] = useState([])
 
   const { user } = useContext(AppContext)

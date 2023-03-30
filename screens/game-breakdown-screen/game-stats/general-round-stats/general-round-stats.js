@@ -2,10 +2,16 @@ import { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { PieGraph } from '../../../../components/graphs/pie-graph'
 import { ProgressBar } from '../../../../components/graphs/progress-bar'
+import { VictoryAnimation } from 'victory-native'
 
 export function GeneralRoundStatistics({ dealsPlayed, totalDealsCount, bestHandPercentages }) {
   const HORIZONTAL_PADDING = 30
   const [pieData, setPieData] = useState([])
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    setProgress((dealsPlayed / totalDealsCount) * 100)
+  }, [totalDealsCount, totalDealsCount])
 
   useEffect(() => {
     setPieData(
@@ -26,7 +32,11 @@ export function GeneralRoundStatistics({ dealsPlayed, totalDealsCount, bestHandP
         <Text style={{ fontWeight: '700' }}> {totalDealsCount} </Text>
         <Text>deals</Text>
       </Text>
-      <ProgressBar progress={dealsPlayed} total={totalDealsCount} />
+      <VictoryAnimation {...{ duration: 1800, easing: 'expInOut' }} data={{ progress: progress }}>
+        {(tweenedProps) => {
+          return <ProgressBar {...tweenedProps} />
+        }}
+      </VictoryAnimation>
       {bestHandPercentages.length ? (
         <>
           <Text style={{ marginTop: 20 }}>
