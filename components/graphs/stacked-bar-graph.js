@@ -26,7 +26,12 @@ export function StackedBarGraph({ dataSets, longLabels }) {
       )
       setLongestLabel(findLongestLabel(dataSets))
 
-      let xCount = dataSets[0].data.length
+      let xCount = dataSets.reduce((maxLength, dataset) => {
+        if (maxLength < dataset.data.length) {
+          return dataset.data.length
+        }
+        return maxLength
+      }, 0)
       setWidth(Math.max(MIN_WIDTH, xCount * 22))
     }
   }, [dataSets])
