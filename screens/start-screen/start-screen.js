@@ -14,7 +14,8 @@ export default function StartScreen({ navigation, route }) {
   const DISABLE_GRADIENT = true
   const isFocused = useIsFocused()
 
-  const { user, location, setLocation, socket, activeSessionId, getMyActiveSessions } = useContext(AppContext)
+  const { user, location, setLocation, socket, activeSessionId, getMyActiveSessions, setSession } =
+    useContext(AppContext)
 
   const placeholderGames = [
     {
@@ -79,16 +80,11 @@ export default function StartScreen({ navigation, route }) {
   }
 
   useEffect(() => {
-    if (user.name && user.name != 'No connection boy') {
+    if (user !== 'No connection boy' && isFocused) {
       fetchGames(user.name)
-    }
-  }, [user, route])
-
-  useEffect(() => {
-    if (isFocused) {
       getMyActiveSessions()
     }
-  }, [isFocused])
+  }, [user, isFocused])
 
   const onClickRound = async (roundId) => {
     if (roundId) {
@@ -116,7 +112,10 @@ export default function StartScreen({ navigation, route }) {
   }
 
   function rejoinActiveGame() {
-    socket.emit('rejoinSession', { name: user.name, sessionId: activeSessionId })
+    socket.emit('rejoinSession', { name: user.name, sessionId: activeSessionId }, (session) => {
+      setSession(session)
+      navigation.navigate('TrackGameScreen', { loading: true })
+    })
   }
 
   const opacityStyle = {

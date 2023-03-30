@@ -204,19 +204,13 @@ export default function GameStats({ navigation, deals, roundSummary }) {
                 bestHandPercentages={bestHandPercentages}
               />
             }
-          ></ComponentCard>
+          />
           <ComponentCard
             title="Summary of hands"
             content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
-          ></ComponentCard>
-          <ComponentCard
-            title="Player Card Qualities"
-            content={<StackedAreaGraph dataSets={qualities} />}
-          ></ComponentCard>
-          <ComponentCard
-            title="Rank Distributions"
-            content={<StackedBarGraph dataSets={rankDistributions} />}
-          ></ComponentCard>
+          />
+          <ComponentCard title="Player Card Qualities" content={<StackedAreaGraph dataSets={qualities} />} />
+          <ComponentCard title="Rank Distributions" content={<StackedBarGraph dataSets={rankDistributions} />} />
           {bestDealIndex > -1 && (
             <Deal
               navigation={navigation}

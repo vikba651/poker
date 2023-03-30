@@ -31,9 +31,7 @@ export default function TrackGameScreen({ navigation, route }) {
   const [rankSelected, setRankSelected] = useState(false)
   const [suitSelected, setSuitSelected] = useState(false)
 
-  const { socket, session, sessionRef, user, deals, setDeals } = useContext(AppContext)
-  const dealsRef = useRef([])
-  dealsRef.current = deals
+  const { socket, session, sessionRef, user, deals, dealsRef, setDeals } = useContext(AppContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [swiperRejoinIndex, setswiperRejoinIndex] = useState(0)
@@ -72,25 +70,31 @@ export default function TrackGameScreen({ navigation, route }) {
         const dealsToCreate = dealNumber - newDeals.length + 2
         newDeals = pushNewDeals(newDeals, dealsToCreate)
       }
-      let newDeal = [...newDeals[dealNumber]]
-      newDeal[cardIndex] = { id: cardIndex, ...card }
-      newDeal = setActiveCards(newDeal)
-      newDeals[dealNumber] = newDeal
+      newDeals[dealNumber][cardIndex] = { id: cardIndex, ...card }
+      newDeals[dealNumber] = setActiveCards(newDeals[dealNumber])
       setDeals(newDeals)
     })
 
-    socket.on('connect', () => {
+    const onConnect = () => {
       if (!sessionRef.current) {
         // First connection, not reconnection
         return
       }
       setIsLoading(true)
       fetchSessionCards()
-    })
+    }
+    socket.on('connect', onConnect)
 
-    socket.on('disconnect', () => {
+    const onDisconnect = () => {
       setIsLoading(true)
-    })
+    }
+    socket.on('disconnect', onDisconnect)
+
+    return () => {
+      socket.off('tableCardUpdated')
+      socket.off('connect', onConnect)
+      socket.off('disconnect', onDisconnect)
+    }
   }, [socket])
 
   function fetchSessionCards() {
@@ -108,6 +112,7 @@ export default function TrackGameScreen({ navigation, route }) {
           })
         )
       )
+      newDeals = pushNewDeals(newDeals, 2) // Add a empty deal for the swiper
       setOngoingDeal(newDeals)
       setDeals(newDeals)
       setIsLoading(false)
@@ -139,7 +144,7 @@ export default function TrackGameScreen({ navigation, route }) {
 
   function consoleLogDeals(newDeals) {
     newDeals.forEach((deal, i) => {
-      let logRow = i + ''
+      let logRow = i + ': '
       deal.forEach((card) => {
         logRow = logRow + card.rank + card.suit + ' '
       })

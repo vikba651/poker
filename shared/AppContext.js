@@ -25,6 +25,8 @@ export const AppProvider = ({ children }) => {
 
   const [location, setLocation] = useState(null)
   const [deals, setDeals] = useState([])
+  const dealsRef = useRef([])
+  dealsRef.current = deals
 
   const providers = {
     socket,
@@ -40,6 +42,7 @@ export const AppProvider = ({ children }) => {
     location,
     setLocation,
     deals,
+    dealsRef,
     setDeals,
     createdSession,
     setCreatedSession,
@@ -61,8 +64,6 @@ export const AppProvider = ({ children }) => {
       setServerState('Connected to Websocket')
       if (sessionRef.current) {
         socket.emit('rejoinSession', { name: userName.current, sessionId: sessionRef.current.id })
-      } else {
-        getMyActiveSessions()
       }
     })
 
@@ -74,11 +75,7 @@ export const AppProvider = ({ children }) => {
       setSession(session)
     })
 
-    socket.on('trackingStarted', (session) => {
-      if (session) {
-        // We get a session => this was a rejoin
-        setSession(session)
-      }
+    socket.on('trackingStarted', () => {
       navigation.navigate('TrackGameScreen', { loading: true })
     })
 
