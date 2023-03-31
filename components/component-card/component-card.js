@@ -4,27 +4,56 @@ import styles from './component-card.scss'
 import ModalComponent from '../modal-component/modal-component'
 
 export default function ComponentCard({ title, content, centerTitle, infoModalContent }) {
-  return (
-    <DropShadow
-      className={styles.boxShadow}
-      style={{
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 1,
-          height: 1,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      }}
-    >
-      <View
-        style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}
-        className={styles.titleRow}
+  const isIos = Platform.OS == 'ios' ? true : false
+
+  if (isIos) {
+    component = (
+      <DropShadow
+        className={styles.boxShadow}
+        style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 1,
+            height: 1,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+        }}
       >
-        {title && <Text className={styles.cardTitle}>{title}</Text>}
-        {infoModalContent && <ModalComponent content={infoModalContent}></ModalComponent>}
+        <View
+          style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}
+          className={styles.titleRow}
+        >
+          {title && <Text className={styles.cardTitle}>{title}</Text>}
+          {infoModalContent && <ModalComponent content={infoModalContent}></ModalComponent>}
+        </View>
+        {content}
+      </DropShadow>
+    )
+  } else {
+    component = (
+      <View
+        className={styles.boxShadow}
+        style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 1,
+            height: 1,
+          },
+          elevation: 2,
+        }}
+      >
+        <View
+          style={{ alignItems: centerTitle ? 'center' : 'baseline', marginLeft: centerTitle ? 0 : 20 }}
+          className={styles.titleRow}
+        >
+          {title && <Text className={styles.cardTitle}>{title}</Text>}
+          {infoModalContent && <ModalComponent content={infoModalContent}></ModalComponent>}
+        </View>
+        {content}
       </View>
-      {content}
-    </DropShadow>
-  )
+    )
+  }
+
+  return component
 }
