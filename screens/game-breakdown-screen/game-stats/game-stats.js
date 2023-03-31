@@ -20,6 +20,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
   const [dealsPlayed, setDealsPlayed] = useState(0)
   const [totalDealsCount, setTotalDealsCount] = useState(1)
   const [bestHandPercentages, setBestHandPercentages] = useState([])
+  const [toggleBestHandPercentages, setToggleBestHandPercentages] = useState(false)
 
   const { user } = useContext(AppContext)
   const players = deals.reduce((players, deal) => {
@@ -151,36 +152,8 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
     setTotalDealsCount(deals.length)
   }
 
-  function createBestHandDistributions() {
-    // In this case best hand means highest quality. In the future we may want hand to mean full house, pair etc.
-    // const myDealsCount = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).qualities
-    //   .length
-    // const bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
-    //   return {
-    //     name: userSummary.name,
-    //     count: 0,
-    //   }
-    // })
-    // for (let i = 0; i < myDealsCount; i++) {
-    //   let bestHand = {
-    //     name: '',
-    //     quality: 0,
-    //   }
-    //   for (const userSummary of roundSummary.userSummaries) {
-    //     const userQuality = userSummary.qualities.at(i)
-    //     if (userQuality && userQuality > bestHand.quality) {
-    //       bestHand = { name: userSummary.name, quality: userQuality }
-    //     }
-    //   }
-    //   bestHandCounts.find((obj) => obj.name === bestHand.name).count++
-    // }
-    // const dataSets = bestHandCounts.map((bestHandCount) => {
-    //   return {
-    //     name: bestHandCount.name,
-    //     data: (bestHandCount.count * 100) / myDealsCount,
-    //   }
-    // })
-    myDealsCount = roundSummary.deals.reduce((count, deal) => {
+  function createBestHandDistributions(showBestHandPercentages) {
+    const myDealsCount = roundSummary.deals.reduce((count, deal) => {
       if (
         deal.playerCards.find((playerCards) => {
           return playerCards.name == user.name
@@ -190,33 +163,57 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
       }
       return count
     }, 0)
-
-    const bestHandCounts = roundSummary.deals.reduce(
-      (bestHandCounts, deal) => {
-        if (!deal.playerCards.length) throw 'Players Cards are empty'
-        if (
-          !deal.playerCards.find((playerCards) => {
-            return playerCards.name == user.name
-          })
-        ) {
-          //Don't count rounds the use didn't take part of
-          return bestHandCounts
+    let bestHandCounts
+    if (!showBestHandPercentages) {
+      bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
+        return {
+          name: userSummary.name,
+          count: 0,
         }
-        let bestHand = deal.playerCards.reduce((bestHand, hand) => (bestHand.score > hand.score ? bestHand : hand))
-        bestHandCounts[bestHandCounts.findIndex((bestHandCount) => bestHandCount.name == bestHand.name)].count++
-
-        return bestHandCounts
-      },
-      players.map((player) => {
-        return { name: player, count: 0 }
       })
-    )
+      for (let i = 0; i < myDealsCount; i++) {
+        let bestHand = {
+          name: '',
+          quality: 0,
+        }
+        for (const userSummary of roundSummary.userSummaries) {
+          const userQuality = userSummary.qualities.at(i)
+          if (userQuality && userQuality > bestHand.quality) {
+            bestHand = { name: userSummary.name, quality: userQuality }
+          }
+        }
+        bestHandCounts.find((obj) => obj.name === bestHand.name).count++
+      }
+    } else {
+      bestHandCounts = roundSummary.deals.reduce(
+        (bestHandCounts, deal) => {
+          if (!deal.playerCards.length) throw 'Players Cards are empty'
+          if (
+            !deal.playerCards.find((playerCards) => {
+              return playerCards.name == user.name
+            })
+          ) {
+            //Don't count rounds the use didn't take part of
+            return bestHandCounts
+          }
+          let bestHand = deal.playerCards.reduce((bestHand, hand) => (bestHand.score > hand.score ? bestHand : hand))
+          bestHandCounts[bestHandCounts.findIndex((bestHandCount) => bestHandCount.name == bestHand.name)].count++
+
+          return bestHandCounts
+        },
+        players.map((player) => {
+          return { name: player, count: 0 }
+        })
+      )
+    }
+
     const dataSets = bestHandCounts.map((bestHandCount) => {
       return {
         name: bestHandCount.name,
         data: (bestHandCount.count * 100) / myDealsCount,
       }
     })
+
     setBestHandPercentages(sortPlayers(dataSets))
   }
 
@@ -250,7 +247,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
       getYourBestDeal()
       getRoundBestDeal()
       createGeneralRoundStats()
-      createBestHandDistributions()
+      createBestHandDistributions(toggleBestHandPercentages)
       setIsLoading(false)
     }
   }, [roundSummary])
@@ -261,17 +258,26 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
         <ActivityIndicator style={{ flex: 1, marginTop: '50%' }} />
       ) : (
         <>
-          <ComponentCard
-            title="General round statistics"
-            content={
-              <GeneralRoundStatistics
-                dealsPlayed={dealsPlayed}
-                totalDealsCount={totalDealsCount}
-                bestHandPercentages={bestHandPercentages}
-              />
-            }
-            infoModalContent="Best hand describes the best 5 card combination"
-          ></ComponentCard>
+          <TouchableOpacity
+            onPress={() => {
+              createBestHandDistributions(!toggleBestHandPercentages)
+              setToggleBestHandPercentages(!toggleBestHandPercentages)
+            }}
+            style={{ width: '100%', alignItems: 'center' }}
+          >
+            <ComponentCard
+              title="General round statistics"
+              content={
+                <GeneralRoundStatistics
+                  dealsPlayed={dealsPlayed}
+                  totalDealsCount={totalDealsCount}
+                  bestHandPercentages={bestHandPercentages}
+                  toggleBestHandPercentages={toggleBestHandPercentages}
+                />
+              }
+              infoModalContent="Best hand describes the best 5 card combination"
+            ></ComponentCard>
+          </TouchableOpacity>
           <ComponentCard
             title="Summary of hands"
             content={<StackedBarGraph dataSets={handResult} longLabels={true} />}

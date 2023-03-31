@@ -4,8 +4,13 @@ import { PieGraph } from '../../../../components/graphs/pie-graph'
 import { ProgressBar } from '../../../../components/graphs/progress-bar'
 import { VictoryAnimation } from 'victory-native'
 
-export function GeneralRoundStatistics({ dealsPlayed, totalDealsCount, bestHandPercentages }) {
-  const HORIZONTAL_PADDING = 30
+export function GeneralRoundStatistics({
+  dealsPlayed,
+  totalDealsCount,
+  bestHandPercentages,
+  toggleBestHandPercentages,
+}) {
+  const HORIZONTAL_PADDING = 25
   const [pieData, setPieData] = useState([])
   const [progress, setProgress] = useState(0)
 
@@ -17,7 +22,7 @@ export function GeneralRoundStatistics({ dealsPlayed, totalDealsCount, bestHandP
     setPieData(
       bestHandPercentages.map((bestHandPercentage) => {
         return {
-          x: `${bestHandPercentage.name}: ${bestHandPercentage.data.toFixed(1)}%`,
+          x: bestHandPercentage.name,
           y: bestHandPercentage.data,
         }
       })
@@ -40,7 +45,7 @@ export function GeneralRoundStatistics({ dealsPlayed, totalDealsCount, bestHandP
       {bestHandPercentages.length ? (
         <>
           <Text style={{ marginTop: 20 }}>
-            <Text>You had the best hand in </Text>
+            <Text>You had the best {toggleBestHandPercentages ? 'player cards' : 'hand'} in </Text>
             <Text style={{ fontWeight: '700' }}>{bestHandPercentages.at(0).data.toFixed(1)}%</Text>
             <Text> of the deals</Text>
           </Text>

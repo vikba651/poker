@@ -16,7 +16,7 @@ export function PieGraph({ data }) {
   return (
     <VictoryPie
       animate={{
-        duration: 300,
+        duration: 500,
         delay: 0,
         onLoad: { duration: 1200 },
         onEnd: () => {
@@ -34,7 +34,7 @@ export function PieGraph({ data }) {
       colorScale={COLORS}
       endAngle={endAngle}
       data={data}
-      labels={({ datum }) => datum.x}
+      labels={({ datum }) => `${datum.x}: ${datum.y.toFixed(1)}%`}
       labelComponent={<VictoryLabel />}
     />
   )
