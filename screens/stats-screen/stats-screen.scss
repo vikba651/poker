@@ -1,17 +1,60 @@
-@import '/variables';
+@import "/variables";
 
 .container {
-  flex: 1;
-  background-color: $background-color;
-  justify-content: center;
+    flex: 1;
+    background-color: $background-color;
+    align-items: center;
+}
+
+.overview {
+    align-items: center;
+    width: 100%;
+}
+
+.roundContent {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 59px;
+    margin: 0.5rem;
 }
 
 .roundButton {
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  height: 40px;
-  width: 200px;
-  border-radius: 5px;
-  margin: 5px;
+    justify-content: space-between;
+    align-items: center;
+    background: #F5F5F5;
+    border-radius: 13px;
+    max-width: 100%;
+    width: 93%;
+    flex-direction: row;
+    height: 59px;
+    margin: 10%;
+}
+
+.chooseEmoji {
+    height: 60%;
+    width: 55%;
+    margin: 4%;
+}
+
+.emojiSide {
+    align-items: center;
+    justify-content: center;
+    width: 17%;
+    height: 59px;
+    background: #F5F5F5;
+    border-radius: 13px 0px 0px 13px;
+}
+
+.binSide {
+    align-items: center;
+    justify-content: center;
+    width: 12%;
+    height: 59px;
+    background: #F5F5F5;
+    border-radius: 0px 13px 13px 0px;
+}
+
+.overviewText {
+  padding-left: 4%;
 }
