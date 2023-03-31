@@ -22,23 +22,25 @@ LogBox.ignoreAllLogs() //Ignore all log notifications
 
 export default function App() {
   return (
-    <AppProvider>
+    <>
       <StatusBar animated={true} backgroundColor="#61dafb" barStyle="dark-content" />
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#EEE' } }}>
-          <Stack.Screen name="NameScreen" component={NameScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Home' }} />
-          <Stack.Screen name="AddPlayersScreen" component={AddPlayersScreen} options={{ title: 'Add Players' }} />
-          <Stack.Screen name="TrackGameScreen" component={TrackGameScreen} options={{ title: 'Track Game' }} />
-          <Stack.Screen name="SettleUpScreen" component={SettleUpScreen} options={{ title: 'Settle Up' }} />
-          <Stack.Screen name="GameBreakdown" component={GameBreakDownScreen} options={{ title: 'Game Breakdown' }} />
-          <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{ title: 'Create Game' }} />
-          <Stack.Screen name="StatsScreen" component={StatsScreen} options={{ title: 'Statistics' }} />
-          <Stack.Screen name="JoinGameScreen" component={JoinGameScreen} options={{ title: 'Join Game' }} />
-          <Stack.Screen name="AllDeals" component={AllDeals} options={{ title: 'All Deals' }} />
-          <Stack.Screen name="DealBreakdown" component={DealBreakdown} options={{ title: 'Deal Breakdown' }} />
-        </Stack.Navigator>
+        <AppProvider>
+          <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#EEE' } }}>
+            <Stack.Screen name="NameScreen" component={NameScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="StartScreen" component={StartScreen} options={{ title: 'Home' }} />
+            <Stack.Screen name="AddPlayersScreen" component={AddPlayersScreen} options={{ title: 'Add Players' }} />
+            <Stack.Screen name="TrackGameScreen" component={TrackGameScreen} options={{ title: 'Track Game' }} />
+            <Stack.Screen name="SettleUpScreen" component={SettleUpScreen} options={{ title: 'Settle Up' }} />
+            <Stack.Screen name="GameBreakdown" component={GameBreakDownScreen} options={{ title: 'Game Breakdown' }} />
+            <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{ title: 'Create Game' }} />
+            <Stack.Screen name="StatsScreen" component={StatsScreen} options={{ title: 'Statistics' }} />
+            <Stack.Screen name="JoinGameScreen" component={JoinGameScreen} options={{ title: 'Join Game' }} />
+            <Stack.Screen name="AllDeals" component={AllDeals} options={{ title: 'All Deals' }} />
+            <Stack.Screen name="DealBreakdown" component={DealBreakdown} options={{ title: 'Deal Breakdown' }} />
+          </Stack.Navigator>
+        </AppProvider>
       </NavigationContainer>
-    </AppProvider>
+    </>
   )
 }

@@ -206,23 +206,17 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
             }
             showInfoModal={true}
             infoModalContent="This is a general breakdown of the game!"
-          ></ComponentCard>
+          />
           <ComponentCard
             title="Summary of hands"
             content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
-          ></ComponentCard>
-          <ComponentCard
-            title="Player Card Qualities"
-            content={<StackedAreaGraph dataSets={qualities} />}
-          ></ComponentCard>
-          <ComponentCard
-            title="Rank Distributions"
-            content={<StackedBarGraph dataSets={rankDistributions} />}
-          ></ComponentCard>
+          />
+          <ComponentCard title="Player Card Qualities" content={<StackedAreaGraph dataSets={qualities} />} />
+          <ComponentCard title="Rank Distributions" content={<StackedBarGraph dataSets={rankDistributions} />} />
           {bestDealIndex > -1 && (
             <Deal
               navigation={navigation}
-              title={`Best hand - Deal ${bestDealIndex + 1}`}
+              title={`Your best hand - Deal ${bestDealIndex + 1}`}
               dealSummary={roundSummary.deals[bestDealIndex]}
               roundId={roundId}
               dealNumber={bestDealIndex}

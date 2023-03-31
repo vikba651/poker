@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import { io } from 'socket.io-client'
 
 const AppContext = React.createContext()
 
-export const SERVER_ADDR = 'http://192.168.86.22:8020'
+export const SERVER_ADDR = 'http://192.168.0.11:8020'
 const socket = io(SERVER_ADDR)
 
 export const AppProvider = ({ children }) => {
+  const navigation = useNavigation()
   const [players, setPlayers] = useState([])
   const [user, setUser] = useState({ name: 'No connection boy' })
   const userName = useRef('')
@@ -19,9 +21,12 @@ export const AppProvider = ({ children }) => {
   const [session, setSession] = useState(null)
   const sessionRef = useRef(null)
   sessionRef.current = session
+  const [activeSessionId, setActiveSessionId] = useState(null)
 
   const [location, setLocation] = useState(null)
   const [deals, setDeals] = useState([])
+  const dealsRef = useRef([])
+  dealsRef.current = deals
 
   const providers = {
     socket,
@@ -37,12 +42,21 @@ export const AppProvider = ({ children }) => {
     location,
     setLocation,
     deals,
+    dealsRef,
     setDeals,
     createdSession,
     setCreatedSession,
     joinedSession,
     joinedSessionRef,
     setJoinedSession,
+    activeSessionId,
+    getMyActiveSessions,
+  }
+
+  function getMyActiveSessions() {
+    socket.emit('findMyActiveSessions', { name: userName.current }, (sessionId) => {
+      setActiveSessionId(sessionId)
+    })
   }
 
   useEffect(() => {
@@ -61,12 +75,15 @@ export const AppProvider = ({ children }) => {
       setSession(session)
     })
 
+    socket.on('trackingStarted', () => {
+      navigation.navigate('TrackGameScreen', { loading: true })
+    })
+
     socket.on('disconnect', () => {
       setServerState('Disconnected from Websocket')
     })
 
     return () => {
-      console.log('unmount')
       socket.disconnect()
     }
   }, [socket])
