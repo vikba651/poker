@@ -9,7 +9,7 @@ import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
-export default function GameStats({ navigation, deals, roundSummary }) {
+export default function GameStats({ navigation, deals, roundSummary, roundId }) {
   const [isLoading, setIsLoading] = useState(true)
   const [rankDistributions, setRankDistributions] = useState()
   const [handResult, setHandResult] = useState()
@@ -204,6 +204,8 @@ export default function GameStats({ navigation, deals, roundSummary }) {
                 bestHandPercentages={bestHandPercentages}
               />
             }
+            showInfoModal={true}
+            infoModalContent="This is a general breakdown of the game!"
           />
           <ComponentCard
             title="Summary of hands"
@@ -216,6 +218,8 @@ export default function GameStats({ navigation, deals, roundSummary }) {
               navigation={navigation}
               title={`Your best hand - Deal ${bestDealIndex + 1}`}
               dealSummary={roundSummary.deals[bestDealIndex]}
+              roundId={roundId}
+              dealNumber={bestDealIndex}
             />
           )}
           <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>

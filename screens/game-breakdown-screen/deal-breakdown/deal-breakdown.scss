@@ -7,26 +7,64 @@
 }
 
 .title {
+  align-self: center;
   font-size: 24px;
   margin: 20px 0;
 }
 
-.otherPlayersView {
-  width: 90%;
+.scrollView {
+  width: 100%;
+}
+
+.playersView {
+  align-items: center;
 }
 
 .playerView {
-  margin: 10px 0;
+  margin: 7px;
+}
+
+.graphPlaceholderView {
+  height: 250px;
+}
+
+.graphPlaceholder {
+  margin: auto;
+}
+
+.markedPlayerView {
+  background-color: rgb(178, 178, 178);
+  border-radius: 14px;
+  margin: 7px;
+}
+
+.cardTitle {
+  font-size: $font-large;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-left: 15px;
 }
 
 .playerName {
   font-size: $font-large;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.playerPosition {
+  font-size: $font-large;
   font-weight: 600;
   margin-bottom: 10px;
-  margin-left: 10px;
+  margin-left: 13px;
 }
 
 .cardRow {
+  flex-direction: row;
+  margin-bottom: 10px;
+  margin-left: 8px;
+}
+
+.playerCardsView {
   flex-direction: row;
 }
 

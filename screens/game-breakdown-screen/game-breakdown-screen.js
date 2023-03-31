@@ -14,7 +14,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
   const [roundSummary, setRoundSummary] = useState()
 
   function onViewDeals() {
-    navigation.navigate('AllDeals', { roundSummary })
+    navigation.navigate('AllDeals', { roundSummary, roundId: round._id })
   }
 
   function onSettleUp() {
@@ -45,7 +45,9 @@ export default function GameBreakDownScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <GameStats navigation={navigation} deals={round.deals} roundSummary={roundSummary}></GameStats>
+      <GameStats navigation={navigation} deals={round.deals} roundSummary={roundSummary} roundId={round._id}>
+        {' '}
+      </GameStats>
 
       <View className={styles.footerButtonsView}>
         <TouchableOpacity onPress={() => onViewDeals()} className={styles.footerButton}>
