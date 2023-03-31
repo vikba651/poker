@@ -45,28 +45,6 @@ export default function JoinGameScreen({ navigation, route }) {
       setErrorMessage(message)
     })
 
-    socket.on('trackingStarted', (session) => {
-      if (navigation.getState().routes[navigation.getState().index].name === 'JoinGameScreen') {
-        navigation.navigate('TrackGameScreen', { loading: true })
-      }
-      updateSession(session)
-    })
-
-    function updateSession(session) {
-      if (
-        session &&
-        session.players.find((player) => {
-          return user.name == player.name
-        })
-      ) {
-        setSession(session)
-      } else {
-        setSession(null)
-        setErrorMessage('Party was disbanded')
-        setJoinedSession(false)
-      }
-    }
-
     socket.on('sendLocation', (serverLocation, code) => {
       if (!location || !serverLocation) {
         return

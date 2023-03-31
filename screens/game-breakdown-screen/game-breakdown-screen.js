@@ -22,11 +22,10 @@ export default function GameBreakDownScreen({ navigation, route }) {
   }
 
   function onHome() {
-    socket.emit('leaveSession', { name: user.name, code: session.code }, () => {
-      setCreatedSession(false)
-      setJoinedSession(false)
-      setSession(null)
-    })
+    socket.emit('leaveSession', { name: user.name, code: session.code })
+    setCreatedSession(false)
+    setJoinedSession(false)
+    setSession(null)
     setDeals([])
     navigation.navigate('StartScreen')
   }
