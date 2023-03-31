@@ -26,7 +26,12 @@ export function StackedBarGraph({ dataSets, longLabels }) {
       )
       setLongestLabel(findLongestLabel(dataSets))
 
-      let xCount = dataSets[0].data.length
+      let xCount = dataSets.reduce((maxLength, dataset) => {
+        if (maxLength < dataset.data.length) {
+          return dataset.data.length
+        }
+        return maxLength
+      }, 0)
       setWidth(Math.max(MIN_WIDTH, xCount * 22))
     }
   }, [dataSets])
@@ -57,7 +62,7 @@ export function StackedBarGraph({ dataSets, longLabels }) {
           padding={{ top: 40, left: 45, right: 20, bottom: longLabels ? 70 : 40 }}
         >
           <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
-          <VictoryStack colorScale={COLORS}>
+          <VictoryStack colorScale={COLORS} animate={{ duration: 2000, onLoad: { duration: 10 } }}>
             {dataSets.map((dataset, i) => (
               <VictoryBar key={i} data={dataset.data} x="x" y="y" barRatio={0.8} />
             ))}

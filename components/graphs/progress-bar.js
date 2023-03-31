@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 
-export function ProgressBar({ progress, total }) {
+export function ProgressBar({ progress }) {
   return (
     <View style={{ width: '100%' }}>
       <View
@@ -13,7 +13,7 @@ export function ProgressBar({ progress, total }) {
       ></View>
       <View
         style={{
-          width: `${(progress / total) * 100}%`,
+          width: `${progress}%`,
           height: 10,
           backgroundColor: '#4285F4',
           borderRadius: 10,

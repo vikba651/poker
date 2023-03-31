@@ -6,12 +6,14 @@ import ComponentCard from '../../../components/component-card/component-card'
 import { ArrowRightCircleIcon } from 'react-native-heroicons/outline'
 import AppContext from '../../../shared/AppContext'
 
-export default function Deal({ navigation, title, dealSummary, roundId, dealNumber }) {
+export default function Deal({ navigation, title, dealSummary, roundId, dealNumber, player }) {
   const { user } = useContext(AppContext)
   const [tableCards, setTableCards] = useState([])
   const [playerSummary, setPlayerSummary] = useState()
   useEffect(() => {
-    setPlayerSummary(dealSummary.playerCards.find((cards) => cards.name === user.name))
+    player
+      ? setPlayerSummary(dealSummary.playerCards.find((cards) => cards.name === player))
+      : setPlayerSummary(dealSummary.playerCards.find((cards) => cards.name === user.name))
     const tableCardsCount = dealSummary.tableCards.length
     const tableCardsToAdd = []
     for (let i = 0; i < 5 - tableCardsCount; i++) {

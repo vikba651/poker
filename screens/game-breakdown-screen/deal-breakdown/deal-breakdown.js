@@ -51,17 +51,13 @@ export default function DealBreakdown({ route }) {
     let dealWinProbabilities = await getDealWinProbabilities(id, dealNumber)
     dealWinProbabilities = dealWinProbabilities.map((winProbabilities) => {
       const name = winProbabilities.name
-      const data = [{ x: 'Pre-Flop', y: winProbabilities.probabilities[0] * 100 }]
-      const phases = ['Flop', 'Turn', 'River']
+      const data = []
+      const phases = ['Pre-Flop', 'Flop', 'Turn', 'River']
       phases.forEach((phase, i) => {
-        // data.push({
-        //   x: phase,
-        //   y: winProbabilities.probabilities.length > i + 1 ? winProbabilities.probabilities[i + 1] * 100 : data[i].y,
-        // })
-        if (winProbabilities.probabilities.length > i + 1) {
+        if (winProbabilities.probabilities.length > i) {
           data.push({
             x: phase,
-            y: winProbabilities.probabilities[i + 1] * 100,
+            y: winProbabilities.probabilities[i] * 100,
           })
         }
       })

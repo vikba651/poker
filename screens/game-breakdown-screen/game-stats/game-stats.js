@@ -6,6 +6,7 @@ import AppContext from '../../../shared/AppContext'
 import ComponentCard from '../../../components/component-card/component-card'
 import Deal from '../deal/deal'
 import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
+import { LineGraph } from '../../../components/graphs/stacked-line-graph'
 import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
 
@@ -14,12 +15,22 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
   const [rankDistributions, setRankDistributions] = useState()
   const [handResult, setHandResult] = useState()
   const [qualities, setQualities] = useState()
-  const [bestDealIndex, setBestDealIndex] = useState(-1)
+  const [yourBestDealIndex, setYourBestDealIndex] = useState(-1)
+  const [roundBestDeal, setRoundBestDeal] = useState(false)
   const [dealsPlayed, setDealsPlayed] = useState(0)
-  const [totalDealsCount, setTotalDealsCount] = useState(0)
+  const [totalDealsCount, setTotalDealsCount] = useState(1)
   const [bestHandPercentages, setBestHandPercentages] = useState([])
+  const [toggleBestHandPercentages, setToggleBestHandPercentages] = useState(false)
 
   const { user } = useContext(AppContext)
+  const players = deals.reduce((players, deal) => {
+    deal.playerCards.forEach((playerCards) => {
+      if (!players.find((player) => player == playerCards.name)) {
+        players.push(playerCards.name)
+      }
+    })
+    return players
+  }, [])
 
   const handTypeToString = {
     straightFlushes: 'Straight flush',
@@ -83,9 +94,10 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
       }
       dataSets.push({
         name: userSummary.name,
-        data: data,
+        data,
       })
     }
+
     setHandResult(sortPlayers(dataSets))
   }
 
@@ -107,9 +119,26 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
     setQualities(sortPlayers(dataSets))
   }
 
-  function getBestDeal() {
-    const bestDealIndex = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).bestDealIndex
-    setBestDealIndex(bestDealIndex)
+  function getYourBestDeal() {
+    const yourBestDealIndex = roundSummary.userSummaries.find(
+      (userSummary) => userSummary.name === user.name
+    ).bestDealIndex
+    setYourBestDealIndex(yourBestDealIndex)
+  }
+
+  function getRoundBestDeal() {
+    let currentMaxScore = 0
+    let newRoundBestDeal = false
+    roundSummary.deals.forEach((deal, index) => {
+      deal.playerCards.forEach((playerCards) => {
+        if (playerCards.score && playerCards.score > currentMaxScore) {
+          currentMaxScore = playerCards.score
+          newRoundBestDeal = { ...playerCards, index }
+        }
+      })
+    })
+
+    setRoundBestDeal(newRoundBestDeal)
   }
 
   function createGeneralRoundStats() {
@@ -123,35 +152,68 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
     setTotalDealsCount(deals.length)
   }
 
-  function createBestHandDistributions() {
-    // In this case best hand means highest quality. In the future we may want hand to mean full house, pair etc.
-    const myDealsCount = roundSummary.userSummaries.find((userSummary) => userSummary.name === user.name).qualities
-      .length
-    const bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
-      return {
-        name: userSummary.name,
-        count: 0,
+  function createBestHandDistributions(showBestHandPercentages) {
+    const myDealsCount = roundSummary.deals.reduce((count, deal) => {
+      if (
+        deal.playerCards.find((playerCards) => {
+          return playerCards.name == user.name
+        })
+      ) {
+        count++
       }
-    })
-    for (let i = 0; i < myDealsCount; i++) {
-      let bestHand = {
-        name: '',
-        quality: 0,
-      }
-      for (const userSummary of roundSummary.userSummaries) {
-        const userQuality = userSummary.qualities.at(i)
-        if (userQuality && userQuality > bestHand.quality) {
-          bestHand = { name: userSummary.name, quality: userQuality }
+      return count
+    }, 0)
+    let bestHandCounts
+    if (!showBestHandPercentages) {
+      bestHandCounts = roundSummary.userSummaries.map((userSummary) => {
+        return {
+          name: userSummary.name,
+          count: 0,
         }
+      })
+      for (let i = 0; i < myDealsCount; i++) {
+        let bestHand = {
+          name: '',
+          quality: 0,
+        }
+        for (const userSummary of roundSummary.userSummaries) {
+          const userQuality = userSummary.qualities.at(i)
+          if (userQuality && userQuality > bestHand.quality) {
+            bestHand = { name: userSummary.name, quality: userQuality }
+          }
+        }
+        bestHandCounts.find((obj) => obj.name === bestHand.name).count++
       }
-      bestHandCounts.find((obj) => obj.name === bestHand.name).count++
+    } else {
+      bestHandCounts = roundSummary.deals.reduce(
+        (bestHandCounts, deal) => {
+          if (!deal.playerCards.length) throw 'Players Cards are empty'
+          if (
+            !deal.playerCards.find((playerCards) => {
+              return playerCards.name == user.name
+            })
+          ) {
+            //Don't count rounds the use didn't take part of
+            return bestHandCounts
+          }
+          let bestHand = deal.playerCards.reduce((bestHand, hand) => (bestHand.score > hand.score ? bestHand : hand))
+          bestHandCounts[bestHandCounts.findIndex((bestHandCount) => bestHandCount.name == bestHand.name)].count++
+
+          return bestHandCounts
+        },
+        players.map((player) => {
+          return { name: player, count: 0 }
+        })
+      )
     }
+
     const dataSets = bestHandCounts.map((bestHandCount) => {
       return {
         name: bestHandCount.name,
         data: (bestHandCount.count * 100) / myDealsCount,
       }
     })
+
     setBestHandPercentages(sortPlayers(dataSets))
   }
 
@@ -182,9 +244,10 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
     if (roundSummary) {
       createHandResultsData()
       createQualities()
-      getBestDeal()
+      getYourBestDeal()
+      getRoundBestDeal()
       createGeneralRoundStats()
-      createBestHandDistributions()
+      createBestHandDistributions(toggleBestHandPercentages)
       setIsLoading(false)
     }
   }, [roundSummary])
@@ -195,33 +258,60 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
         <ActivityIndicator style={{ flex: 1, marginTop: '50%' }} />
       ) : (
         <>
-          <ComponentCard
-            title="General round statistics"
-            content={
-              <GeneralRoundStatistics
-                dealsPlayed={dealsPlayed}
-                totalDealsCount={totalDealsCount}
-                bestHandPercentages={bestHandPercentages}
-              />
-            }
-            showInfoModal={true}
-            infoModalContent="This is a general breakdown of the game!"
-          />
+          <TouchableOpacity
+            onPress={() => {
+              createBestHandDistributions(!toggleBestHandPercentages)
+              setToggleBestHandPercentages(!toggleBestHandPercentages)
+            }}
+            style={{ width: '100%', alignItems: 'center' }}
+          >
+            <ComponentCard
+              title="General round statistics"
+              content={
+                <GeneralRoundStatistics
+                  dealsPlayed={dealsPlayed}
+                  totalDealsCount={totalDealsCount}
+                  bestHandPercentages={bestHandPercentages}
+                  toggleBestHandPercentages={toggleBestHandPercentages}
+                />
+              }
+              infoModalContent="Best hand describes the best 5 card combination"
+            ></ComponentCard>
+          </TouchableOpacity>
           <ComponentCard
             title="Summary of hands"
             content={<StackedBarGraph dataSets={handResult} longLabels={true} />}
-          />
-          <ComponentCard title="Player Card Qualities" content={<StackedAreaGraph dataSets={qualities} />} />
-          <ComponentCard title="Rank Distributions" content={<StackedBarGraph dataSets={rankDistributions} />} />
-          {bestDealIndex > -1 && (
+          ></ComponentCard>
+          <ComponentCard
+            title="Player Card Qualities"
+            content={<LineGraph dataSets={qualities} />}
+            infoModalContent="Player card qualities describes the probability of the player cards winning against any other player cards and table cards pre-flop in a lobby the same size. This is computed with simulations. If the winners have the same hand, the win is divided by the amount of winners. For each combination of player cards more than 20K simulated games has been computed."
+          ></ComponentCard>
+          {yourBestDealIndex > -1 && (
             <Deal
               navigation={navigation}
-              title={`Your best hand - Deal ${bestDealIndex + 1}`}
-              dealSummary={roundSummary.deals[bestDealIndex]}
+              title={`Your Best Hand - Deal ${yourBestDealIndex + 1}`}
+              dealSummary={roundSummary.deals[yourBestDealIndex]}
               roundId={roundId}
-              dealNumber={bestDealIndex}
+              dealNumber={yourBestDealIndex}
             />
           )}
+          <ComponentCard
+            title="Rank Distributions"
+            content={<StackedBarGraph dataSets={rankDistributions} />}
+            infoModalContent="Rank distribution describes the amount of player cards of each rank the players in the lobby has been dealt."
+          ></ComponentCard>
+          {roundBestDeal && (
+            <Deal
+              navigation={navigation}
+              title={`Rounds Best Hand - ${roundBestDeal.name} Deal ${roundBestDeal.index + 1}`}
+              dealSummary={roundSummary.deals[roundBestDeal.index]}
+              roundId={roundId}
+              dealNumber={roundBestDeal.index + 1}
+              player={roundBestDeal.name}
+            />
+          )}
+
           <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
         </>
       )}
