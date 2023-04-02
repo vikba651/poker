@@ -1,4 +1,4 @@
-import { SERVER_ADDR } from './AppContext'
+import { SERVER_ADDR } from '@env'
 
 const postRequest = async (url, body) => {
   try {

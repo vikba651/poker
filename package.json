@@ -7,7 +7,8 @@
     "android": "expo start --android --port 19001",
     "ios": "expo start --ios --port 19001",
     "web": "expo start --web",
-    "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
+    "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
+    "clear-cache": "expo start -c --port 19001"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.10",
@@ -36,7 +37,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "react-native-dotenv": "^3.4.8"
   },
   "private": true
 }

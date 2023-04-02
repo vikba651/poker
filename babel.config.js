@@ -5,6 +5,7 @@ module.exports = function (api) {
     plugins: [
       'react-native-classname-to-style',
       ['react-native-platform-specific-extensions', { extensions: ['css'] }],
+      ['module:react-native-dotenv'],
     ],
   }
 }
