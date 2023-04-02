@@ -15,7 +15,6 @@ export default function StatsScreen({ navigation, route }) {
   useEffect(() => {
     fetchRounds()
   }, [])
-
   async function fetchRounds() {
     const rounds = await getRounds(user.name)
     if (rounds) {
@@ -42,10 +41,6 @@ export default function StatsScreen({ navigation, route }) {
 
   function onClickRound(round) {
     navigation.navigate('GameBreakdown', { round })
-  }
-
-  function onClickDelete(roundId, player) {
-    deleteRound(roundId, player)
   }
 
   return (
@@ -76,7 +71,7 @@ export default function StatsScreen({ navigation, route }) {
 
                       <Text style={{ fontWeight: 'bold' }}>{formatTime(round.startTime)} </Text>
                       <Text>{round.deals.length + ' deals'}</Text>
-                      <TouchableOpacity className={styles.binSide} onPress={onClickDelete(round._id, user.name)}>
+                      <TouchableOpacity className={styles.binSide} onPress={() => deleteRound(round._id, user.name)}>
                         <TrashIcon color="red" style={{ marginRight: '5%' }}></TrashIcon>
                       </TouchableOpacity>
                     </TouchableOpacity>
