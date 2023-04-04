@@ -1,8 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, memo } from 'react'
 import { Image, SafeAreaView, Text, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native'
 import { getRounds, deleteRound, getPlayer } from '../../shared/api'
 import AppContext from '../../shared/AppContext'
 import { SparklesIcon, TrashIcon } from 'react-native-heroicons/outline'
+import Modal from 'react-native-modal'
+import EmojiSelector from 'react-native-emoji-selector'
+import emojiData from 'emoji-datasource'
+import Svg, { Path } from 'react-native-svg'
+import Potrace from 'potrace'
 
 import styles from './stats-screen.scss'
 import ComponentCard from '../../components/component-card/component-card'
@@ -11,7 +16,11 @@ export default function StatsScreen({ navigation, route }) {
   const { user } = useContext(AppContext)
   const [rounds, setRounds] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const player = getPlayer(user.name)
+  const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false)
+  const [currentRound, setCurrentRound] = useState(null)
+  const [emojiMap, setEmojiMap] = useState({})
+  const MemoizedEmojiSelector = memo(EmojiSelector)
+
   useEffect(() => {
     fetchRounds()
   }, [])
@@ -26,6 +35,43 @@ export default function StatsScreen({ navigation, route }) {
   async function onClickDelete(roundId, playerName) {
     await deleteRound(roundId, playerName)
     fetchRounds()
+  }
+
+  function showEmojiPicker(round) {
+    setCurrentRound(round)
+    setIsEmojiPickerVisible(true)
+  }
+
+  async function getEmojiImage(emoji) {
+    const emojiItem = emojiData.find((item) => item.unified === emoji.replace(/-/g, ''))
+
+    if (emojiItem) {
+      const base64Image = emojiItem.image.replace(/^.*;base64,/, '')
+      const buffer = Buffer.from(base64Image, 'base64')
+
+      return new Promise((resolve, reject) => {
+        Potrace.trace(buffer, (err, svg) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(svg)
+          }
+        })
+      })
+    }
+
+    return null
+  }
+
+  async function handleEmojiSelect(emoji) {
+    console.log('Selected emoji:', emoji)
+
+    const emojiImage = await getEmojiImage(emoji)
+    if (emojiImage) {
+      setEmojiMap({ ...emojiMap, [currentRound._id]: emojiImage })
+    }
+
+    setIsEmojiPickerVisible(false)
   }
 
   function formatTime(dateTimeString) {
@@ -52,7 +98,15 @@ export default function StatsScreen({ navigation, route }) {
     <SafeAreaView className={styles.container}>
       <ComponentCard
         title="Overview"
-        content={<Text style={styles.overviewText}>An overview of your games' statistics will show up here.</Text>}
+        content={
+          isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={styles.overviewText}>
+              You have played {rounds.length} {rounds.length === 1 ? 'game' : 'games'}.
+            </Text>
+          )
+        }
       ></ComponentCard>
       <ComponentCard
         title="Your games"
@@ -66,12 +120,18 @@ export default function StatsScreen({ navigation, route }) {
                 rounds.map((round, i) => (
                   <View key={i} className={styles.roundContent}>
                     <TouchableOpacity className={styles.roundButton} onPress={() => onClickRound(round)}>
-                      <TouchableOpacity className={styles.emojiSide}>
-                        <Image
-                          className={styles.chooseEmoji}
-                          style={{ resizeMode: 'contain' }}
-                          source={require('../../assets/choose-emoji.png')}
-                        />
+                      <TouchableOpacity className={styles.emojiSide} onPress={() => showEmojiPicker(round)}>
+                        {emojiMap[round._id] ? (
+                          <Svg className={styles.chooseEmoji}>
+                            <Path d={emojiMap[round._id]} />
+                          </Svg>
+                        ) : (
+                          <Image
+                            className={styles.chooseEmoji}
+                            style={{ resizeMode: 'contain' }}
+                            source={require('../../assets/choose-emoji.png')}
+                          />
+                        )}
                       </TouchableOpacity>
 
                       <Text style={{ fontWeight: 'bold' }}>{formatTime(round.startTime)} </Text>
@@ -86,6 +146,11 @@ export default function StatsScreen({ navigation, route }) {
           </>
         }
       ></ComponentCard>
+      <Modal isVisible={isEmojiPickerVisible} onBackdropPress={() => setIsEmojiPickerVisible(false)}>
+        <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 20, width: '90%', height: '60%' }}>
+          <MemoizedEmojiSelector onEmojiSelected={handleEmojiSelect} />
+        </View>
+      </Modal>
     </SafeAreaView>
   )
 }
