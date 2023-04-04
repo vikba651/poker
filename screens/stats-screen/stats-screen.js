@@ -23,6 +23,11 @@ export default function StatsScreen({ navigation, route }) {
     setIsLoading(false)
   }
 
+  async function onClickDelete(roundId, playerName) {
+    await deleteRound(roundId, playerName)
+    fetchRounds()
+  }
+
   function formatTime(dateTimeString) {
     const monthNames = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const date = new Date(dateTimeString)
@@ -71,7 +76,7 @@ export default function StatsScreen({ navigation, route }) {
 
                       <Text style={{ fontWeight: 'bold' }}>{formatTime(round.startTime)} </Text>
                       <Text>{round.deals.length + ' deals'}</Text>
-                      <TouchableOpacity className={styles.binSide} onPress={() => deleteRound(round._id, user.name)}>
+                      <TouchableOpacity className={styles.binSide} onPress={() => onClickDelete(round._id, user.name)}>
                         <TrashIcon color="red" style={{ marginRight: '5%' }}></TrashIcon>
                       </TouchableOpacity>
                     </TouchableOpacity>
