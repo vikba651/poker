@@ -9,6 +9,7 @@ import { StackedBarGraph } from '../../../components/graphs/stacked-bar-graph'
 import { LineGraph } from '../../../components/graphs/stacked-line-graph'
 import { StackedAreaGraph } from '../../../components/graphs/stacked-area-graph'
 import { GeneralRoundStatistics } from './general-round-stats/general-round-stats'
+import { RoundAchievements } from './round-achievements/round-achievements'
 
 export default function GameStats({ navigation, deals, roundSummary, roundId }) {
   const [isLoading, setIsLoading] = useState(true)
@@ -261,6 +262,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
         <ActivityIndicator style={{ flex: 1, marginTop: '50%' }} />
       ) : (
         <>
+          <RoundAchievements userSummaries={sortPlayers(roundSummary.userSummaries)} />
           <TouchableOpacity
             onPress={() => {
               createBestHandDistributions(!toggleBestHandPercentages)
@@ -314,7 +316,6 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
               player={roundBestDeal.name}
             />
           )}
-
           <View style={{ height: 80 }}>{/* This adds to height to make space for footerbutton */}</View>
         </>
       )}
