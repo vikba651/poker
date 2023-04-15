@@ -1,0 +1,22 @@
+.achievementsContainer {
+  width: 100%;
+}
+
+.achievementContainer {
+  margin: 10px 10px 10px 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.achievementColor {
+  height: 120%;
+  width: 12px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.achievementText {
+  flex-direction: column;
+}
