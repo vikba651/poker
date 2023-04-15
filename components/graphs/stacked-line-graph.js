@@ -7,9 +7,11 @@ import { VictoryLine, VictoryChart, VictoryStack, VictoryAxis, VictoryLegend } f
  * @param dataSets: [{name: "dude", data: [{x: label1, y: value1}, {x: label2,  y: value2}]}]
  * @returns
  */
-export function LineGraph({ dataSets }) {
+export function LineGraph({ dataSets, showHandAxis }) {
   const COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853']
   const MIN_WIDTH = 340
+  const HANDFACTOR = 13 ** 5
+  const HANDS = ['High Card', 'Pair', 'Two Pair', 'Triple', 'Straight', 'Flush', 'Full House', 'Quad', 'Straight Flush']
 
   const [legend, setLegend] = useState([])
   const [width, setWidth] = useState(MIN_WIDTH)
@@ -41,7 +43,7 @@ export function LineGraph({ dataSets }) {
 
   return (
     <ScrollView horizontal scrollEnabled={width !== MIN_WIDTH}>
-      <VictoryChart height={250} width={width} padding={{ top: 40, left: 45, right: 20, bottom: 40 }}>
+      <VictoryChart height={250} width={width} padding={{ top: 40, left: 90, right: 20, bottom: 40 }}>
         <VictoryLegend x={55} y={0} orientation="horizontal" gutter={20} colorScale={COLORS} data={legend} />
         {dataSets &&
           dataSets.map((dataset, i) => (
@@ -56,8 +58,13 @@ export function LineGraph({ dataSets }) {
           ))}
         <VictoryAxis
           dependentAxis
-          tickFormat={(tick) => `${tick}`}
+          tickValues={Array.from({ length: 9 }, (_, i) => (i + 2) * HANDFACTOR)}
+          //tickFormat={(tick) => `${Math.floor(tick / HANDFACTOR)}`}
+          tickFormat={(tick) => {
+            return HANDS[Math.floor(tick / HANDFACTOR) - 2]
+          }}
           style={{
+            tickLabels: { transform: 'translate(0,5)' },
             grid: {
               fill: 'white',
               stroke: 'gray',

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Dimensions, View } from 'react-native'
 import { VictoryPie, VictoryLabel } from 'victory-native'
 
-export function PieGraph({ data }) {
+export function PieGraph({ data, onPress }) {
   const COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853']
   const [endAngle, setEndAngle] = useState(0)
   const [textOpacity, setTextOpacity] = useState(0.1)
@@ -15,6 +15,13 @@ export function PieGraph({ data }) {
 
   return (
     <VictoryPie
+      events={[
+        {
+          eventHandlers: {
+            onPress: onPress,
+          },
+        },
+      ]}
       animate={{
         duration: 500,
         delay: 0,

@@ -102,20 +102,34 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
   }
 
   function createQualities() {
-    const dataSets = []
-    for (const userSummary of roundSummary.userSummaries) {
-      const data = []
-      for (let i = 0; i < userSummary.qualities.length; i++) {
-        data.push({
-          x: i + 1,
-          y: userSummary.qualities[i],
+    // const dataSets = []
+    // for (const userSummary of roundSummary.userSummaries) {
+    //   const data = []
+    //   for (let i = 0; i < userSummary.qualities.length; i++) {
+    //     data.push({
+    //       x: i + 1,
+    //       y: userSummary.qualities[i],
+    //     })
+    //   }
+    //   dataSets.push({
+    //     name: userSummary.name,
+    //     data: data,
+    //   })
+    // }
+
+    const dataSets = roundSummary.deals.reduce((dataSets, deal, i) => {
+      deal.playerCards.forEach((playerCards) => {
+        const dataSet = dataSets.find((dataSet) => {
+          return dataSet.name == playerCards.name
         })
-      }
-      dataSets.push({
-        name: userSummary.name,
-        data: data,
+        if (!dataSet) {
+          dataSets.push({ name: playerCards.name, data: [{ x: i + 1, y: playerCards.score }] })
+        } else {
+          dataSet.data.push({ x: i + 1, y: playerCards.score })
+        }
       })
-    }
+      return dataSets
+    }, [])
     setQualities(sortPlayers(dataSets))
   }
 
@@ -273,6 +287,10 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
                   totalDealsCount={totalDealsCount}
                   bestHandPercentages={bestHandPercentages}
                   toggleBestHandPercentages={toggleBestHandPercentages}
+                  onPress={() => {
+                    createBestHandDistributions(!toggleBestHandPercentages)
+                    setToggleBestHandPercentages(!toggleBestHandPercentages)
+                  }}
                 />
               }
               infoModalContent="Best hand describes the best 5 card combination"

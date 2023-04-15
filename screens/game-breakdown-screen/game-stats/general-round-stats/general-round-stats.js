@@ -9,6 +9,7 @@ export function GeneralRoundStatistics({
   totalDealsCount,
   bestHandPercentages,
   toggleBestHandPercentages,
+  onPress,
 }) {
   const HORIZONTAL_PADDING = 25
   const [pieData, setPieData] = useState([])
@@ -49,7 +50,7 @@ export function GeneralRoundStatistics({
             <Text style={{ fontWeight: '700' }}>{bestHandPercentages.at(0).data.toFixed(1)}%</Text>
             <Text> of the deals</Text>
           </Text>
-          <PieGraph data={pieData} />
+          <PieGraph data={pieData} onPress={onPress} />
         </>
       ) : null}
     </View>
