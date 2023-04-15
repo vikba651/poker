@@ -73,7 +73,10 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
 
           // Increment rank value
           for (const card of playerCards.cards) {
-            data.find((datum) => datum.x === card.rank).y += 1
+            const rankData = data.find((datum) => datum.x === card.rank)
+            if (rankData) {
+              rankData.y += 1
+            }
           }
         }
       }
