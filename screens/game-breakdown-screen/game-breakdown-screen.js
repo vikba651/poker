@@ -31,30 +31,7 @@ export default function GameBreakDownScreen({ navigation, route }) {
   }
 
   const fetchRoundSummary = async (id) => {
-    let roundSummary = await getRoundSummary(id)
-
-    const achievements = [
-      {
-        title: 'Floppy King',
-        description: 'Got a flush on the flop',
-      },
-      {
-        title: 'Floppy King',
-        description: 'Got a flush on the flop',
-      },
-      {
-        title: 'Floppy King',
-        description: 'Got a flush on the flop',
-      },
-      {
-        title: 'Floppy King',
-        description: 'Got a flush on the flop',
-      },
-    ]
-
-    achievements.forEach((achievement, i) => {
-      roundSummary.userSummaries[i].achievement = achievement
-    })
+    const roundSummary = await getRoundSummary(id)
     setRoundSummary(roundSummary)
   }
 
