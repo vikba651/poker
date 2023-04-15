@@ -22,6 +22,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
   const [totalDealsCount, setTotalDealsCount] = useState(1)
   const [bestHandPercentages, setBestHandPercentages] = useState([])
   const [toggleBestHandPercentages, setToggleBestHandPercentages] = useState(false)
+  const [achievements, setAchievements] = useState([])
 
   const { user } = useContext(AppContext)
   const players = deals.reduce((players, deal) => {
@@ -221,6 +222,17 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
     setBestHandPercentages(sortPlayers(dataSets))
   }
 
+  function getAchievements() {
+    const achievements = roundSummary.userSummaries.map((userSummary) => {
+      return {
+        name: userSummary.name,
+        title: userSummary.achievement.title,
+        description: userSummary.achievement.description,
+      }
+    })
+    setAchievements(sortPlayers(achievements))
+  }
+
   /**
    * Current user first, then alphabetic order
    */
@@ -252,6 +264,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
       getRoundBestDeal()
       createGeneralRoundStats()
       createBestHandDistributions(toggleBestHandPercentages)
+      getAchievements()
       setIsLoading(false)
     }
   }, [roundSummary])
@@ -262,7 +275,7 @@ export default function GameStats({ navigation, deals, roundSummary, roundId }) 
         <ActivityIndicator style={{ flex: 1, marginTop: '50%' }} />
       ) : (
         <>
-          <RoundAchievements userSummaries={sortPlayers(roundSummary.userSummaries)} />
+          <RoundAchievements achievements={achievements} />
           <TouchableOpacity
             onPress={() => {
               createBestHandDistributions(!toggleBestHandPercentages)

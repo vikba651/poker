@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import styles from './round-achievements.scss'
 
-export const RoundAchievements = ({ userSummaries }) => {
+export const RoundAchievements = ({ achievements }) => {
   const COLORS = ['#4285F4', '#EA4335', '#FBBC04', '#34A853']
 
   return (
     <View className={styles.achievementsContainer}>
-      {userSummaries.map((userSummary, i) => {
+      {achievements.map((achievement, i) => {
         return (
           <View className={styles.achievementContainer} key={i}>
             <View
@@ -17,10 +17,10 @@ export const RoundAchievements = ({ userSummaries }) => {
             ></View>
             <View className={styles.achievementText}>
               <Text>
-                <Text style={{ fontWeight: '700', fontSize: '16px' }}>{userSummary.name}</Text>
-                <Text style={{ fontSize: '16px' }}> - {userSummary.achievement.title}</Text>
+                <Text style={{ fontWeight: '700', fontSize: 16 }}>{achievement.name}</Text>
+                <Text style={{ fontSize: 16 }}> - {achievement.title}</Text>
               </Text>
-              <Text style={{ fontSize: '12px' }}>{userSummary.achievement.description}</Text>
+              <Text style={{ fontSize: 12 }}>{achievement.description}</Text>
             </View>
           </View>
         )
