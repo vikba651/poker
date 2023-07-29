@@ -22,7 +22,9 @@ export default function GameBreakDownScreen({ navigation, route }) {
   }
 
   function onHome() {
-    socket.emit('leaveSession', { name: user.name, code: session.code })
+    if (session && round && session.id === round._id) {
+      socket.emit('leaveSession', { name: user.name, code: session.code })
+    }
     setCreatedSession(false)
     setJoinedSession(false)
     setSession(null)
