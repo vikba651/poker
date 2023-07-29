@@ -37,6 +37,24 @@ const getRequest = async (url) => {
   }
 }
 
+const delRequest = async (url) => {
+  try {
+    const res = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (res.status === 200) {
+      return res.json()
+    } else {
+      console.log(`status=${res.status}, msg=${res.message} from request=${url} `)
+    }
+  } catch (err) {
+    console.log('error', err)
+  }
+}
+
 export const createPlayer = (name) => {
   return postRequest(`${SERVER_ADDR}/players/create`, { name })
 }
@@ -67,4 +85,8 @@ export const postRoundEarnings = (roundId, earnings) => {
 
 export const getDealWinProbabilities = (roundId, dealNumber) => {
   return getRequest(`${SERVER_ADDR}/rounds/dealWinProbabilities/${roundId}/${dealNumber}`)
+}
+
+export const deleteRound = (roundId, playerId) => {
+  return delRequest(`${SERVER_ADDR}/rounds/${roundId}/${playerId}`)
 }
